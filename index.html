@@ -955,6 +955,13 @@
             </div>
           </sc-if>
 
+          <sc-if value="{{ viewPr.canRecall }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FFF6E0;border:1px solid #F0DA9E;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
+              <div style="font-size:12.5px;color:#8A6A12;line-height:1.6">ຍັງບໍ່ມີໃຜອະນຸມັດ — ທ່ານ (ຜູ້ສ້າງ) ຖອນຄຳຂໍກັບມາແກ້ໄຂ ຫຼື ຍົກເລີກໄດ້</div>
+              <button onClick="{{ viewPr.onRecall }}" style="flex-shrink:0;background:#fff;color:#8A6A12;border:1px solid #F0DA9E;border-radius:6px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer">ຖອນຄຳຂໍ (ກັບເປັນຮ່າງ)</button>
+            </div>
+          </sc-if>
+
           <sc-if value="{{ viewPr.canAct }}" hint-placeholder-val="{{ false }}">
             <sc-if value="{{ viewPr.isRejecting }}" hint-placeholder-val="{{ false }}">
               <div style="background:#F3F8F4;border-radius:8px;padding:14px">
@@ -2036,6 +2043,18 @@ class Component extends DCLogic {
     this.persist({ prs, ...lg });
     this.toast('success', 'ສົ່ງອະນຸມັດແລ້ວ — ເດັ້ງໄປຂັ້ນ Review for approval');
   }
+  // ຖອນ/ຍົກເລີກຄຳຂໍອະນຸມັດ — ສະເພາະຜູ້ສ້າງ (ຫຼື admin) ແລະ ຕ້ອງຍັງ "ບໍ່ທັນມີໃຜອະນຸມັດ" (currentStep 0)
+  recallPr(pr) {
+    const u = this.me();
+    if (pr.requesterId !== u.id && u.role !== 'ADMIN') { this.deny(`ພະຍາຍາມຖອນ ${pr.prNumber}`, 'ສະເພາະຜູ້ສ້າງເອກະສານເອງເທົ່ານັ້ນ (SoD)'); return; }
+    if (pr.status !== 'PENDING_APPROVAL') { this.toast('error', 'ຖອນໄດ້ສະເພາະຕອນ "ກຳລັງລໍຖ້າອະນຸມັດ" ເທົ່ານັ້ນ'); return; }
+    if ((pr.approvals || []).length > 0) { this.toast('error', 'ມີການອະນຸມັດບາງຂັ້ນໄປແລ້ວ — ຖອນບໍ່ໄດ້ (ໃຫ້ຜູ້ອະນຸມັດປະຕິເສດແທນ)'); return; }
+    const prs = this.state.prs.map(p => p.id === pr.id ? { ...p, status: 'DRAFT', currentStep: 0, approvals: [], rfq: null } : p);
+    const lg = this.log('UPDATE', `ຖອນຄຳຂໍອະນຸມັດ ${pr.prNumber} — ກັບເປັນສະບັບຮ່າງ`, true);
+    this.persist({ prs, ...lg });
+    this.toast('success', `ຖອນຄຳຂໍ ${pr.prNumber} ແລ້ວ — ກັບເປັນສະບັບຮ່າງ, ແກ້ໄຂ ຫຼື ສົ່ງໃໝ່ໄດ້`);
+    this.setState({ action: null });
+  }
   startRfq(pr) {
     const u = this.me();
     if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມເລີ່ມຂະບວນການ RFQ ${pr.prNumber}`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
@@ -2574,8 +2593,9 @@ class Component extends DCLogic {
         isHistorical, onBackToCurrent: () => this.backToCurrentStep(),
         budgetControllerName: (this.state.users.find(x => x.role === 'BUDGET_CONTROLLER' && x.isActive) || {}).name || '—',
 
-        canSubmitDraft: u && (selPr.requesterId === u.id || u.role === 'ADMIN') && !isHistorical, onSubmitDraft: () => this.submitDraftForReview(selPr),
+        canSubmitDraft: u && (selPr.requesterId === u.id || u.role === 'ADMIN') && selPr.status === 'DRAFT' && !isHistorical, onSubmitDraft: () => this.submitDraftForReview(selPr),
         onEditDraft: () => this.openEditPrForm(selPr),
+        canRecall: u && (selPr.requesterId === u.id || u.role === 'ADMIN') && selPr.status === 'PENDING_APPROVAL' && (selPr.approvals || []).length === 0 && !isHistorical, onRecall: () => this.recallPr(selPr),
         canStartRfq: u && ['PROCUREMENT', 'ADMIN'].includes(u.role) && !isHistorical, onStartRfq: () => this.startRfq(selPr),
 
         budgetRejectReason: selPr.rfq ? selPr.rfq.budgetRejectReason : null,
