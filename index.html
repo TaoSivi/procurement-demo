@@ -537,6 +537,21 @@
       </sc-for>
     </div>
     <button onClick="{{ onAddPrLine }}" style="margin-top:10px;background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:7px;padding:7px 14px;font-size:12.5px;cursor:pointer">+ ເພີ່ມລາຍການ</button>
+
+    <!-- ===== ແນบเอกสาร (ຫຼາຍໄຟລ໌) ====== -->
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid #EEF1ED">
+      <label style="font-size:12px;color:#5C6D5A;font-weight:600">ເອກະສານແນບ (ແນບໄດ້ຫຼາຍໄຟລ໌ — ໃບສະເໜີລາຄາ, ຮູບ, PDF ฯลฯ)</label>
+      <div style="margin-top:6px"><input type="file" multiple onChange="{{ onPrFilesChange }}" style="font-size:12.5px" /></div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">
+        <sc-for list="{{ prFormAttachmentRows }}" as="at" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:#F3F8F4;border:1px solid #DCE8DF;border-radius:7px;padding:7px 10px;font-size:12.5px">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">📎 {{ at.name }}</span>
+            <button onClick="{{ at.onRemove }}" style="flex-shrink:0;background:none;border:none;color:#B23B2E;font-size:15px;cursor:pointer;padding:0 4px">×</button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
     <!-- ===== ເສ້ນທາງອະນຸມັດ: ພິມຊື່ເລືອກຄົນ + ຈັດລຳດັບຂັ້ນ + CC ====== -->
     <div style="margin-top:18px;padding-top:16px;border-top:1px solid #EEF1ED">
       <label style="font-size:12px;color:#5C6D5A;font-weight:600">ເສ້ນທາງອະນຸມັດ — ພິມຊື່ເພື່ອເພີ່ມຜູ້ອະນຸມັດ (ລຽງຕາມລຳດັບຂັ້ນ)</label>
@@ -912,6 +927,16 @@
           <div style="display:flex;justify-content:flex-end;margin-bottom:22px">
             <div style="text-align:right"><div style="font-size:12.5px;color:#5C6D5A">ມູນຄ່າລວມ</div><div style="font-size:19px;font-weight:700">{{ viewPr.totalDisplay }}</div></div>
           </div>
+          <sc-if value="{{ viewPr.hasAttachments }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-bottom:20px">
+              <div style="font-size:11.5px;font-weight:700;color:#0B4D27;margin-bottom:6px">ເອກະສານແນບ</div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <sc-for list="{{ viewPr.attachmentList }}" as="at" hint-placeholder-count="2">
+                  <a href="{{ at.url }}" download="{{ at.name }}" target="_blank" style="font-size:12.5px;color:#116F38;text-decoration:none;background:#F3F8F4;border:1px solid #DCE8DF;border-radius:7px;padding:7px 10px;display:block">📎 {{ at.name }}</a>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
           <sc-if value="{{ viewPr.canSubmitDraft }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;gap:8px">
               <button onClick="{{ viewPr.onSubmitDraft }}" style="background:#116F38;color:#fff;border:none;border-radius:6px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer">ສົ່ງອະນຸມັດ</button>
@@ -952,6 +977,17 @@
                   </sc-for>
                 </tbody>
               </table>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ viewPr.hasAttachments }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-bottom:16px">
+              <div style="font-size:11.5px;font-weight:700;color:#0B4D27;margin-bottom:6px">ເອກະສານແນບ</div>
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <sc-for list="{{ viewPr.attachmentList }}" as="at" hint-placeholder-count="2">
+                  <a href="{{ at.url }}" download="{{ at.name }}" target="_blank" style="font-size:12.5px;color:#116F38;text-decoration:none;background:#F3F8F4;border:1px solid #DCE8DF;border-radius:7px;padding:7px 10px;display:block">📎 {{ at.name }}</a>
+                </sc-for>
+              </div>
             </div>
           </sc-if>
 
@@ -1331,6 +1367,27 @@
           <button onClick="{{ viewPo.onReceiveClick }}" style="background:#116F38;color:#fff;border:none;border-radius:6px;padding:10px 18px;font-size:13.5px;font-weight:600;cursor:pointer">ຮັບເຄື່ອງທັງໝົດ (ສ້າງ GRN)</button>
         </sc-if>
       </div>
+
+      <!-- ===== ເອກະສານ PO — ພະແนกจัดซื้อ แนบ/จัดการ ===== -->
+      <div style="margin-top:22px;padding-top:18px;border-top:1px solid #EEF1ED">
+        <div style="font-size:13px;font-weight:700;color:#0B4D27;margin-bottom:8px">ເອກະສານ ໃບສັ່ງຊື້ (ຈັດການໂດຍ ພະແນກຈັດຊື້)</div>
+        <sc-if value="{{ viewPo.canManagePoDocs }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-bottom:8px"><input type="file" multiple onChange="{{ viewPo.onPoFilesChange }}" style="font-size:12.5px" /></div>
+        </sc-if>
+        <sc-if value="{{ viewPo.hasPoAttachments }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <sc-for list="{{ viewPo.poAttachmentList }}" as="at" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:#F3F8F4;border:1px solid #DCE8DF;border-radius:7px;padding:7px 10px;font-size:12.5px">
+                <a href="{{ at.url }}" download="{{ at.name }}" target="_blank" style="color:#116F38;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">📎 {{ at.name }} <span style="color:#98A69B">· {{ at.byName }}</span></a>
+                <sc-if value="{{ viewPo.canManagePoDocs }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ at.onRemove }}" style="flex-shrink:0;background:none;border:none;color:#B23B2E;font-size:15px;cursor:pointer;padding:0 4px">×</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ viewPo.hasPoAttachments }}" hint-placeholder-val="{{ false }}"></sc-if>
+      </div>
     </div>
   </div>
 </div>
@@ -1670,7 +1727,7 @@ function parseIn(v) { return String(v).replace(/,/g, ''); }
 function seedData() {
   const settings = { t1: 10000000, t2: 100000000, quoteThreshold: 20000000, minQuotes: 2, quoteThreshold2: 80000000, minQuotes2: 3,
     coLao: 'ບໍລິສັດ ຕົວຢ່າງ ການຄ້າ ຈຳກັດ (DEMO)', coEn: 'Demo Trading Co., Ltd.',
-    coAddr: 'ນະຄອນປາກເຊ, ແຂວງຈຳປາສັກ, ສປປ ລາວ', coPhone: '+856 20 5555 1234 · info@laotaigroup.la' };
+    coAddr: 'ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ (ຕົວຢ່າງ)', coPhone: '+856 20 0000 0000 · demo@example.com' };
   const vendors = [
     { id: 'v1', name: 'ຮ້ານວັດສະດຸກໍ່ສ້າງຈຳປາສັກ', taxId: '0100123456', currency: 'LAK', status: 'ACTIVE', isDeleted: false },
     { id: 'v2', name: 'Siam Trading Co., Ltd.', taxId: 'TH-88991122', currency: 'THB', status: 'ACTIVE', isDeleted: false },
@@ -1691,7 +1748,7 @@ class Component extends DCLogic {
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
-    prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '',
+    prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [],
     qVendorId: '', qAmount: '', qFx: '', qNote: '', qFileName: '', qFileData: '',
     qNewVendorOpen: false, qNvName: '', qNvTax: '', qNvCur: 'LAK',
     selectingQuoteId: null, qSelectReason: '', filePreview: null,
@@ -1894,6 +1951,18 @@ class Component extends DCLogic {
   prNeed(pr) { const r = this.prRoute(pr); return r ? r.length : this.stepsNeeded(this.prTotal(pr)); }
   expApproverId(pr) { const r = this.prRoute(pr); return r ? (r[pr.currentStep] || null) : null; }
   stepLabel(pr, i) { const r = this.prRoute(pr); if (r) { return this.uName(r[i]); } return ROLE_LABEL[CHAIN[i]]; }
+  // ໃຜເຫັນ PR ໄດ້: ຄົນສ້າງ + ຜູ້ອະນຸມັດ (ຕາມเส้นทาง) + ຜู้ติดตาม (CC) + Admin/Auditor.
+  // ພະແนกจัดซื้อ/การเงิน/ผู้อำนวยการ ເຫັນໄດ້ເມื่อ PR ຜ่านอนุมัดแล้ว (เข้าขั้นงานของเขา) — กันคนไม่เกี่ยวข้องสับสน
+  canSeePr(pr, u) {
+    if (!u || !pr) return false;
+    if (u.role === 'ADMIN' || u.role === 'AUDITOR') return true;
+    if (pr.requesterId === u.id) return true;
+    if ((pr.approvalRoute || []).includes(u.id)) return true;
+    if ((pr.watchers || []).includes(u.id)) return true;
+    const downstream = ['PROCUREMENT', 'FINANCE_MANAGER', 'BUDGET_CONTROLLER', 'DIRECTOR'];
+    if (downstream.includes(u.role) && (pr.status === 'APPROVED' || pr.status === 'CONVERTED' || !!pr.rfq)) return true;
+    return false;
+  }
   quoteLcy(q) { return r2(q.amount * q.fxRate); }
   minQuotesRequired(total) {
     const st = this.state.settings;
@@ -1941,7 +2010,11 @@ class Component extends DCLogic {
     this.toast('success', 'ລຶບລາຍເຊັນແລ້ວ');
   }
   goPage(p) { this.setState({ page: p, detailKind: null, detailId: null, action: null, docView: null }); }
-  openDetail(kind, id) { this.setState({ detailKind: kind, detailId: id, detailTab: 'lines', action: null, reasonText: '', qVendorId: '', qAmount: '', qFx: '', qNote: '', historicalStepIdx: null }); }
+  openDetail(kind, id) {
+    // ກັນຄົນທີ່ບໍ່ກ່ຽວຂ້ອງເປີດ PR (defense): ເຫັນໄດ້ສະເພาะ ຄົນສ້າງ/ຜູ້ອະນຸມັດ/CC/Admin/Auditor/ຝ່າຍທີ່ກ່ຽວ
+    if (kind === 'pr') { const pr = this.state.prs.find(p => p.id === id); if (pr && !this.canSeePr(pr, this.me())) { this.toast('error', 'ທ່ານບໍ່ມີສິດເບິ່ງໃບຂໍຊື້ນີ້ (ສະເພາະຜູ້ກ່ຽວຂ້ອງ)'); return; } }
+    this.setState({ detailKind: kind, detailId: id, detailTab: 'lines', action: null, reasonText: '', qVendorId: '', qAmount: '', qFx: '', qNote: '', historicalStepIdx: null });
+  }
   // ເບິ່ງຂັ້ນຕອນທີ່ຜ່ານໄປແລ້ວ (ອ່ານໄດ້ຢ່າງດຽວ, ພ້ອມພິມ) — ບໍ່ປ່ຽນສະຖານະຈິງ
   viewHistoricalStep(i) { this.setState({ historicalStepIdx: i }); }
   backToCurrentStep() { this.setState({ historicalStepIdx: null }); }
@@ -1951,7 +2024,7 @@ class Component extends DCLogic {
   openPrForm() {
     const u = this.me();
     if (!['DEPT_VP', 'DEPT_HEAD', 'TECHNICAL', 'PROCUREMENT', 'IT_STAFF', 'WAREHOUSE', 'BUDGET_CONTROLLER', 'FINANCE_MANAGER', 'ADMIN'].includes(u.role)) { this.deny('ພະຍາຍາມສ້າງໃບຂໍຊື້', `ບົດບາດ "${ROLE_LABEL[u.role]}" ບໍ່ມີສິດສ້າງໃບຂໍຊື້ (SoD)`); return; }
-    this.setState({ prFormOpen: true, editingPrId: null, prFormDept: u.dept, prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }], prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '' });
+    this.setState({ prFormOpen: true, editingPrId: null, prFormDept: u.dept, prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }], prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [] });
   }
   // ແກ້ໄຂໃບຂໍຊື້ຂະນະຍັງເປັນສະບັບຮ່າງ (ຍັງບໍ່ໄດ້ສົ່ງອະນຸມັດ) — ສະເພາະຜູ້ສ້າງເອກະສານເອງ ຫຼື admin (SoD)
   openEditPrForm(pr) {
@@ -1959,7 +2032,7 @@ class Component extends DCLogic {
     if (pr.status !== 'DRAFT') { this.toast('error', 'ແກ້ໄຂໄດ້ສະເພາະຕອນຍັງເປັນສະບັບຮ່າງ (ຍັງບໍ່ໄດ້ສົ່ງອະນຸມັດ)'); return; }
     if (pr.requesterId !== u.id && u.role !== 'ADMIN') { this.deny(`ພະຍາຍາມແກ້ໄຂ ${pr.prNumber}`, 'ສະເພາະຜູ້ສ້າງເອກະສານເອງເທົ່ານັ້ນທີ່ແກ້ໄຂໄດ້ (SoD)'); return; }
     this.setState({ prFormOpen: true, editingPrId: pr.id, prFormDept: pr.department, prFormNeeded: pr.neededDate || '', prFormReason: pr.justification || '', prFormBudgetLine: pr.budgetLine || '',
-      prFormLines: pr.lines.map(l => ({ desc: l.desc, qty: l.qty, unit: l.unit || '', unitPrice: l.unitPrice })), prFormApprovers: [...(pr.approvalRoute || [])], prFormWatchers: [...(pr.watchers || [])], prFormApproverSearch: '', prFormWatcherSearch: '' });
+      prFormLines: pr.lines.map(l => ({ desc: l.desc, qty: l.qty, unit: l.unit || '', unitPrice: l.unitPrice })), prFormApprovers: [...(pr.approvalRoute || [])], prFormWatchers: [...(pr.watchers || [])], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [...(pr.attachments || [])] });
   }
   submitPr() {
     const u = this.me();
@@ -1973,7 +2046,7 @@ class Component extends DCLogic {
       if (!existing) { this.setState({ prFormOpen: false, editingPrId: null }); return; }
       if (existing.status !== 'DRAFT') { this.toast('error', 'ໃບນີ້ຖືກສົ່ງອະນຸມັດໄປແລ້ວ — ແກ້ໄຂບໍ່ໄດ້'); this.setState({ prFormOpen: false, editingPrId: null }); return; }
       if (existing.requesterId !== u.id && u.role !== 'ADMIN') { this.deny(`ພະຍາຍາມແກ້ໄຂ ${existing.prNumber}`, 'ສະເພາະຜູ້ສ້າງເອກະສານເອງເທົ່ານັ້ນທີ່ແກ້ໄຂໄດ້ (SoD)'); return; }
-      const updated = { ...existing, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), lines, approvalRoute: route, watchers };
+      const updated = { ...existing, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), lines, approvalRoute: route, watchers, attachments: [...(this.state.prFormAttachments || [])] };
       const total = this.prTotal(updated);
       const prs = this.state.prs.map(p => p.id === existing.id ? updated : p);
       const lg = this.log('UPDATE', `ແກ້ໄຂສະບັບຮ່າງ ${existing.prNumber} ມູນຄ່າ ${fm(total)} ກີບ`, true);
@@ -1983,7 +2056,7 @@ class Component extends DCLogic {
     }
     const n = this.state.seq.pr + 1;
     const prNumber = 'PR-2026-' + String(n).padStart(6, '0');
-    const pr = { id: uid(), prNumber, requesterId: u.id, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), status: 'DRAFT', createdAt: new Date().toISOString(), currentStep: 0, approvals: [], rejectReason: null, quotes: [], rfq: null, lines, approvalRoute: route, watchers };
+    const pr = { id: uid(), prNumber, requesterId: u.id, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), status: 'DRAFT', createdAt: new Date().toISOString(), currentStep: 0, approvals: [], rejectReason: null, quotes: [], rfq: null, lines, approvalRoute: route, watchers, attachments: [...(this.state.prFormAttachments || [])] };
     const total = this.prTotal(pr);
     const lg = this.log('CREATE', `ສ້າງສະບັບຮ່າງ ${prNumber} ມູນຄ່າ ${fm(total)} ກີບ`, true);
     this.persist({ prs: [pr, ...this.state.prs], seq: { ...this.state.seq, pr: n, audit: lg.seq.audit }, auditLogs: lg.auditLogs, prFormOpen: false, editingPrId: null, detailKind: 'pr', detailId: pr.id, action: null });
@@ -2133,6 +2206,45 @@ class Component extends DCLogic {
     reader.readAsDataURL(file);
   }
   clearQFile() { this.setState({ qFileName: '', qFileData: '' }); }
+  // ແນบหลายไฟล์ตอนสร้างร่าง PR (เก็บเป็น dataURL) — ຈຳກັດ 4MB/ໄຟລ໌
+  handlePrFiles(e) {
+    const files = [...(e.target.files || [])];
+    if (!files.length) return;
+    files.forEach(file => {
+      if (file.size > 4 * 1024 * 1024) { this.toast('error', `"${file.name}" ໃຫຍ່ເກີນ 4MB — ຂ້າມ`); return; }
+      const reader = new FileReader();
+      reader.onload = () => this.setState({ prFormAttachments: [...(this.state.prFormAttachments || []), { id: uid(), name: file.name, data: reader.result }] });
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+  }
+  removePrAttachment(id) { this.setState({ prFormAttachments: (this.state.prFormAttachments || []).filter(a => a.id !== id) }); }
+  // ພະແนกจัดซื้อ แนบ/จัดการเอกสารบน PO (ໃບສັ່ງຊື້) — ສະເພาะ PROCUREMENT/ADMIN (SoD)
+  addPoAttachments(po, e) {
+    const u = this.me();
+    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມແນບເອກະສານ ${po.poNumber}`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ຈັດການເອກະສານ PO ໄດ້ (SoD)`); e.target.value = ''; return; }
+    const files = [...(e.target.files || [])];
+    files.forEach(file => {
+      if (file.size > 4 * 1024 * 1024) { this.toast('error', `"${file.name}" ໃຫຍ່ເກີນ 4MB — ຂ້າມ`); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const att = { id: uid(), name: file.name, data: reader.result, byId: u.id, at: new Date().toISOString() };
+        const pos = this.state.pos.map(p => p.id === po.id ? { ...p, attachments: [...(p.attachments || []), att] } : p);
+        const lg = this.log('UPDATE', `ແນບເອກະສານ "${file.name}" ໃສ່ ${po.poNumber}`, true);
+        this.persist({ pos, ...lg });
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = '';
+  }
+  removePoAttachment(po, attId) {
+    const u = this.me();
+    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມລຶບເອກະສານ ${po.poNumber}`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" (SoD)`); return; }
+    const pos = this.state.pos.map(p => p.id === po.id ? { ...p, attachments: (p.attachments || []).filter(a => a.id !== attId) } : p);
+    const lg = this.log('UPDATE', `ລຶບເອກະສານແນບຈາກ ${po.poNumber}`, true);
+    this.persist({ pos, ...lg });
+    this.toast('success', 'ລຶບເອກະສານແນບແລ້ວ');
+  }
 
   // ເພີ່ມຜູ້ຂາຍໃໝ່ຈາກໜ້າຫາໃບສະເໜີລາຄາໂດຍກົງ — ສະເພາະພະແນກຈັດຊື້ເທົ່ານັ້ນ (SoD)
   addVendorInline() {
@@ -2452,7 +2564,7 @@ class Component extends DCLogic {
     const loginRows = s.users.map(x => ({ ...x, roleLabel: ROLE_LABEL[x.role], cardOpacity: x.isActive ? 1 : 0.5, cardCursor: x.isActive ? 'pointer' : 'not-allowed', isActiveBadge: !x.isActive, onLogin: () => this.selectLoginUser(x.id) }));
     const loginSelUser = s.users.find(x => x.id === s.loginSelectedId) || null;
 
-    const prRows = s.prs.map(pr => {
+    const prRows = s.prs.filter(pr => this.canSeePr(pr, u)).map(pr => {
       const meta = sm(pr.status);
       const total = this.prTotal(pr);
       const need = this.prNeed(pr);
@@ -2596,6 +2708,8 @@ class Component extends DCLogic {
         canSubmitDraft: u && (selPr.requesterId === u.id || u.role === 'ADMIN') && selPr.status === 'DRAFT' && !isHistorical, onSubmitDraft: () => this.submitDraftForReview(selPr),
         onEditDraft: () => this.openEditPrForm(selPr),
         canRecall: u && (selPr.requesterId === u.id || u.role === 'ADMIN') && selPr.status === 'PENDING_APPROVAL' && (selPr.approvals || []).length === 0 && !isHistorical, onRecall: () => this.recallPr(selPr),
+        hasAttachments: (selPr.attachments || []).length > 0,
+        attachmentList: (selPr.attachments || []).map((a, i) => ({ name: a.name, url: a.data, num: i + 1 })),
         canStartRfq: u && ['PROCUREMENT', 'ADMIN'].includes(u.role) && !isHistorical, onStartRfq: () => this.startRfq(selPr),
 
         budgetRejectReason: selPr.rfq ? selPr.rfq.budgetRejectReason : null,
@@ -2653,6 +2767,10 @@ class Component extends DCLogic {
         onConfirmReject: () => this.rejectPo(selPo),
         onCancelAction: () => this.setState({ action: null, reasonText: '' }),
         onPrintDoc: () => this.setState({ docView: { kind: 'po', id: selPo.id } }),
+        canManagePoDocs: !!u && ['PROCUREMENT', 'ADMIN'].includes(u.role),
+        hasPoAttachments: (selPo.attachments || []).length > 0,
+        poAttachmentList: (selPo.attachments || []).map(a => ({ name: a.name, url: a.data, byName: this.uName(a.byId), onRemove: () => this.removePoAttachment(selPo, a.id) })),
+        onPoFilesChange: (e) => this.addPoAttachments(selPo, e),
       };
     }
 
@@ -2678,7 +2796,7 @@ class Component extends DCLogic {
 
     let myPendingApprovalCount = 0;
     if (u) {
-      myPendingApprovalCount = s.prs.filter(p => p.status === 'PENDING_APPROVAL' && CHAIN[p.currentStep] === u.role).length
+      myPendingApprovalCount = s.prs.filter(p => p.status === 'PENDING_APPROVAL' && this.canSeePr(p, u) && (this.prRoute(p) ? this.expApproverId(p) === u.id : CHAIN[p.currentStep] === u.role)).length
         + (['FINANCE_MANAGER', 'DIRECTOR'].includes(u.role) ? s.pos.filter(p => p.status === 'PENDING_APPROVAL').length : 0);
     }
 
@@ -2722,8 +2840,8 @@ class Component extends DCLogic {
       logoRowJustify: collapsed ? 'center' : 'space-between',
 
       myPendingApprovalCount,
-      pendingPrCount: s.prs.filter(p => p.status === 'PENDING_APPROVAL').length,
-      readyConvertCount: s.prs.filter(p => p.status === 'APPROVED').length,
+      pendingPrCount: s.prs.filter(p => p.status === 'PENDING_APPROVAL' && this.canSeePr(p, u)).length,
+      readyConvertCount: s.prs.filter(p => p.status === 'APPROVED' && this.canSeePr(p, u)).length,
       pendingPoCount: s.pos.filter(p => p.status === 'PENDING_APPROVAL').length,
       readyReceiveCount: s.pos.filter(p => p.status === 'APPROVED').length,
       auditTotal: s.auditLogs.length,
@@ -2742,6 +2860,8 @@ class Component extends DCLogic {
       onSubmitPrForm: () => this.submitPr(), prFormTotal: fm(prFormTotalNum), prFormChainPreview,
       prFormApproverRows, prFormWatcherRows, prFormApproverResults, prFormWatcherResults,
       prFormApproverSearch: s.prFormApproverSearch, prFormWatcherSearch: s.prFormWatcherSearch,
+      prFormAttachmentRows: (s.prFormAttachments || []).map(a => ({ name: a.name, onRemove: () => this.removePrAttachment(a.id) })),
+      onPrFilesChange: e => this.handlePrFiles(e),
       onPrApproverSearchChange: e => this.setState({ prFormApproverSearch: e.target.value }),
       onPrWatcherSearchChange: e => this.setState({ prFormWatcherSearch: e.target.value }),
       prApproverSearchActive, prWatcherSearchActive, prApproverNoResult, prWatcherNoResult, prNoApprover,
