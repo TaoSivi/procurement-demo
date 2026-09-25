@@ -653,6 +653,13 @@
         </sc-for>
       </div>
       <div style="background:#F3F8F4;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:12px;color:#3C4C3A;line-height:1.6">ລຳດັບອະນຸມັດ: <b>{{ prFormChainPreview }}</b></div>
+
+      <label style="font-size:12px;color:#5C6D5A;font-weight:600;display:block;margin-top:16px">ມອບໝາຍໃຫ້ຝ່າຍຈັດຊື້ (ທາງເລືອກ)</label>
+      <select value="{{ prFormProcOfficer }}" onChange="{{ onPrProcOfficerChange }}" style="width:100%;box-sizing:border-box;margin-top:6px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+        <option value="">— ບໍ່ລະບຸ (ທຸກຄົນໃນຝ່າຍຈັດຊື້ເຫັນ) —</option>
+        <sc-for list="{{ prProcOfficerOptions }}" as="po" hint-placeholder-count="2"><option value="{{ po.id }}">{{ po.name }} · {{ po.dept }}</option></sc-for>
+      </select>
+      <div style="font-size:11px;color:#8B9A88;margin-top:5px">ຖ້າเลือกชื่อ → เฉพาะคนนั้นดำเนินงานจัดซื้อ (RFQ/PO) ต่อได้</div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid #EEF1ED">
       <div style="font-size:13.5px;color:#5C6D5A">ຍອດລວມ: <span style="font-weight:700;color:#14231A;font-size:16px">{{ prFormTotal }}</span> ກີບ</div>
@@ -1042,6 +1049,10 @@
                 </sc-for>
               </div>
             </div>
+          </sc-if>
+
+          <sc-if value="{{ viewPr.hasProcOfficer }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#EEF2ED;border:1px solid #DCE8DF;border-radius:8px;padding:9px 12px;margin-bottom:14px;font-size:12.5px;color:#3C4C3A">🛒 ມอบหมายจัดซื้อ: <b>{{ viewPr.procOfficerName }}</b></div>
           </sc-if>
 
           <!-- ===== ຄວາມເห็น / โน้ต (คุยกันในใบ) ===== -->
@@ -1821,7 +1832,7 @@ class Component extends DCLogic {
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
-    prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [],
+    prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [], prFormProcOfficer: '',
     qVendorId: '', qAmount: '', qFx: '', qNote: '', qFileName: '', qFileData: '',
     qNewVendorOpen: false, qNvName: '', qNvTax: '', qNvCur: 'LAK',
     selectingQuoteId: null, qSelectReason: '', filePreview: null,
@@ -2032,9 +2043,20 @@ class Component extends DCLogic {
     if (pr.requesterId === u.id) return true;
     if ((pr.approvalRoute || []).includes(u.id)) return true;
     if ((pr.watchers || []).includes(u.id)) return true;
-    const downstream = ['PROCUREMENT', 'FINANCE_MANAGER', 'BUDGET_CONTROLLER', 'DIRECTOR'];
+    // ຝ່າຍຈັດຊື້: ຖ້າ PR ມອບໝາຍໃຫ້ຄົນໃດຄົນໜຶ່ງ → ສະເພາະຄົນນັ້ນເຫັນ; ຖ້າບໍ່ໄດ້ມອບໝາຍ → ທຸກຄົນໃນຝ່າຍເຫັນ
+    if (u.role === 'PROCUREMENT' && (pr.status === 'APPROVED' || pr.status === 'CONVERTED' || !!pr.rfq)) {
+      return pr.procurementOfficer ? pr.procurementOfficer === u.id : true;
+    }
+    const downstream = ['FINANCE_MANAGER', 'BUDGET_CONTROLLER', 'DIRECTOR'];
     if (downstream.includes(u.role) && (pr.status === 'APPROVED' || pr.status === 'CONVERTED' || !!pr.rfq)) return true;
     return false;
+  }
+  // ຝ່າຍຈັດຊື້ຄົນນີ້ ມີສິດ "ດຳເນີນງານ" ໃນ PR ນີ້ບໍ (ນັບການມອບໝາຍ)
+  canDoProcurement(pr, u) {
+    if (!u) return false;
+    if (u.role === 'ADMIN') return true;
+    if (u.role !== 'PROCUREMENT') return false;
+    return pr && pr.procurementOfficer ? pr.procurementOfficer === u.id : true;
   }
   quoteLcy(q) { return r2(q.amount * q.fxRate); }
   minQuotesRequired(total) {
@@ -2092,7 +2114,7 @@ class Component extends DCLogic {
     if (pr.status === 'APPROVED' && pr.rfq && pr.rfq.stage === 'BUDGET_REVIEW' && ['FINANCE_MANAGER', 'BUDGET_CONTROLLER', 'ADMIN'].includes(u.role)) return true;
     if (pr.rfq) {
       if (pr.rfq.stage === 'HEAD_PENDING' && (u.role === 'DIRECTOR' || u.role === 'ADMIN' || (u.role === 'DEPT_HEAD' && u.dept === 'ພະແນກຈັດຊື້'))) return true;
-      if (['COLLECTING', 'BUDGET_REVIEW'].includes(pr.rfq.stage) && ['PROCUREMENT', 'ADMIN'].includes(u.role)) return true;
+      if (['COLLECTING', 'BUDGET_REVIEW'].includes(pr.rfq.stage) && u.role === 'PROCUREMENT' && (pr.procurementOfficer ? pr.procurementOfficer === u.id : true)) return true;
     }
     return false;
   }
@@ -2110,7 +2132,7 @@ class Component extends DCLogic {
   openPrForm() {
     const u = this.me();
     if (!['DEPT_VP', 'DEPT_HEAD', 'TECHNICAL', 'PROCUREMENT', 'IT_STAFF', 'WAREHOUSE', 'BUDGET_CONTROLLER', 'FINANCE_MANAGER', 'ADMIN'].includes(u.role)) { this.deny('ພະຍາຍາມສ້າງໃບຂໍຊື້', `ບົດບາດ "${ROLE_LABEL[u.role]}" ບໍ່ມີສິດສ້າງໃບຂໍຊື້ (SoD)`); return; }
-    this.setState({ prFormOpen: true, editingPrId: null, prFormDept: u.dept, prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }], prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [] });
+    this.setState({ prFormOpen: true, editingPrId: null, prFormDept: u.dept, prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }], prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [], prFormProcOfficer: '' });
   }
   // ແກ້ໄຂໃບຂໍຊື້ຂະນະຍັງເປັນສະບັບຮ່າງ (ຍັງບໍ່ໄດ້ສົ່ງອະນຸມັດ) — ສະເພາະຜູ້ສ້າງເອກະສານເອງ ຫຼື admin (SoD)
   openEditPrForm(pr) {
@@ -2118,7 +2140,7 @@ class Component extends DCLogic {
     if (pr.status !== 'DRAFT') { this.toast('error', 'ແກ້ໄຂໄດ້ສະເພາະຕອນຍັງເປັນສະບັບຮ່າງ (ຍັງບໍ່ໄດ້ສົ່ງອະນຸມັດ)'); return; }
     if (pr.requesterId !== u.id && u.role !== 'ADMIN') { this.deny(`ພະຍາຍາມແກ້ໄຂ ${pr.prNumber}`, 'ສະເພາະຜູ້ສ້າງເອກະສານເອງເທົ່ານັ້ນທີ່ແກ້ໄຂໄດ້ (SoD)'); return; }
     this.setState({ prFormOpen: true, editingPrId: pr.id, prFormDept: pr.department, prFormNeeded: pr.neededDate || '', prFormReason: pr.justification || '', prFormBudgetLine: pr.budgetLine || '',
-      prFormLines: pr.lines.map(l => ({ desc: l.desc, qty: l.qty, unit: l.unit || '', unitPrice: l.unitPrice })), prFormApprovers: [...(pr.approvalRoute || [])], prFormWatchers: [...(pr.watchers || [])], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [...(pr.attachments || [])] });
+      prFormLines: pr.lines.map(l => ({ desc: l.desc, qty: l.qty, unit: l.unit || '', unitPrice: l.unitPrice })), prFormApprovers: [...(pr.approvalRoute || [])], prFormWatchers: [...(pr.watchers || [])], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [...(pr.attachments || [])], prFormProcOfficer: pr.procurementOfficer || '' });
   }
   submitPr() {
     const u = this.me();
@@ -2132,7 +2154,7 @@ class Component extends DCLogic {
       if (!existing) { this.setState({ prFormOpen: false, editingPrId: null }); return; }
       if (existing.status !== 'DRAFT') { this.toast('error', 'ໃບນີ້ຖືກສົ່ງອະນຸມັດໄປແລ້ວ — ແກ້ໄຂບໍ່ໄດ້'); this.setState({ prFormOpen: false, editingPrId: null }); return; }
       if (existing.requesterId !== u.id && u.role !== 'ADMIN') { this.deny(`ພະຍາຍາມແກ້ໄຂ ${existing.prNumber}`, 'ສະເພາະຜູ້ສ້າງເອກະສານເອງເທົ່ານັ້ນທີ່ແກ້ໄຂໄດ້ (SoD)'); return; }
-      const updated = { ...existing, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), lines, approvalRoute: route, watchers, attachments: [...(this.state.prFormAttachments || [])] };
+      const updated = { ...existing, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), lines, approvalRoute: route, watchers, attachments: [...(this.state.prFormAttachments || [])], procurementOfficer: this.state.prFormProcOfficer || null };
       const total = this.prTotal(updated);
       const prs = this.state.prs.map(p => p.id === existing.id ? updated : p);
       const lg = this.log('UPDATE', `ແກ້ໄຂສະບັບຮ່າງ ${existing.prNumber} ມູນຄ່າ ${fm(total)} ກີບ`, true);
@@ -2142,7 +2164,7 @@ class Component extends DCLogic {
     }
     const n = this.state.seq.pr + 1;
     const prNumber = 'PR-2026-' + String(n).padStart(6, '0');
-    const pr = { id: uid(), prNumber, requesterId: u.id, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), status: 'DRAFT', createdAt: new Date().toISOString(), currentStep: 0, approvals: [], rejectReason: null, quotes: [], rfq: null, lines, approvalRoute: route, watchers, attachments: [...(this.state.prFormAttachments || [])] };
+    const pr = { id: uid(), prNumber, requesterId: u.id, department: this.state.prFormDept || u.dept, neededDate: this.state.prFormNeeded || null, justification: this.state.prFormReason.trim(), budgetLine: this.state.prFormBudgetLine.trim(), status: 'DRAFT', createdAt: new Date().toISOString(), currentStep: 0, approvals: [], rejectReason: null, quotes: [], rfq: null, lines, approvalRoute: route, watchers, attachments: [...(this.state.prFormAttachments || [])], procurementOfficer: this.state.prFormProcOfficer || null };
     const total = this.prTotal(pr);
     const lg = this.log('CREATE', `ສ້າງສະບັບຮ່າງ ${prNumber} ມູນຄ່າ ${fm(total)} ກີບ`, true);
     this.persist({ prs: [pr, ...this.state.prs], seq: { ...this.state.seq, pr: n, audit: lg.seq.audit }, auditLogs: lg.auditLogs, prFormOpen: false, editingPrId: null, detailKind: 'pr', detailId: pr.id, action: null });
@@ -2227,7 +2249,7 @@ class Component extends DCLogic {
   }
   startRfq(pr) {
     const u = this.me();
-    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມເລີ່ມຂະບວນການ RFQ ${pr.prNumber}`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
+    if (!this.canDoProcurement(pr, u)) { this.deny(`ພະຍາຍາມເລີ່ມຂະບວນການ RFQ ${pr.prNumber}`, pr.procurementOfficer ? `PR ນີ້ມອບໝາຍໃຫ້ "${this.uName(pr.procurementOfficer)}" ຮັບຜິດຊອບ (SoD)` : `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
     const rfq = { stage: 'BUDGET_REVIEW', budgetBy: null, budgetAt: null, budgetRejectReason: null, headBy: null, headAt: null, headRejectReason: null, poId: null };
     const prs = this.state.prs.map(p => p.id === pr.id ? { ...p, rfq } : p);
     const lg = this.log('UPDATE', `ເລີ່ມຂະບວນການ RFQ ສຳລັບ ${pr.prNumber}`, true);
@@ -2256,7 +2278,7 @@ class Component extends DCLogic {
   }
   submitQuotesForHead(pr) {
     const u = this.me();
-    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມສົ່ງໃບສະເໜີລາຄາ ${pr.prNumber}`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
+    if (!this.canDoProcurement(pr, u)) { this.deny(`ພະຍາຍາມສົ່ງໃບສະເໜີລາຄາ ${pr.prNumber}`, pr.procurementOfficer ? `PR ນີ້ມອບໝາຍໃຫ້ "${this.uName(pr.procurementOfficer)}" (SoD)` : `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
     const total = this.prTotal(pr);
     const req = this.minQuotesRequired(total);
     if (req > 0 && pr.quotes.length < req) { this.toast('error', `ຕ້ອງມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ ${req} ໃບ (ມີ ${pr.quotes.length} ໃບ)`); return; }
@@ -2390,7 +2412,7 @@ class Component extends DCLogic {
 
   addQuote(pr) {
     const u = this.me();
-    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມເພີ່ມໃບສະເໜີລາຄາໃຫ້ ${pr.prNumber}`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
+    if (!this.canDoProcurement(pr, u)) { this.deny(`ພະຍາຍາມເພີ່ມໃບສະເໜີລາຄາໃຫ້ ${pr.prNumber}`, pr.procurementOfficer ? `PR ນີ້ມອບໝາຍໃຫ້ "${this.uName(pr.procurementOfficer)}" (SoD)` : `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
     const v = this.state.vendors.find(x => x.id === this.state.qVendorId);
     if (!v) { this.toast('error', 'ກະລຸນາເລືອກຜູ້ຂາຍ'); return; }
     if (v.status !== 'ACTIVE' || v.isDeleted) { this.toast('error', 'ຜູ້ຂາຍນີ້ບໍ່ສາມາດໃຊ້ງານໄດ້ (ຖືກລຶບ ຫຼື ບັນຊີດຳ)'); return; }
@@ -2412,7 +2434,7 @@ class Component extends DCLogic {
   }
   selectQuote(pr, q) {
     const u = this.me();
-    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມເລືອກໃບສະເໜີລາຄາ`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
+    if (!this.canDoProcurement(pr, u)) { this.deny(`ພະຍາຍາມເລືອກໃບສະເໜີລາຄາ`, pr.procurementOfficer ? `PR ນີ້ມອບໝາຍໃຫ້ "${this.uName(pr.procurementOfficer)}" (SoD)` : `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
     const reason = this.state.qSelectReason.trim();
     if (!reason) { this.toast('error', 'ກະລຸນາລະບຸເຫດຜົນວ່າເປັນຫຍັງຈຶ່ງເລືອກໃບນີ້'); return; }
     const prs = this.state.prs.map(p => p.id === pr.id ? { ...p, quotes: p.quotes.map(x => ({ ...x, selected: x.id === q.id, selectReason: x.id === q.id ? reason : null })) } : p);
@@ -2487,7 +2509,8 @@ class Component extends DCLogic {
   }
   receivePo(po) {
     const u = this.me();
-    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny(`ພະຍາຍາມຮັບເຄື່ອງ ${po.poNumber}`, `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
+    const _pr = this.state.prs.find(p => p.id === po.prId);
+    if (!this.canDoProcurement(_pr, u)) { this.deny(`ພະຍາຍາມຮັບເຄື່ອງ ${po.poNumber}`, (_pr && _pr.procurementOfficer) ? `PR ນີ້ມອບໝາຍໃຫ້ "${this.uName(_pr.procurementOfficer)}" (SoD)` : `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
     if (po.status !== 'APPROVED') { this.toast('error', 'ຮັບເຄື່ອງໄດ້ສະເພາະ PO ທີ່ອະນຸມັດແລ້ວ'); return; }
     const n = this.state.seq.grn + 1;
     const grnNumber = 'GRN-2026-' + String(n).padStart(6, '0');
@@ -2784,7 +2807,7 @@ class Component extends DCLogic {
         stepRows.push({ num, roleLabel: this.stepLabel(selPr, i), statusText, dotBg, dotFg });
       }
       const myTurn = u && selPr.status === 'PENDING_APPROVAL' && (u.role === 'ADMIN' || (selRoute ? (u.id === this.expApproverId(selPr)) : (u.role === CHAIN[selPr.currentStep])));
-      const canQuote = u && ['PROCUREMENT', 'ADMIN'].includes(u.role);
+      const canQuote = this.canDoProcurement(selPr, u);
       const requiredQ = this.minQuotesRequired(total);
       const enoughQ = requiredQ === 0 || selPr.quotes.length >= requiredQ;
       const hasSel = selPr.quotes.some(q => q.selected);
@@ -2851,8 +2874,9 @@ class Component extends DCLogic {
         attachmentList: (selPr.attachments || []).map((a, i) => ({ name: a.name, url: a.data, num: i + 1 })),
         commentList: (selPr.comments || []).map(c => ({ name: this.uName(c.by), at: fdt(c.at), text: c.text })),
         hasComments: (selPr.comments || []).length > 0,
+        hasProcOfficer: !!selPr.procurementOfficer, procOfficerName: selPr.procurementOfficer ? this.uName(selPr.procurementOfficer) : '',
         prCommentText: s.prCommentText, onCommentChange: e => this.setState({ prCommentText: e.target.value }), onAddComment: () => this.addPrComment(selPr),
-        canStartRfq: u && ['PROCUREMENT', 'ADMIN'].includes(u.role) && !isHistorical, onStartRfq: () => this.startRfq(selPr),
+        canStartRfq: this.canDoProcurement(selPr, u) && !isHistorical, onStartRfq: () => this.startRfq(selPr),
 
         budgetRejectReason: selPr.rfq ? selPr.rfq.budgetRejectReason : null,
         headRejectReason: selPr.rfq ? selPr.rfq.headRejectReason : null,
@@ -3031,6 +3055,8 @@ class Component extends DCLogic {
       prFormApproverSearch: s.prFormApproverSearch, prFormWatcherSearch: s.prFormWatcherSearch,
       prFormAttachmentRows: (s.prFormAttachments || []).map(a => ({ name: a.name, onRemove: () => this.removePrAttachment(a.id) })),
       onPrFilesChange: e => this.handlePrFiles(e),
+      prFormProcOfficer: s.prFormProcOfficer, onPrProcOfficerChange: e => this.setState({ prFormProcOfficer: e.target.value }),
+      prProcOfficerOptions: s.users.filter(x => x.isActive && x.role === 'PROCUREMENT').map(x => ({ id: x.id, name: x.name, dept: x.dept })),
       onPrApproverSearchChange: e => this.setState({ prFormApproverSearch: e.target.value }),
       onPrWatcherSearchChange: e => this.setState({ prFormWatcherSearch: e.target.value }),
       prApproverSearchActive, prWatcherSearchActive, prApproverNoResult, prWatcherNoResult, prNoApprover,
