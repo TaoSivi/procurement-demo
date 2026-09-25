@@ -19,6 +19,18 @@
   a { color:#116F38; } a:hover { color:#0B4D27; }
   input, select, textarea, button { font-family:'Phetsarath OT','Times New Roman','Noto Sans Lao', serif; }
   ::placeholder { color:#A8B5A5; }
+  /* ===== Mobile responsive: sidebar → off-canvas drawer ===== */
+  #mobileTopBar { display:none; }
+  #navBackdrop { display:none; }
+  @media (max-width: 820px) {
+    #sideNav { transform: translateX(-100%); transition: transform .25s ease !important; }
+    #sideNav[data-open="1"] { transform: translateX(0); }
+    #appMain { margin-left: 0 !important; padding: 64px 14px 48px !important; overflow-x: hidden; }
+    #detailOverlay { left: 0 !important; }
+    #mobileTopBar { display: flex; }
+    #navBackdrop[data-open="1"] { display: block; }
+    .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  }
   @page { size: A4; margin: 0; }
   @media print {
     body * { visibility: hidden !important; }
@@ -76,7 +88,13 @@
 
 <sc-if value="{{ showApp }}" hint-placeholder-val="{{ false }}">
 <div style="min-height:100vh">
-  <div style="background:#0B4D27;width:{{ sidebarWidth }};display:flex;flex-direction:column;padding:18px 12px;position:fixed;top:0;left:0;bottom:0;box-shadow:2px 0 12px rgba(0,0,0,0.12);z-index:300;transition:width .18s ease;overflow:hidden">
+  <!-- Mobile top bar (ເຫັນສະເພາະໜ້າຈໍນ້ອຍ) -->
+  <div id="mobileTopBar" style="position:fixed;top:0;left:0;right:0;height:52px;background:#0B4D27;color:#fff;z-index:150;align-items:center;gap:12px;padding:0 14px;box-shadow:0 2px 8px rgba(0,0,0,0.18)">
+    <button onClick="{{ onToggleMobileNav }}" aria-label="menu" style="background:rgba(255,255,255,0.14);border:none;color:#fff;width:38px;height:38px;border-radius:9px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">☰</button>
+    <div style="font-weight:800;font-size:14px;letter-spacing:0.02em;color:#F3C01F">DEMO GROUP</div>
+  </div>
+  <div id="navBackdrop" data-open="{{ mobileNavOpen01 }}" onClick="{{ onCloseMobileNav }}" style="position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:250"></div>
+  <div id="sideNav" data-open="{{ mobileNavOpen01 }}" style="background:#0B4D27;width:{{ sidebarWidth }};display:flex;flex-direction:column;padding:18px 12px;position:fixed;top:0;left:0;bottom:0;box-shadow:2px 0 12px rgba(0,0,0,0.12);z-index:300;transition:width .18s ease;overflow:hidden">
     <div style="display:flex;align-items:center;padding-bottom:14px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.15);justify-content:{{ logoRowJustify }}">
       <sc-if value="{{ showSidebarLabels }}" hint-placeholder-val="{{ true }}">
         <img src="uploads/cropped-cropped-cropped-cropped-cropped-Logo.png" alt="logo" style="width:38px;height:38px;object-fit:contain;flex-shrink:0;margin-right:10px">
@@ -131,7 +149,7 @@
     </div>
   </div>
 
-  <div style="margin-left:{{ sidebarWidth }};padding:30px 36px;min-width:0;overflow-x:hidden;transition:margin-left .18s ease">
+  <div id="appMain" style="margin-left:{{ sidebarWidth }};padding:30px 36px;min-width:0;overflow-x:hidden;transition:margin-left .18s ease">
     <sc-if value="{{ toastOpen }}" hint-placeholder-val="{{ false }}">
       <div style="position:fixed;bottom:24px;right:24px;z-index:400;background:{{ toastBg }};color:{{ toastFg }};border:1px solid {{ toastBorder }};border-radius:10px;padding:14px 18px;max-width:420px;font-size:13.5px;line-height:1.7;box-shadow:0 8px 24px rgba(0,0,0,0.18)">{{ toastText }}</div>
     </sc-if>
@@ -263,19 +281,38 @@
 
     <sc-if value="{{ isVendorPage }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Vendors">
-      <h2 style="margin:0 0 4px;font-size:22px">ຜູ້ຂາຍ (Vendors)</h2>
-      <p style="margin:0 0 20px;color:#5C6D5A;font-size:13.5px">ລຶບແບບ Smart Delete — ປະຫວັດເອກະສານເກົ່າຍັງຄົງຢູ່ຄົບ</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px">
+        <h2 style="margin:0;font-size:22px">ຜູ້ຂາຍ (Vendors)</h2>
+        <sc-if value="{{ canManageVendors }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ onToggleVendorForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer">{{ vendorFormBtnLabel }}</button>
+        </sc-if>
+      </div>
+      <p style="margin:0 0 16px;color:#5C6D5A;font-size:13.5px">ລຶບແບບ Smart Delete — ປະຫວັດເອກະສານເກົ່າຍັງຄົງຢູ່ຄົບ</p>
+      <sc-if value="{{ vendorFormOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #DCE8DF;border-radius:12px;padding:16px 18px;margin-bottom:16px">
+          <div style="font-weight:700;font-size:13.5px;color:#0B4D27;margin-bottom:10px">ເພີ່ມຜູ້ຂາຍໃໝ່</div>
+          <div style="display:grid;grid-template-columns:2fr 1.3fr 0.8fr;gap:10px">
+            <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ຊື່ຜູ້ຂາຍ</label><input value="{{ vNewName }}" onChange="{{ onVNewName }}" placeholder="ຊື່ບໍລິສັດ/ຮ້ານ" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"></div>
+            <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ເລກຜູ້ເສຍພາສີ</label><input value="{{ vNewTax }}" onChange="{{ onVNewTax }}" placeholder="ບໍ່ບັງຄັບ" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"></div>
+            <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ສະກຸນເງິນ</label><select value="{{ vNewCur }}" onChange="{{ onVNewCur }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="LAK">LAK</option><option value="THB">THB</option><option value="USD">USD</option></select></div>
+          </div>
+          <button onClick="{{ onCreateVendor }}" style="margin-top:12px;background:#116F38;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer">ບັນທຶກຜູ້ຂາຍ</button>
+        </div>
+      </sc-if>
       <div style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05)">
-        <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.8fr 1fr 0.7fr;padding:12px 18px;font-size:11.5px;font-weight:700;color:#8B9A88;border-bottom:1px solid #EEF1ED">
+        <div style="display:grid;grid-template-columns:1.6fr 1.1fr 0.6fr 0.9fr 1.5fr;padding:12px 18px;font-size:11.5px;font-weight:700;color:#8B9A88;border-bottom:1px solid #EEF1ED">
           <div>ຊື່ຜູ້ຂາຍ</div><div>ເລກຜູ້ເສຍພາສີ</div><div>ສະກຸນເງິນ</div><div>ສະຖານະ</div><div></div>
         </div>
         <sc-for list="{{ vendorRows }}" as="v" hint-placeholder-count="4">
-          <div style="display:grid;grid-template-columns:1.6fr 1.2fr 0.8fr 1fr 0.7fr;padding:14px 18px;font-size:13px;align-items:center;border-bottom:1px solid #F4F6F3;opacity:{{ v.rowOpacity }}">
+          <div style="display:grid;grid-template-columns:1.6fr 1.1fr 0.6fr 0.9fr 1.5fr;padding:14px 18px;font-size:13px;align-items:center;border-bottom:1px solid #F4F6F3;opacity:{{ v.rowOpacity }}">
             <div>{{ v.name }}<sc-if value="{{ v.isDeleted }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:10.5px;font-weight:600;color:#B23B2E;background:#FBE7E6;padding:2px 8px;border-radius:20px">ຖືກລຶບ</span></sc-if></div>
             <div style="font-family:ui-monospace,monospace;color:#8B9A88">{{ v.taxId }}</div>
             <div style="font-family:ui-monospace,monospace">{{ v.currency }}</div>
             <div><span style="font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;background:{{ v.statusBg }};color:{{ v.statusFg }}">{{ v.statusLabel }}</span></div>
-            <div><sc-if value="{{ v.canShowDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ v.onDelete }}" style="background:#FBE7E6;color:#B23B2E;border:1px solid #F3CFCB;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ລຶບ</button></sc-if></div>
+            <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap">
+              <sc-if value="{{ v.canToggle }}" hint-placeholder-val="{{ false }}"><button onClick="{{ v.onToggleStatus }}" style="background:#FFF6E0;color:#8A6A12;border:1px solid #F0DA9E;border-radius:7px;padding:6px 10px;font-size:11.5px;cursor:pointer">{{ v.toggleLabel }}</button></sc-if>
+              <sc-if value="{{ v.canShowDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ v.onDelete }}" style="background:#FBE7E6;color:#B23B2E;border:1px solid #F3CFCB;border-radius:7px;padding:6px 10px;font-size:11.5px;cursor:pointer">ລຶບ</button></sc-if>
+            </div>
           </div>
         </sc-for>
       </div>
@@ -627,7 +664,7 @@
 
 <!-- ===== ໜ້າ: WIZARD PR → RFQ → PO (8 ຂັ້ນຕອນ) ===== -->
 <sc-if value="{{ showPrDetail }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;top:0;right:0;bottom:0;left:{{ sidebarWidth }};background:#FAF7F0;z-index:100;display:flex;flex-direction:column;overflow-y:auto;transition:left .18s ease">
+<div id="detailOverlay" style="position:fixed;top:0;right:0;bottom:0;left:{{ sidebarWidth }};background:#FAF7F0;z-index:100;display:flex;flex-direction:column;overflow-y:auto;transition:left .18s ease">
 
   <div style="padding:12px 32px 10px 44px;background:#fff;border-bottom:1px solid #EEF1ED;flex-shrink:0">
     <div style="max-width:1180px;margin:0 auto">
@@ -1779,7 +1816,8 @@ function seedData() {
 class Component extends DCLogic {
   state = {
     loaded: false, currentUserId: null, page: 'dashboard', toast: null, sidebarCollapsed: false, sigTargetUserId: '',
-    prFilter: 'all', prSearch: '', prCommentText: '',
+    prFilter: 'all', prSearch: '', prCommentText: '', mobileNavOpen: false,
+    vendorFormOpen: false, vNewName: '', vNewTax: '', vNewCur: 'LAK',
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
@@ -2044,7 +2082,7 @@ class Component extends DCLogic {
     this.persist({ users });
     this.toast('success', 'ລຶບລາຍເຊັນແລ້ວ');
   }
-  goPage(p) { this.setState({ page: p, detailKind: null, detailId: null, action: null, docView: null }); }
+  goPage(p) { this.setState({ page: p, detailKind: null, detailId: null, action: null, docView: null, mobileNavOpen: false }); }
   goPrFilter(f) { this.setState({ page: 'pr', prFilter: f, prSearch: '', detailKind: null, detailId: null, action: null, docView: null }); }
   // ວຽກที่ "รอฉันทำ" — ใช้กับ filter 'mine' + dashboard badge
   isMyTask(pr, u) {
@@ -2320,6 +2358,34 @@ class Component extends DCLogic {
     this.persist({ vendors, ...lg });
     this.toast('success', `ເພີ່ມຜູ້ຂາຍ "${name}" ແລ້ວ — ຖືກເລືອກໃນຟອມອັດຕະໂນມັດ`);
     this.setState({ qVendorId: v.id, qNewVendorOpen: false, qNvName: '', qNvTax: '', qNvCur: 'LAK' });
+  }
+  // ===== ຈัดการผู้ขายจากหน้า Vendors (procurement/admin) =====
+  toggleVendorForm() {
+    const u = this.me();
+    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny('ພະຍາຍາມເພີ່ມຜູ້ຂາຍ', `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" (SoD)`); return; }
+    this.setState({ vendorFormOpen: !this.state.vendorFormOpen, vNewName: '', vNewTax: '', vNewCur: 'LAK' });
+  }
+  createVendorFromPage() {
+    const u = this.me();
+    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny('ພະຍາຍາມເພີ່ມຜູ້ຂາຍ', `ສະເພาะ "${ROLE_LABEL.PROCUREMENT}" (SoD)`); return; }
+    const name = (this.state.vNewName || '').trim();
+    if (!name) { this.toast('error', 'ກະລຸນາລະບຸຊື່ຜູ້ຂາຍ'); return; }
+    const taxIn = (this.state.vNewTax || '').trim();
+    const dupe = this.state.vendors.find(v => !v.isDeleted && (v.name.trim().toLowerCase() === name.toLowerCase() || (taxIn && taxIn !== '—' && v.taxId.trim().toLowerCase() === taxIn.toLowerCase())));
+    if (dupe) { this.toast('error', `ມີຜູ້ຂາຍ "${dupe.name}" ຢູ່ແລ້ວ (ຊື່/ເລກพาสีຊໍ້າ)`); return; }
+    const v = { id: uid(), name, taxId: taxIn || '—', currency: this.state.vNewCur, status: 'ACTIVE', isDeleted: false };
+    const lg = this.log('CREATE', `ເພີ່ມຜູ້ຂາຍໃໝ່ "${name}" (${v.currency})`, true);
+    this.persist({ vendors: [...this.state.vendors, v], vendorFormOpen: false, vNewName: '', vNewTax: '', vNewCur: 'LAK', ...lg });
+    this.toast('success', `ເພີ່ມຜູ້ຂາຍ "${name}" ແລ້ວ`);
+  }
+  toggleVendorStatus(v) {
+    const u = this.me();
+    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny('ພະຍາຍາມປ່ຽນສະຖານະຜູ້ຂາຍ', `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" (SoD)`); return; }
+    const ns = v.status === 'BLACKLISTED' ? 'ACTIVE' : 'BLACKLISTED';
+    const vendors = this.state.vendors.map(x => x.id === v.id ? { ...x, status: ns } : x);
+    const lg = this.log('UPDATE', `ປ່ຽນສະຖານະຜູ້ຂາຍ "${v.name}" → ${ns === 'BLACKLISTED' ? 'Blacklist' : 'ໃຊ້ງານ'}`, true);
+    this.persist({ vendors, ...lg });
+    this.toast('success', ns === 'BLACKLISTED' ? `Blacklist "${v.name}" ແລ້ວ` : `ປົດ Blacklist "${v.name}" ແລ້ວ`);
   }
 
   addQuote(pr) {
@@ -2653,9 +2719,14 @@ class Component extends DCLogic {
       return { ...g, receiverName: this.uName(g.receiverId), receivedDisplay: fd(g.receivedAt), statusLabel: meta.label, statusBg: meta.bg, statusFg: meta.fg, onView: () => this.openDetail('grn', g.id) };
     });
 
+    const canManageVendors = !!(u && ['PROCUREMENT', 'ADMIN'].includes(u.role));
     const vendorRows = s.vendors.map(v => {
       const meta = sm(v.status);
-      return { ...v, statusLabel: meta.label, statusBg: meta.bg, statusFg: meta.fg, rowOpacity: v.isDeleted ? 0.55 : 1, canShowDelete: !v.isDeleted, onDelete: () => this.deleteVendor(v) };
+      return { ...v, statusLabel: meta.label, statusBg: meta.bg, statusFg: meta.fg, rowOpacity: v.isDeleted ? 0.55 : 1,
+        canShowDelete: !v.isDeleted && canManageVendors, onDelete: () => this.deleteVendor(v),
+        canToggle: !v.isDeleted && canManageVendors,
+        toggleLabel: v.status === 'BLACKLISTED' ? 'ປົດ Blacklist' : 'Blacklist',
+        onToggleStatus: () => this.toggleVendorStatus(v) };
     });
     const activeVendors = s.vendors.filter(v => !v.isDeleted && v.status === 'ACTIVE');
 
@@ -2896,6 +2967,7 @@ class Component extends DCLogic {
       onLogout: () => this.logout(),
       isDashboard: s.page === 'dashboard', isPrPage: s.page === 'pr', isPoPage: s.page === 'po', isGrnPage: s.page === 'grn', isVendorPage: s.page === 'vendor', isSettingsPage: s.page === 'settings', isAuditPage: s.page === 'audit',
       goDashboard: () => this.goPage('dashboard'), goPr: () => this.goPage('pr'), goPo: () => this.goPage('po'), goGrn: () => this.goPage('grn'), goVendor: () => this.goPage('vendor'), goSettings: () => this.goPage('settings'), goAudit: () => this.goPage('audit'),
+      mobileNavOpen01: s.mobileNavOpen ? '1' : '0', onToggleMobileNav: () => this.setState({ mobileNavOpen: !s.mobileNavOpen }), onCloseMobileNav: () => this.setState({ mobileNavOpen: false }),
       navDashboardBg: nb('dashboard'), navDashboardColor: nc('dashboard'), navDashboardAccent: na('dashboard'), navPrBg: nb('pr'), navPrColor: nc('pr'), navPrAccent: na('pr'), navPoBg: nb('po'), navPoColor: nc('po'), navGrnBg: nb('grn'), navGrnColor: nc('grn'), navGrnAccent: na('grn'), navVendorBg: nb('vendor'), navVendorColor: nc('vendor'), navVendorAccent: na('vendor'), navSettingsBg: nb('settings'), navSettingsColor: nc('settings'), navSettingsAccent: na('settings'), navAuditBg: nb('audit'), navAuditColor: nc('audit'), navAuditAccent: na('audit'),
       sidebarCollapsed: collapsed, sidebarWidth, navJustify, navPad, showSidebarLabels: !collapsed, onToggleSidebar: () => this.toggleSidebar(),
       isAdminUser: !!(u && u.role === 'ADMIN'),
@@ -2941,6 +3013,11 @@ class Component extends DCLogic {
       qt2Display: fm(st.quoteThreshold2), minQuotes2Display: st.minQuotes2,
 
       prRows, poRows, grnRows, vendorRows,
+      canManageVendors, vendorFormOpen: s.vendorFormOpen, onToggleVendorForm: () => this.toggleVendorForm(), onCreateVendor: () => this.createVendorFromPage(),
+      vNewName: s.vNewName, onVNewName: e => this.setState({ vNewName: e.target.value }),
+      vNewTax: s.vNewTax, onVNewTax: e => this.setState({ vNewTax: e.target.value }),
+      vNewCur: s.vNewCur, onVNewCur: e => this.setState({ vNewCur: e.target.value }),
+      vendorFormBtnLabel: s.vendorFormOpen ? 'ຍົກເລີກ' : '+ ເພີ່ມຜູ້ຂາຍ',
 
       prFormOpen: s.prFormOpen, onOpenPrForm: () => this.openPrForm(), onClosePrForm: () => this.setState({ prFormOpen: false, editingPrId: null }),
       prFormIsEdit: !!s.editingPrId, prFormModalTitle: s.editingPrId ? 'ແກ້ໄຂໃບຂໍຊື້ (PR)' : 'ສ້າງໃບຂໍຊື້ (PR)', prFormSubmitLabel: s.editingPrId ? 'ບັນທຶກການແກ້ໄຂ' : 'ສົ່ງຂໍອະນຸມັດ',
