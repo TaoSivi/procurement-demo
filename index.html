@@ -97,6 +97,7 @@
       <div onClick="{{ goPr }}" title="ໃບຂໍຊື້ (PR)" style="display:flex;align-items:center;gap:11px;padding:{{ navPad }};border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:{{ navPrColor }};background:{{ navPrBg }};border-left:3px solid {{ navPrAccent }};justify-content:{{ navJustify }}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M6 2h9l5 5v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"></path><path d="M14 2v6h6"></path><path d="M8.5 13h7M8.5 17h4.5"></path></svg>
         <sc-if value="{{ showSidebarLabels }}" hint-placeholder-val="{{ true }}"><span style="white-space:nowrap">ໃບຂໍຊື້ (PR)</span></sc-if>
+        <sc-if value="{{ hasMyTasks }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;background:#F3C01F;color:#0B4D27;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px">{{ myTaskCount }}</span></sc-if>
       </div>
       <div onClick="{{ goGrn }}" title="ຮັບເຄື່ອງ (GRN)" style="display:flex;align-items:center;gap:11px;padding:{{ navPad }};border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:{{ navGrnColor }};background:{{ navGrnBg }};border-left:3px solid {{ navGrnAccent }};justify-content:{{ navJustify }}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 9l2-5h14l2 5"></path><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"></path><path d="M3 9h18M9.5 13h5"></path></svg>
@@ -140,21 +141,21 @@
       <h2 style="margin:0 0 4px;font-size:22px">ພາບລວມ</h2>
       <p style="margin:0 0 24px;color:#5C6D5A;font-size:13.5px">ວຽກທີ່ລໍຖ້າດຳເນີນການຕາມບົດບາດຂອງທ່ານ</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:28px">
-        <div style="background:#0B4D27;border-radius:14px;padding:18px;box-shadow:0 4px 16px rgba(11,77,39,0.22)">
+        <div onClick="{{ onCardMine }}" style="background:#0B4D27;border-radius:14px;padding:18px;box-shadow:0 4px 16px rgba(11,77,39,0.22);cursor:pointer">
           <div style="width:34px;height:34px;border-radius:9px;background:rgba(243,192,31,0.16);color:#F3C01F;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.5 3"></path></svg>
           </div>
           <div style="font-size:25px;font-weight:800;color:#F3C01F;letter-spacing:-0.01em">{{ myPendingApprovalCount }}</div>
           <div style="font-size:12px;color:#D7E6DB;margin-top:4px">ເອກະສານລໍຖ້າທ່ານອະນຸມັດ</div>
         </div>
-        <div style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05)">
+        <div onClick="{{ onCardPending }}" style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05);cursor:pointer">
           <div style="width:34px;height:34px;border-radius:9px;background:#F3F8F4;color:#116F38;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"></path><path d="M14 2v6h6"></path></svg>
           </div>
           <div style="font-size:25px;font-weight:800;color:#14231A;letter-spacing:-0.01em">{{ pendingPrCount }}</div>
           <div style="font-size:12px;color:#5C6D5A;margin-top:4px">PR ຢູ່ໃນຂັ້ນຕອນອະນຸມັດ</div>
         </div>
-        <div style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05)">
+        <div onClick="{{ onCardReady }}" style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05);cursor:pointer">
           <div style="width:34px;height:34px;border-radius:9px;background:#F3F8F4;color:#116F38;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.5l4 4-4 4"></path><path d="M3 11.5v-2a4 4 0 0 1 4-4h14"></path><path d="M7 21.5l-4-4 4-4"></path><path d="M21 12.5v2a4 4 0 0 1-4 4H3"></path></svg>
           </div>
@@ -168,14 +169,14 @@
           <div style="font-size:25px;font-weight:800;color:#14231A;letter-spacing:-0.01em">{{ pendingPoCount }}</div>
           <div style="font-size:12px;color:#5C6D5A;margin-top:4px">PO ລໍຖ້າອະນຸມັດ</div>
         </div>
-        <div style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05)">
+        <div onClick="{{ onCardReceive }}" style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05);cursor:pointer">
           <div style="width:34px;height:34px;border-radius:9px;background:#F3F8F4;color:#116F38;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-5h14l2 5"></path><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"></path><path d="M3 9h18M9.5 13h5"></path></svg>
           </div>
           <div style="font-size:25px;font-weight:800;color:#14231A;letter-spacing:-0.01em">{{ readyReceiveCount }}</div>
           <div style="font-size:12px;color:#5C6D5A;margin-top:4px">PO ລໍຖ້າຮັບເຄື່ອງ</div>
         </div>
-        <div style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05)">
+        <div onClick="{{ onCardAudit }}" style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05);cursor:pointer">
           <div style="width:34px;height:34px;border-radius:9px;background:#F3F8F4;color:#116F38;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7 3v6c0 5-3.5 8-7 9.5-3.5-1.5-7-4.5-7-9.5v-6z"></path><path d="M9 12l2 2 4-4.3"></path></svg>
           </div>
@@ -198,12 +199,24 @@
 
     <sc-if value="{{ isPrPage }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Purchase Requisitions">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
         <div>
           <h2 style="margin:0 0 4px;font-size:22px">ໃບຂໍຊື້ (PR)</h2>
           <p style="margin:0;color:#5C6D5A;font-size:13.5px">ສ້າງ → ອະນຸມັດຕາມຂັ້ນ → ເກັບໃບສະເໜີລາຄາ → ອອກ PO</p>
         </div>
-        <button onClick="{{ onOpenPrForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer">+ ສ້າງໃບຂໍຊື້</button>
+        <sc-if value="{{ canCreatePr }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ onOpenPrForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer">+ ສ້າງໃບຂໍຊື້</button>
+        </sc-if>
+      </div>
+      <!-- ຕົວກอง + ຄົ້นหา -->
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px">
+        <button onClick="{{ onFilterAll }}" style="background:{{ fAllBg }};color:{{ fAllFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ທັງໝົດ</button>
+        <button onClick="{{ onFilterMine }}" style="background:{{ fMineBg }};color:{{ fMineFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ວຽກຂອງຂ້ອຍ ({{ myTaskCount }})</button>
+        <button onClick="{{ onFilterPending }}" style="background:{{ fPendBg }};color:{{ fPendFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ລໍຖ້າອະນຸມັດ</button>
+        <button onClick="{{ onFilterApproved }}" style="background:{{ fApprBg }};color:{{ fApprFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ອະນຸມັດແລ້ວ</button>
+        <button onClick="{{ onFilterDraft }}" style="background:{{ fDraftBg }};color:{{ fDraftFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ຮ່າງ</button>
+        <button onClick="{{ onFilterConverted }}" style="background:{{ fConvBg }};color:{{ fConvFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ອອກ PO ແລ້ວ</button>
+        <input value="{{ prSearch }}" onChange="{{ onPrSearchChange }}" placeholder="🔍 ຄົ້ນຫາ ເລກທີ / ຊື່ຜູ້ຂໍ / ພະແນກ" style="flex:1;min-width:180px;box-sizing:border-box;padding:8px 12px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px">
       </div>
       <div style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05)">
         <div style="display:grid;grid-template-columns:1.2fr 1.3fr 1.1fr 1.2fr 1.1fr 0.7fr;padding:12px 18px;font-size:11.5px;font-weight:700;color:#8B9A88;border-bottom:1px solid #EEF1ED">
@@ -219,6 +232,9 @@
             <div><button onClick="{{ pr.onView }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ເບິ່ງ</button></div>
           </div>
         </sc-for>
+        <sc-if value="{{ prListEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:44px 18px;text-align:center;color:#8B9A88;font-size:13.5px;line-height:1.7">{{ prEmptyMsg }}</div>
+        </sc-if>
       </div>
     </div>
     </sc-if>
@@ -991,6 +1007,24 @@
             </div>
           </sc-if>
 
+          <!-- ===== ຄວາມເห็น / โน้ต (คุยกันในใบ) ===== -->
+          <div style="margin-bottom:16px;padding-top:14px;border-top:1px solid #EEF1ED">
+            <div style="font-size:11.5px;font-weight:700;color:#0B4D27;margin-bottom:8px">ຄວາມເห็น / ໂน้ต</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+              <sc-for list="{{ viewPr.commentList }}" as="cm" hint-placeholder-count="2">
+                <div style="background:#F3F8F4;border:1px solid #EEF1ED;border-radius:8px;padding:8px 11px">
+                  <div style="font-size:11.5px;color:#8B9A88;margin-bottom:3px"><b style="color:#3C4C3A">{{ cm.name }}</b> · {{ cm.at }}</div>
+                  <div style="font-size:13px;color:#14231A;line-height:1.6">{{ cm.text }}</div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ viewPr.hasComments }}" hint-placeholder-val="{{ false }}"></sc-if>
+            </div>
+            <div style="display:flex;gap:8px">
+              <input value="{{ viewPr.prCommentText }}" onChange="{{ viewPr.onCommentChange }}" placeholder="ຂຽນຄວາມເห็น..." style="flex:1;box-sizing:border-box;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px">
+              <button onClick="{{ viewPr.onAddComment }}" style="flex-shrink:0;background:#116F38;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer">ສົ່ງ</button>
+            </div>
+          </div>
+
           <sc-if value="{{ viewPr.canRecall }}" hint-placeholder-val="{{ false }}">
             <div style="background:#FFF6E0;border:1px solid #F0DA9E;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
               <div style="font-size:12.5px;color:#8A6A12;line-height:1.6">ຍັງບໍ່ມີໃຜອະນຸມັດ — ທ່ານ (ຜູ້ສ້າງ) ຖອນຄຳຂໍກັບມາແກ້ໄຂ ຫຼື ຍົກເລີກໄດ້</div>
@@ -1745,6 +1779,7 @@ function seedData() {
 class Component extends DCLogic {
   state = {
     loaded: false, currentUserId: null, page: 'dashboard', toast: null, sidebarCollapsed: false, sigTargetUserId: '',
+    prFilter: 'all', prSearch: '', prCommentText: '',
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
@@ -2010,6 +2045,19 @@ class Component extends DCLogic {
     this.toast('success', 'ລຶບລາຍເຊັນແລ້ວ');
   }
   goPage(p) { this.setState({ page: p, detailKind: null, detailId: null, action: null, docView: null }); }
+  goPrFilter(f) { this.setState({ page: 'pr', prFilter: f, prSearch: '', detailKind: null, detailId: null, action: null, docView: null }); }
+  // ວຽກที่ "รอฉันทำ" — ใช้กับ filter 'mine' + dashboard badge
+  isMyTask(pr, u) {
+    if (!u || !pr) return false;
+    if (pr.status === 'DRAFT' && pr.requesterId === u.id) return true; // ร่างของฉัน รอส่ง
+    if (pr.status === 'PENDING_APPROVAL') { const r = this.prRoute(pr); return r ? (this.expApproverId(pr) === u.id) : (CHAIN[pr.currentStep] === u.role); }
+    if (pr.status === 'APPROVED' && pr.rfq && pr.rfq.stage === 'BUDGET_REVIEW' && ['FINANCE_MANAGER', 'BUDGET_CONTROLLER', 'ADMIN'].includes(u.role)) return true;
+    if (pr.rfq) {
+      if (pr.rfq.stage === 'HEAD_PENDING' && (u.role === 'DIRECTOR' || u.role === 'ADMIN' || (u.role === 'DEPT_HEAD' && u.dept === 'ພະແນກຈັດຊື້'))) return true;
+      if (['COLLECTING', 'BUDGET_REVIEW'].includes(pr.rfq.stage) && ['PROCUREMENT', 'ADMIN'].includes(u.role)) return true;
+    }
+    return false;
+  }
   openDetail(kind, id) {
     // ກັນຄົນທີ່ບໍ່ກ່ຽວຂ້ອງເປີດ PR (defense): ເຫັນໄດ້ສະເພาะ ຄົນສ້າງ/ຜູ້ອະນຸມັດ/CC/Admin/Auditor/ຝ່າຍທີ່ກ່ຽວ
     if (kind === 'pr') { const pr = this.state.prs.find(p => p.id === id); if (pr && !this.canSeePr(pr, this.me())) { this.toast('error', 'ທ່ານບໍ່ມີສິດເບິ່ງໃບຂໍຊື້ນີ້ (ສະເພາະຜູ້ກ່ຽວຂ້ອງ)'); return; } }
@@ -2127,6 +2175,17 @@ class Component extends DCLogic {
     this.persist({ prs, ...lg });
     this.toast('success', `ຖອນຄຳຂໍ ${pr.prNumber} ແລ້ວ — ກັບເປັນສະບັບຮ່າງ, ແກ້ໄຂ ຫຼື ສົ່ງໃໝ່ໄດ້`);
     this.setState({ action: null });
+  }
+  // ຄอมเมนต์/โน้ต ในใบ PR — ຄนที่เกี่ยวข้อง (ຄนสร้าง/ผู้อนุมัด/CC/Admin/Auditor/ฝ่ายที่เกี่ยว) คุยกันได้
+  addPrComment(pr) {
+    const u = this.me();
+    if (!this.canSeePr(pr, u)) { this.deny(`ພະຍາຍາມเพิ่มความเห็น ${pr.prNumber}`, 'ສະเฉพาะผู้เกี่ยวข้อง'); return; }
+    const text = (this.state.prCommentText || '').trim();
+    if (!text) { this.toast('error', 'ພິມຂໍ້ຄວາມກ່ອນ'); return; }
+    const c = { id: uid(), by: u.id, at: new Date().toISOString(), text };
+    const prs = this.state.prs.map(p => p.id === pr.id ? { ...p, comments: [...(p.comments || []), c] } : p);
+    this.persist({ prs, prCommentText: '' });
+    this.toast('success', 'ເພີ່ມຄວາມເห็นแล้ว');
   }
   startRfq(pr) {
     const u = this.me();
@@ -2564,7 +2623,16 @@ class Component extends DCLogic {
     const loginRows = s.users.map(x => ({ ...x, roleLabel: ROLE_LABEL[x.role], cardOpacity: x.isActive ? 1 : 0.5, cardCursor: x.isActive ? 'pointer' : 'not-allowed', isActiveBadge: !x.isActive, onLogin: () => this.selectLoginUser(x.id) }));
     const loginSelUser = s.users.find(x => x.id === s.loginSelectedId) || null;
 
-    const prRows = s.prs.filter(pr => this.canSeePr(pr, u)).map(pr => {
+    const _prq = (s.prSearch || '').trim().toLowerCase();
+    const prRowsAll = s.prs.filter(pr => this.canSeePr(pr, u));
+    const prRows = prRowsAll
+      .filter(pr => {
+        if (s.prFilter === 'mine') return this.isMyTask(pr, u);
+        if (['DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'CONVERTED', 'REJECTED'].includes(s.prFilter)) return pr.status === s.prFilter;
+        return true;
+      })
+      .filter(pr => !_prq || pr.prNumber.toLowerCase().includes(_prq) || this.uName(pr.requesterId).toLowerCase().includes(_prq) || (pr.department || '').toLowerCase().includes(_prq))
+      .map(pr => {
       const meta = sm(pr.status);
       const total = this.prTotal(pr);
       const need = this.prNeed(pr);
@@ -2710,6 +2778,9 @@ class Component extends DCLogic {
         canRecall: u && (selPr.requesterId === u.id || u.role === 'ADMIN') && selPr.status === 'PENDING_APPROVAL' && (selPr.approvals || []).length === 0 && !isHistorical, onRecall: () => this.recallPr(selPr),
         hasAttachments: (selPr.attachments || []).length > 0,
         attachmentList: (selPr.attachments || []).map((a, i) => ({ name: a.name, url: a.data, num: i + 1 })),
+        commentList: (selPr.comments || []).map(c => ({ name: this.uName(c.by), at: fdt(c.at), text: c.text })),
+        hasComments: (selPr.comments || []).length > 0,
+        prCommentText: s.prCommentText, onCommentChange: e => this.setState({ prCommentText: e.target.value }), onAddComment: () => this.addPrComment(selPr),
         canStartRfq: u && ['PROCUREMENT', 'ADMIN'].includes(u.role) && !isHistorical, onStartRfq: () => this.startRfq(selPr),
 
         budgetRejectReason: selPr.rfq ? selPr.rfq.budgetRejectReason : null,
@@ -2840,6 +2911,27 @@ class Component extends DCLogic {
       logoRowJustify: collapsed ? 'center' : 'space-between',
 
       myPendingApprovalCount,
+      // KPI cards clickable → filter PR list / go page
+      onCardMine: () => this.goPrFilter('mine'), onCardPending: () => this.goPrFilter('PENDING_APPROVAL'),
+      onCardReady: () => this.goPrFilter('APPROVED'), onCardReceive: () => this.goPage('grn'), onCardAudit: () => this.goPage('audit'),
+      // create-permission (ຊ่อนปุ่ม + ຖ້າ role ไม่มีสิทธิ์)
+      canCreatePr: !!(u && ['DEPT_VP', 'DEPT_HEAD', 'TECHNICAL', 'PROCUREMENT', 'IT_STAFF', 'WAREHOUSE', 'BUDGET_CONTROLLER', 'FINANCE_MANAGER', 'ADMIN'].includes(u.role)),
+      // filter / search
+      prFilter: s.prFilter, prSearch: s.prSearch,
+      onPrSearchChange: e => this.setState({ prSearch: e.target.value }),
+      onFilterAll: () => this.setState({ prFilter: 'all' }), onFilterMine: () => this.setState({ prFilter: 'mine' }),
+      onFilterPending: () => this.setState({ prFilter: 'PENDING_APPROVAL' }), onFilterApproved: () => this.setState({ prFilter: 'APPROVED' }),
+      onFilterDraft: () => this.setState({ prFilter: 'DRAFT' }), onFilterConverted: () => this.setState({ prFilter: 'CONVERTED' }),
+      fAllBg: s.prFilter === 'all' ? '#116F38' : '#F3F8F4', fAllFg: s.prFilter === 'all' ? '#fff' : '#5C6D5A',
+      fMineBg: s.prFilter === 'mine' ? '#116F38' : '#F3F8F4', fMineFg: s.prFilter === 'mine' ? '#fff' : '#5C6D5A',
+      fPendBg: s.prFilter === 'PENDING_APPROVAL' ? '#116F38' : '#F3F8F4', fPendFg: s.prFilter === 'PENDING_APPROVAL' ? '#fff' : '#5C6D5A',
+      fApprBg: s.prFilter === 'APPROVED' ? '#116F38' : '#F3F8F4', fApprFg: s.prFilter === 'APPROVED' ? '#fff' : '#5C6D5A',
+      fDraftBg: s.prFilter === 'DRAFT' ? '#116F38' : '#F3F8F4', fDraftFg: s.prFilter === 'DRAFT' ? '#fff' : '#5C6D5A',
+      fConvBg: s.prFilter === 'CONVERTED' ? '#116F38' : '#F3F8F4', fConvFg: s.prFilter === 'CONVERTED' ? '#fff' : '#5C6D5A',
+      prListEmpty: prRows.length === 0,
+      prEmptyMsg: (s.prSearch || '').trim() ? 'ບໍ່ພົບໃບຂໍຊື້ທີ່ກົງກັບການຄົ້ນຫາ' : (s.prFilter === 'mine' ? 'ບໍ່ມີວຽກທີ່ລໍຖ້າທ່ານດຳເນີນການ 🎉' : (s.prFilter === 'all' ? 'ຍັງບໍ່ມີໃບຂໍຊື້ — ກົດ "ສ້າງໃບຂໍຊື້" ເພື່ອເລີ່ມ' : 'ບໍ່ມີໃບຂໍຊື້ໃນສະຖານະນີ້')),
+      myTaskCount: prRowsAll.filter(pr => this.isMyTask(pr, u)).length,
+      hasMyTasks: prRowsAll.filter(pr => this.isMyTask(pr, u)).length > 0,
       pendingPrCount: s.prs.filter(p => p.status === 'PENDING_APPROVAL' && this.canSeePr(p, u)).length,
       readyConvertCount: s.prs.filter(p => p.status === 'APPROVED' && this.canSeePr(p, u)).length,
       pendingPoCount: s.pos.filter(p => p.status === 'PENDING_APPROVAL').length,
