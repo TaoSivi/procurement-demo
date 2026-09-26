@@ -394,8 +394,33 @@
       </sc-if>
 
       <div style="margin-top:32px;max-width:1080px">
-        <div style="font-weight:700;font-size:15px;color:#0B4D27;margin-bottom:4px">⚡ Workflow ອະນຸມັດ (ເສ້ນທາງສຳເລັດຮູບ)</div>
-        <p style="margin:0 0 14px;font-size:12.5px;color:#5C6D5A">ບັນທຶກເສ້ນທາງອະນຸມັດໄວ້ໃນ "ໜ້າສ້າງ PR" (ปุ่ม 💾) → ໃຊ້ຊ້ຳໄດ້ທຸກຄັ້ງ ໂດຍບໍ່ต้องเลือกชื่อใหม่</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px">
+          <div style="font-weight:700;font-size:15px;color:#0B4D27">⚡ Workflow ອະນຸມັດ (ເສ້ນທາງສຳເລັດຮູບ)</div>
+          <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onToggleWfForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer">{{ wfFormBtnLabel }}</button></sc-if>
+        </div>
+        <p style="margin:0 0 14px;font-size:12.5px;color:#5C6D5A">Admin ສ້າງ Workflow ໄດ້ບ່ອນนี้ ຫຼື ບັນທຶກຈากໜ້າ "ສ້າງ PR" (ปุ่ม 💾) → ໃຊ້ຊ້ຳໄດ້ທຸກຄັ້ງ</p>
+        <sc-if value="{{ wfFormOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid #DCE8DF;border-radius:12px;padding:18px 20px;margin-bottom:16px">
+            <div style="font-weight:700;font-size:13.5px;color:#0B4D27;margin-bottom:12px">ສ້າງ Workflow ໃໝ່</div>
+            <label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ຊື່ Workflow</label>
+            <input value="{{ wfName }}" onChange="{{ onWfName }}" placeholder="ເช่น จัดซื้อไอที, งบใหญ่ >50 ลาน" style="width:100%;box-sizing:border-box;margin:4px 0 14px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+            <div style="font-size:11.5px;color:#5C6D5A;font-weight:600;margin-bottom:6px">ຂັ້ນຕອນອະນຸມັດ PR (ຕາມລຳດັບ — ວ່າງ = ຂ້າມ)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+              <select value="{{ wfStep1 }}" onChange="{{ onWfStep1 }}" style="padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">ຂັ້ນ 1 —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+              <select value="{{ wfStep2 }}" onChange="{{ onWfStep2 }}" style="padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">ຂັ້ນ 2 —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+              <select value="{{ wfStep3 }}" onChange="{{ onWfStep3 }}" style="padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">ຂັ້ນ 3 —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+              <select value="{{ wfStep4 }}" onChange="{{ onWfStep4 }}" style="padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">ຂັ້ນ 4 —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ຜູ້ຕິດຕາມ CC</label><select value="{{ wfCc }}" onChange="{{ onWfCc }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ບໍ່ມີ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }}</option></sc-for></select></div>
+              <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ມອບໝາຍຈັດຊື້</label><select value="{{ wfProc }}" onChange="{{ onWfProc }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ໃຊ້ role —</option><sc-for list="{{ wfProcList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }}</option></sc-for></select></div>
+              <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ກວດງົບປະມານ</label><select value="{{ wfBudget }}" onChange="{{ onWfBudget }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ໃຊ້ role —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }}</option></sc-for></select></div>
+              <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ອະນຸມັດໃບສະເໜີລາຄາ</label><select value="{{ wfQuote }}" onChange="{{ onWfQuote }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ໃຊ້ role —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }}</option></sc-for></select></div>
+              <div><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ອະນຸມັດ PO</label><select value="{{ wfPo }}" onChange="{{ onWfPo }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ໃຊ້ role —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }}</option></sc-for></select></div>
+            </div>
+            <button onClick="{{ onSaveWfSettings }}" style="margin-top:14px;background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer">ບັນທຶກ Workflow</button>
+          </div>
+        </sc-if>
         <div style="background:#fff;border:1px solid #EEF2ED;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(16,40,24,0.04)">
           <sc-for list="{{ workflowRows }}" as="wf" hint-placeholder-count="2">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid #F4F6F3">
@@ -1870,6 +1895,7 @@ class Component extends DCLogic {
     loaded: false, currentUserId: null, page: 'dashboard', toast: null, sidebarCollapsed: false, sigTargetUserId: '',
     prFilter: 'all', prSearch: '', prCommentText: '', mobileNavOpen: false,
     vendorFormOpen: false, vNewName: '', vNewTax: '', vNewCur: 'LAK',
+    wfFormOpen: false, wfName: '', wfStep1: '', wfStep2: '', wfStep3: '', wfStep4: '', wfCc: '', wfProc: '', wfBudget: '', wfQuote: '', wfPo: '',
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
@@ -2326,6 +2352,25 @@ class Component extends DCLogic {
     const lg = this.log('CREATE', `ບັນທຶກ Workflow "${nm}"`, true);
     this.persist({ settings, ...lg });
     this.toast('success', `ບັນທຶກ Workflow "${nm}" ແລ້ວ — ໃຊ້ຊ້ຳໄດ້ຄັ້ງໜ້າ`);
+  }
+  toggleWfForm() {
+    const u = this.me();
+    if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມສ້າງ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
+    this.setState({ wfFormOpen: !this.state.wfFormOpen, wfName: '', wfStep1: '', wfStep2: '', wfStep3: '', wfStep4: '', wfCc: '', wfProc: '', wfBudget: '', wfQuote: '', wfPo: '' });
+  }
+  saveWorkflowFromSettings() {
+    const u = this.me();
+    if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມສ້າງ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
+    const s = this.state;
+    const nm = (s.wfName || '').trim();
+    if (!nm) { this.toast('error', 'ຕ້ອງມີຊື່ Workflow'); return; }
+    const approvers = [s.wfStep1, s.wfStep2, s.wfStep3, s.wfStep4].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
+    if (!approvers.length) { this.toast('error', 'ເລືອກຜູ້ອະນຸມັດຢ່າງໜ້ອຍ 1 ຂັ້ນ'); return; }
+    const wf = { id: uid(), name: nm, approvers, watchers: s.wfCc ? [s.wfCc] : [], procOfficer: s.wfProc || null, budgetApprover: s.wfBudget || null, quoteApprover: s.wfQuote || null, poApprover: s.wfPo || null };
+    const settings = { ...s.settings, workflows: [...(s.settings.workflows || []), wf] };
+    const lg = this.log('CREATE', `ສ້າງ Workflow "${nm}" (Settings)`, true);
+    this.persist({ settings, wfFormOpen: false, wfName: '', wfStep1: '', wfStep2: '', wfStep3: '', wfStep4: '', wfCc: '', wfProc: '', wfBudget: '', wfQuote: '', wfPo: '', ...lg });
+    this.toast('success', `ສ້າງ Workflow "${nm}" ແລ້ວ`);
   }
   deleteWorkflow(id) {
     const u = this.me();
@@ -3182,6 +3227,19 @@ class Component extends DCLogic {
         summary: 'ຜູ້ອະນຸມັດ: ' + ((w.approvers || []).map(id => this.uName(id)).join(' → ') || '—') + (w.budgetApprover ? ' · ງບ: ' + this.uName(w.budgetApprover) : '') + (w.quoteApprover ? ' · ໃບສະເໜີ: ' + this.uName(w.quoteApprover) : '') + (w.poApprover ? ' · PO: ' + this.uName(w.poApprover) : '') + (w.procOfficer ? ' · ຈັດຊື້: ' + this.uName(w.procOfficer) : ''),
         canDelete: !!(u && u.role === 'ADMIN'), onDelete: () => this.deleteWorkflow(w.id),
       })),
+      wfFormOpen: s.wfFormOpen, wfFormBtnLabel: s.wfFormOpen ? 'ຍົກເລີກ' : '+ ສ້າງ Workflow', onToggleWfForm: () => this.toggleWfForm(), onSaveWfSettings: () => this.saveWorkflowFromSettings(),
+      wfPickList: s.users.filter(x => x.isActive).map(x => ({ id: x.id, name: x.name, role: ROLE_LABEL[x.role] || '' })),
+      wfProcList: s.users.filter(x => x.isActive && x.role === 'PROCUREMENT').map(x => ({ id: x.id, name: x.name })),
+      wfName: s.wfName, onWfName: e => this.setState({ wfName: e.target.value }),
+      wfStep1: s.wfStep1, onWfStep1: e => this.setState({ wfStep1: e.target.value }),
+      wfStep2: s.wfStep2, onWfStep2: e => this.setState({ wfStep2: e.target.value }),
+      wfStep3: s.wfStep3, onWfStep3: e => this.setState({ wfStep3: e.target.value }),
+      wfStep4: s.wfStep4, onWfStep4: e => this.setState({ wfStep4: e.target.value }),
+      wfCc: s.wfCc, onWfCc: e => this.setState({ wfCc: e.target.value }),
+      wfProc: s.wfProc, onWfProc: e => this.setState({ wfProc: e.target.value }),
+      wfBudget: s.wfBudget, onWfBudget: e => this.setState({ wfBudget: e.target.value }),
+      wfQuote: s.wfQuote, onWfQuote: e => this.setState({ wfQuote: e.target.value }),
+      wfPo: s.wfPo, onWfPo: e => this.setState({ wfPo: e.target.value }),
       applyWorkflowId: s.applyWorkflowId, onApplyWorkflow: e => this.applyWorkflow(e.target.value),
       onSaveWorkflow: () => this.saveCurrentAsWorkflow(),
       onPrApproverSearchChange: e => this.setState({ prFormApproverSearch: e.target.value }),
