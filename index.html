@@ -398,7 +398,7 @@
           <div style="font-weight:700;font-size:15px;color:#0B4D27">⚡ Workflow ອະນຸມັດ (ເສ້ນທາງສຳເລັດຮູບ)</div>
           <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ true }}"><button onClick="{{ onToggleWfForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer">{{ wfFormBtnLabel }}</button></sc-if>
         </div>
-        <p style="margin:0 0 14px;font-size:12.5px;color:#5C6D5A">Admin ສ້າງ Workflow ໄວ້ບ່ອນນີ້ (ຂັ້ນ ກວດງົບ → ໃບສະເໜີ → PO) → ຕອນສ້າງ PR ເລືອກ Workflow ໄດ້ເລີຍ → ໃຊ້ຊ້ຳໄດ້ທຸກຄັ້ງ</p>
+        <p style="margin:0 0 14px;font-size:12.5px;color:#5C6D5A">Admin ສ້າງ Workflow ໄວ້ບ່ອນນີ້ (ຂັ້ນ ອະນຸມັດ PR → ກວດງົບ → ໃບສະເໜີ → PO) → ຕອນສ້າງ PR ເລືອກ Workflow ໄດ້ເລີຍ → ໃຊ້ຊ້ຳໄດ້ທຸກຄັ້ງ</p>
         <sc-if value="{{ wfFormOpen }}" hint-placeholder-val="{{ false }}">
           <div style="background:#fff;border:1px solid #DCE8DF;border-radius:12px;padding:18px 20px;margin-bottom:16px">
             <div style="font-weight:700;font-size:13.5px;color:#0B4D27;margin-bottom:4px">ສ້າງ Workflow ໃໝ່</div>
@@ -408,7 +408,19 @@
             <div style="margin-bottom:14px"><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ມອບໝາຍຈັດຊື້ (ຜູ້ຫາໃບສະເໜີ/ອອກ PO)</label><select value="{{ wfProc }}" onChange="{{ onWfProc }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ໃຊ້ role —</option><sc-for list="{{ wfProcList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }}</option></sc-for></select></div>
 
             <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
-              <label style="font-size:12px;color:#0B4D27;font-weight:700">1. ກວດງົບປະມານ</label>
+              <label style="font-size:12px;color:#0B4D27;font-weight:700">1. ອະນຸມັດ PR (ກວດ ແລະ ອະນຸມັດ)</label>
+              <div style="display:flex;gap:8px;margin-top:6px">
+                <select value="{{ wfPrPick }}" onChange="{{ onWfPrPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+                <button onClick="{{ onAddWfPr }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+                <sc-for list="{{ wfPrChips }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;background:#F1F6F2;border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><b style="color:#116F38">{{ c.order }}.</b> {{ c.name }} <button onClick="{{ c.onRemove }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">×</button></span></sc-for>
+              </div>
+              <div style="font-size:10.5px;color:#8B9A88;margin-top:4px">ວ່າງໄວ້ = ໃຊ້ role ອັດຕະໂນມັດຕາມມູນຄ່າ (≤10ລ້ານ→ຫົວໜ້າ, ≤100ລ້ານ→+ການເງິນ, >100ລ້ານ→+ຜอ.)</div>
+            </div>
+
+            <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
+              <label style="font-size:12px;color:#0B4D27;font-weight:700">2. ກວດງົບປະມານ</label>
               <div style="display:flex;gap:8px;margin-top:6px">
                 <select value="{{ wfBudgetPick }}" onChange="{{ onWfBudgetPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
                 <button onClick="{{ onAddWfBudget }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
@@ -419,7 +431,7 @@
             </div>
 
             <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
-              <label style="font-size:12px;color:#0B4D27;font-weight:700">2. ອະນຸມັດໃບສະເໜີລາຄາ</label>
+              <label style="font-size:12px;color:#0B4D27;font-weight:700">3. ອະນຸມັດໃບສະເໜີລາຄາ</label>
               <div style="display:flex;gap:8px;margin-top:6px">
                 <select value="{{ wfQuotePick }}" onChange="{{ onWfQuotePick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
                 <button onClick="{{ onAddWfQuote }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
@@ -430,7 +442,7 @@
             </div>
 
             <div style="border-top:1px dashed #DCE8DF;padding-top:12px">
-              <label style="font-size:12px;color:#0B4D27;font-weight:700">3. ອະນຸມັດ ໃບສັ່ງຊື້ (PO)</label>
+              <label style="font-size:12px;color:#0B4D27;font-weight:700">4. ອະນຸມັດ ໃບສັ່ງຊື້ (PO)</label>
               <div style="display:flex;gap:8px;margin-top:6px">
                 <select value="{{ wfPoPick }}" onChange="{{ onWfPoPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
                 <button onClick="{{ onAddWfPo }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
@@ -674,34 +686,9 @@
       </div>
     </div>
 
-    <!-- ===== ເສ້ນທາງອະນຸມັດ: ພິມຊື່ເລືອກຄົນ + ຈັດລຳດັບຂັ້ນ + CC ====== -->
+    <!-- ===== ຜູ້ຕິດຕາມ (CC) — ເສ້ນທາງອະນຸມັດ ມາຈາກ Workflow ====== -->
     <div style="margin-top:18px;padding-top:16px;border-top:1px solid #EEF1ED">
-      <label style="font-size:12px;color:#5C6D5A;font-weight:600">ເສ້ນທາງອະນຸມັດ — ພິມຊື່ເພື່ອເພີ່ມຜູ້ອະນຸມັດ (ລຽງຕາມລຳດັບຂັ້ນ)</label>
-      <div style="position:relative;margin:6px 0 8px">
-        <input value="{{ prFormApproverSearch }}" onChange="{{ onPrApproverSearchChange }}" placeholder="ພິມຊື່ຜູ້ອະນຸມັດ..." style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
-        <sc-if value="{{ prApproverSearchActive }}" hint-placeholder-val="{{ false }}">
-          <div style="position:absolute;left:0;right:0;top:44px;background:#fff;border:1px solid #D9E1D6;border-radius:8px;box-shadow:0 8px 24px rgba(16,40,24,0.12);max-height:210px;overflow-y:auto;z-index:5">
-            <sc-for list="{{ prFormApproverResults }}" as="ru" hint-placeholder-count="3">
-              <div onClick="{{ ru.onAdd }}" style="padding:9px 12px;cursor:pointer;border-bottom:1px solid #F4F6F3;font-size:13px">{{ ru.name }} <span style="color:#8B9A88;font-size:11.5px">· {{ ru.roleLabel }} · {{ ru.dept }}</span></div>
-            </sc-for>
-            <sc-if value="{{ prApproverNoResult }}" hint-placeholder-val="{{ false }}"><div style="padding:10px 12px;color:#8B9A88;font-size:12.5px">ບໍ່ພົບຊື່ນີ້</div></sc-if>
-          </div>
-        </sc-if>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <sc-for list="{{ prFormApproverRows }}" as="ap" hint-placeholder-count="2">
-          <div style="display:flex;align-items:center;gap:10px;background:#F3F8F4;border:1px solid #DCE8DF;border-radius:8px;padding:8px 10px">
-            <div style="width:22px;height:22px;border-radius:6px;background:#116F38;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ ap.stepNo }}</div>
-            <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">{{ ap.name }}</div><div style="font-size:11px;color:#8B9A88">{{ ap.roleLabel }} · {{ ap.dept }}</div></div>
-            <button onClick="{{ ap.onUp }}" title="ເລື່ອນຂຶ້ນ" style="background:none;border:none;color:#5C6D5A;font-size:13px;cursor:pointer;padding:2px 5px">▲</button>
-            <button onClick="{{ ap.onDown }}" title="ເລື່ອນລົງ" style="background:none;border:none;color:#5C6D5A;font-size:13px;cursor:pointer;padding:2px 5px">▼</button>
-            <button onClick="{{ ap.onRemove }}" style="background:none;border:none;color:#B23B2E;font-size:16px;cursor:pointer;padding:2px 6px">×</button>
-          </div>
-        </sc-for>
-        <sc-if value="{{ prNoApprover }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#B23B2E;padding:2px 0">⚠ ຕ້ອງເລືອກຜູ້ອະນຸມັດຢ່າງໜ້ອຍ 1 ຄົນ</div></sc-if>
-      </div>
-
-      <label style="font-size:12px;color:#5C6D5A;font-weight:600;display:block;margin-top:16px">ຜູ້ຕິດຕາມ (CC) — ເບິ່ງໄດ້ຢ່າງດຽວ, ອະນຸມັດບໍ່ໄດ້</label>
+      <label style="font-size:12px;color:#5C6D5A;font-weight:600;display:block">ຜູ້ຕິດຕາມ (CC) — ເບິ່ງໄດ້ຢ່າງດຽວ, ອະນຸມັດບໍ່ໄດ້</label>
       <div style="position:relative;margin:6px 0 8px">
         <input value="{{ prFormWatcherSearch }}" onChange="{{ onPrWatcherSearchChange }}" placeholder="ພິມຊື່ຜູ້ຕິດຕາມ (CC)..." style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
         <sc-if value="{{ prWatcherSearchActive }}" hint-placeholder-val="{{ false }}">
@@ -721,9 +708,9 @@
           </div>
         </sc-for>
       </div>
-      <div style="background:#F3F8F4;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:12px;color:#3C4C3A;line-height:1.6">ລຳດັບອະນຸມັດ: <b>{{ prFormChainPreview }}</b></div>
+      <div style="background:#F3F8F4;border-radius:10px;padding:10px 14px;margin-top:14px;font-size:12px;color:#3C4C3A;line-height:1.6">ລຳດັບອະນຸມັດ PR (ຈາກ Workflow): <b>{{ prFormChainPreview }}</b></div>
 
-      <div style="background:#EAF3FB;border:1px solid #BCD8F0;border-radius:10px;padding:10px 14px;margin-top:16px;font-size:12px;color:#1D3F6E;line-height:1.6">ℹ️ ຂັ້ນ <b>ກວດງົບ → ໃບສະເໜີລາຄາ → PO</b> (ຜູ້ອະນຸມັດ + ຜູ້ຈັດຊື້) ຖືກກຳນົດໄວ້ໃນ <b>Workflow</b> ທີ່ເລືອກຂ້າງເທິງ. ຖ້າບໍ່ເລືອກ Workflow → ໃຊ້ role ອັດຕະໂນມັດ. Admin ຕັ້ງ Workflow ໄດ້ທີ່ ⚙ ຕັ້ງຄ່າ.</div>
+      <div style="background:#EAF3FB;border:1px solid #BCD8F0;border-radius:10px;padding:10px 14px;margin-top:16px;font-size:12px;color:#1D3F6E;line-height:1.6">ℹ️ ເສ້ນທາງອະນຸມັດທັງໝົດ (<b>ອະນຸມັດ PR → ກວດງົບ → ໃບສະເໜີລາຄາ → PO</b> + ຜູ້ຈັດຊື້) ຖືກກຳນົດໄວ້ໃນ <b>Workflow</b> ທີ່ເລືອກຂ້າງເທິງ. ຖ້າບໍ່ເລືອກ Workflow → ໃຊ້ role ອັດຕະໂນມັດຕາມມູນຄ່າ. Admin ຕັ້ງ Workflow ໄດ້ທີ່ ⚙ ຕັ້ງຄ່າ.</div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid #EEF1ED">
       <div style="font-size:13.5px;color:#5C6D5A">ຍອດລວມ: <span style="font-weight:700;color:#14231A;font-size:16px">{{ prFormTotal }}</span> ກີບ</div>
@@ -1900,7 +1887,7 @@ class Component extends DCLogic {
     loaded: false, currentUserId: null, page: 'dashboard', toast: null, sidebarCollapsed: false, sigTargetUserId: '',
     prFilter: 'all', prSearch: '', prCommentText: '', mobileNavOpen: false,
     vendorFormOpen: false, vNewName: '', vNewTax: '', vNewCur: 'LAK',
-    wfFormOpen: false, wfName: '', wfProc: '', wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfBudgetPick: '', wfQuotePick: '', wfPoPick: '',
+    wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '',
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
@@ -2242,11 +2229,10 @@ class Component extends DCLogic {
     const u = this.me();
     const lines = this.state.prFormLines.filter(l => l.desc.trim() && Number(l.qty) > 0).map(l => ({ id: uid(), desc: l.desc.trim(), qty: Number(l.qty), unit: (l.unit || '').trim(), unitPrice: Number(l.unitPrice) || 0 }));
     if (!lines.length) { this.toast('error', 'ກະລຸນາລະບຸລາຍການສິນຄ້າຢ່າງໜ້ອຍ 1 ລາຍການ'); return; }
-    const route = (this.state.prFormApprovers || []).filter(id => id && id !== u.id);
-    const watchers = (this.state.prFormWatchers || []).filter(id => id && id !== u.id && !route.includes(id));
-    if (!route.length) { this.toast('error', 'ກະລຸນາເລືອກຜູ້ອະນຸມັດຢ່າງໜ້ອຍ 1 ຄົນ (ພິມຊື່ໃສ່ບ່ອນ “ເສ້ນທາງອະນຸມັດ”)'); return; }
-    // ຂັ້ນ ກວດງບ→PO ມາຈາກ Workflow ທີ່ເລືອກ (ຖ້າບໍ່ເລືອກ = ໃຊ້ role ຕາມเดิม)
+    // ເສ້ນທາງອະນຸມັດທັງໝົດ (PR + ງບ + ໃບສະເໜີ + PO) ມາຈາກ Workflow ທີ່ເລືອກ (ຖ້າບໍ່ເລືອກ = ໃຊ້ role ຕາມມູນຄ່າ)
     const _wf = (this.state.settings.workflows || []).find(w => w.id === this.state.prFormWorkflowId);
+    const route = _wf ? (_wf.prApprovers || []).filter(id => id && id !== u.id) : [];
+    const watchers = (this.state.prFormWatchers || []).filter(id => id && id !== u.id && !route.includes(id));
     const dsw = _wf ? { workflowId: _wf.id, procurementOfficer: _wf.procOfficer || null, budgetApprovers: [...(_wf.budgetApprovers || [])], quoteApprovers: [...(_wf.quoteApprovers || [])], poApprovers: [...(_wf.poApprovers || [])] } : { workflowId: null, procurementOfficer: null, budgetApprovers: [], quoteApprovers: [], poApprovers: [] };
     if (this.state.editingPrId) {
       const existing = this.state.prs.find(p => p.id === this.state.editingPrId);
@@ -2348,9 +2334,9 @@ class Component extends DCLogic {
   }
   // ===== Workflow templates: บันทึกการตั้งค่าอนุมัดไว้ใช้ซ้ำ =====
   applyWorkflow(id) {
-    // ເລືອກ Workflow → ໃຊ້ກຳນົດຂັ້ນ ກວດງບ/ໃບສະເໜີ/PO/ຈັດຊື້ (route ອະນຸມັດ PR + CC ຍັງຕັ້ງໃນຟອມ)
+    // ເລືອກ Workflow → ໃຊ້ເສ້ນທາງອະນຸມັດທັງໝົດ (ອະນຸມັດ PR → ງບ → ໃບສະເໜີ → PO → ຈັດຊື້); CC ຍັງຕັ້ງໃນຟອມ
     this.setState({ prFormWorkflowId: id || '', applyWorkflowId: id || '' });
-    if (id) { const wf = (this.state.settings.workflows || []).find(w => w.id === id); if (wf) this.toast('success', `ໃຊ້ Workflow "${wf.name}" — ขั้นกวดงบ→PO ตามเวิร์กโฟ`); }
+    if (id) { const wf = (this.state.settings.workflows || []).find(w => w.id === id); if (wf) this.toast('success', `ໃຊ້ Workflow "${wf.name}" — ເສ້ນທາງອະນຸມັດຕາມ Workflow`); }
   }
   saveCurrentAsWorkflow_unused() {
     const name = prompt('ຕັ້ງຊື່ Workflow:', '');
@@ -2367,7 +2353,7 @@ class Component extends DCLogic {
   toggleWfForm() {
     const u = this.me();
     if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມສ້າງ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
-    this.setState({ wfFormOpen: !this.state.wfFormOpen, wfName: '', wfProc: '', wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfBudgetPick: '', wfQuotePick: '', wfPoPick: '' });
+    this.setState({ wfFormOpen: !this.state.wfFormOpen, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '' });
   }
   addWfStageApprover(stage, id) {
     if (!id) return;
@@ -2386,11 +2372,11 @@ class Component extends DCLogic {
     const s = this.state;
     const nm = (s.wfName || '').trim();
     if (!nm) { this.toast('error', 'ຕ້ອງມີຊື່ Workflow'); return; }
-    if (!(s.wfBudgetList || []).length && !(s.wfQuoteList || []).length && !(s.wfPoList || []).length && !s.wfProc) { this.toast('error', 'ກຳນົດຢ່າງໜ້ອຍ 1 ຂັ້ນ (ງບ/ໃບສະເໜີ/PO/ຈັດຊື້)'); return; }
-    const wf = { id: uid(), name: nm, procOfficer: s.wfProc || null, budgetApprovers: [...(s.wfBudgetList || [])], quoteApprovers: [...(s.wfQuoteList || [])], poApprovers: [...(s.wfPoList || [])] };
+    if (!(s.wfPrList || []).length && !(s.wfBudgetList || []).length && !(s.wfQuoteList || []).length && !(s.wfPoList || []).length && !s.wfProc) { this.toast('error', 'ກຳນົດຢ່າງໜ້ອຍ 1 ຂັ້ນ (ອະນຸມັດ PR/ງບ/ໃບສະເໜີ/PO/ຈັດຊື້)'); return; }
+    const wf = { id: uid(), name: nm, prApprovers: [...(s.wfPrList || [])], procOfficer: s.wfProc || null, budgetApprovers: [...(s.wfBudgetList || [])], quoteApprovers: [...(s.wfQuoteList || [])], poApprovers: [...(s.wfPoList || [])] };
     const settings = { ...s.settings, workflows: [...(s.settings.workflows || []), wf] };
     const lg = this.log('CREATE', `ສ້າງ Workflow "${nm}" (Settings)`, true);
-    this.persist({ settings, wfFormOpen: false, wfName: '', wfProc: '', wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfBudgetPick: '', wfQuotePick: '', wfPoPick: '', ...lg });
+    this.persist({ settings, wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '', ...lg });
     this.toast('success', `ສ້າງ Workflow "${nm}" ແລ້ວ`);
   }
   deleteWorkflow(id) {
@@ -2985,7 +2971,8 @@ class Component extends DCLogic {
     }));
     const prWatcherNoResult = prWatcherSearchActive && prFormWatcherResults.length === 0;
     const prNoApprover = (s.prFormApprovers || []).length === 0;
-    const prFormChainPreview = prFormApproverRows.length ? prFormApproverRows.map(a => a.name).join(' → ') : '(ຍັງບໍ່ໄດ້ເລືອກຜູ້ອະນຸມັດ)';
+    const _selWf = ((s.settings && s.settings.workflows) || []).find(w => w.id === s.prFormWorkflowId);
+    const prFormChainPreview = (_selWf && (_selWf.prApprovers || []).length) ? _selWf.prApprovers.map(id => this.uName(id)).join(' → ') : (s.prFormWorkflowId ? 'role ອັດຕະໂນມັດຕາມມູນຄ່າ' : '(ເລືອກ Workflow ຂ້າງເທິງກ່ອນ — ຫຼື ໃຊ້ role ອັດຕະໂນມັດ)');
 
     const selPr = s.detailKind === 'pr' ? s.prs.find(p => p.id === s.detailId) : null;
     let viewPr = null;
@@ -3276,7 +3263,7 @@ class Component extends DCLogic {
       noWorkflows: ((s.settings && s.settings.workflows) || []).length === 0,
       workflowRows: ((s.settings && s.settings.workflows) || []).map(w => ({
         name: w.name,
-        summary: (w.procOfficer ? 'ຈັດຊື້: ' + this.uName(w.procOfficer) : 'ຈັດຊື້: —') + ((w.budgetApprovers || []).length ? ' · ງບ: ' + w.budgetApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.quoteApprovers || []).length ? ' · ໃບສະເໜີ: ' + w.quoteApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.poApprovers || []).length ? ' · PO: ' + w.poApprovers.map(id => this.uName(id)).join(' → ') : ''),
+        summary: ((w.prApprovers || []).length ? 'PR: ' + w.prApprovers.map(id => this.uName(id)).join(' → ') : 'PR: role ອັດຕະໂນມັດ') + (w.procOfficer ? ' · ຈັດຊື້: ' + this.uName(w.procOfficer) : '') + ((w.budgetApprovers || []).length ? ' · ງບ: ' + w.budgetApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.quoteApprovers || []).length ? ' · ໃບສະເໜີ: ' + w.quoteApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.poApprovers || []).length ? ' · PO: ' + w.poApprovers.map(id => this.uName(id)).join(' → ') : ''),
         canDelete: !!(u && u.role === 'ADMIN'), onDelete: () => this.deleteWorkflow(w.id),
       })),
       wfFormOpen: s.wfFormOpen, wfFormBtnLabel: s.wfFormOpen ? 'ຍົກເລີກ' : '+ ສ້າງ Workflow', onToggleWfForm: () => this.toggleWfForm(), onSaveWfSettings: () => this.saveWorkflowFromSettings(),
@@ -3284,6 +3271,8 @@ class Component extends DCLogic {
       wfProcList: s.users.filter(x => x.isActive && x.role === 'PROCUREMENT').map(x => ({ id: x.id, name: x.name })),
       wfName: s.wfName, onWfName: e => this.setState({ wfName: e.target.value }),
       wfProc: s.wfProc, onWfProc: e => this.setState({ wfProc: e.target.value }),
+      wfPrPick: s.wfPrPick, onWfPrPick: e => this.setState({ wfPrPick: e.target.value }), onAddWfPr: () => this.addWfStageApprover('wfPr', s.wfPrPick),
+      wfPrChips: (s.wfPrList || []).map((id, i) => ({ id, order: i + 1, name: this.uName(id), onRemove: () => this.removeWfStageApprover('wfPr', id) })),
       wfBudgetPick: s.wfBudgetPick, onWfBudgetPick: e => this.setState({ wfBudgetPick: e.target.value }), onAddWfBudget: () => this.addWfStageApprover('wfBudget', s.wfBudgetPick),
       wfBudgetChips: (s.wfBudgetList || []).map((id, i) => ({ id, order: i + 1, name: this.uName(id), onRemove: () => this.removeWfStageApprover('wfBudget', id) })),
       wfQuotePick: s.wfQuotePick, onWfQuotePick: e => this.setState({ wfQuotePick: e.target.value }), onAddWfQuote: () => this.addWfStageApprover('wfQuote', s.wfQuotePick),
