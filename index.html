@@ -714,6 +714,13 @@
         </div>
       </sc-if>
 
+      <sc-if value="{{ viewPr.showWaiting }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:10px;background:#EAF3FB;border:1px solid #BcdBF0;border:1px solid #BCD8F0;border-radius:8px;padding:12px 16px;margin-bottom:18px">
+          <span style="font-size:18px">🕐</span>
+          <div style="font-size:13px;color:#1D3F6E;line-height:1.6">ຂັ້ນຕອນนี้ยังไม่ถึงตาท่าน — ກຳລັງລໍຖ້າ: <b>{{ viewPr.waitingText }}</b> ດຳເນີນການກ່ອน. ท่านจะดำเนินการต่อได้เมื่อถึงขั้นของท่าน.</div>
+        </div>
+      </sc-if>
+
       <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
       <div style="flex:1 1 420px;min-width:420px">
       <sc-if value="{{ showPrDoc }}" hint-placeholder-val="{{ true }}">
@@ -2826,7 +2833,20 @@ class Component extends DCLogic {
       else if (effIdx === 5) { canAct = u && (u.role === 'ADMIN' || u.role === 'DIRECTOR' || (u.role === 'DEPT_HEAD' && u.dept === 'ພະແນກຈັດຊື້')) && !isHistorical; onApproveClick = () => this.approveQuote(selPr); onConfirmReject = () => this.rejectQuote(selPr); actLabel = 'ອະນຸມັດ ແລະ ອອກ PO'; }
       else if (effIdx === 6 && wsPoRaw) { canAct = u && this.poStepAllowed(this.poStepInfo(wsPoRaw, wsPoRaw.currentStep || 0), u) && wsPoRaw.createdBy !== u.id && !isHistorical; onApproveClick = () => this.approvePo(wsPoRaw); onConfirmReject = () => this.rejectPo(wsPoRaw); actLabel = 'ອະນຸມັດ PO'; }
 
-      viewPr = { ...selPr,
+      // ===== "ກำลังรอใคร" — ບอกให้ชัดเมื่อผู้ใช้ยังทำอะไรไม่ได้ในขั้นนี้ =====
+      const canActNow = canAct || (effIdx === 2 && this.canDoProcurement(selPr, u)) || (effIdx === 4 && canQuote);
+      let waitingText = '';
+      if (selPr.status !== 'REJECTED') {
+        if (effIdx === 1) waitingText = 'ຜູ້ອະນຸມັດ: ' + (selRoute ? this.uName(this.expApproverId(selPr)) : ROLE_LABEL[CHAIN[selPr.currentStep]]);
+        else if (effIdx === 2) waitingText = 'ຝ່າຍຈັດຊື້ ເລີ່ມຫາໃບສະເໜີລາຄາ' + (selPr.procurementOfficer ? ' (' + this.uName(selPr.procurementOfficer) + ')' : '');
+        else if (effIdx === 3) waitingText = 'ຝ່າຍການເງິນ / ຜູ້ຄຸມງົບປະມານ ກວດງົບປະມານ';
+        else if (effIdx === 4) waitingText = 'ຝ່າຍຈັດຊື້ ຫາໃບສະເໜີລາຄາ' + (selPr.procurementOfficer ? ' (' + this.uName(selPr.procurementOfficer) + ')' : '');
+        else if (effIdx === 5) waitingText = 'ຜູ້ອຳນວຍການ ອະນຸມັດໃບສະເໜີລາຄາ';
+        else if (effIdx === 6) waitingText = 'ຜູ້ອະນຸມັດ ໃບສັ່ງຊື້ (PO)';
+      }
+      const showWaiting = !!waitingText && !isHistorical && !canActNow;
+
+      viewPr = { ...selPr, showWaiting, waitingText,
         requesterName: this.uName(selPr.requesterId), statusLabel: meta.label, statusBg: meta.bg, statusFg: meta.fg,
         totalDisplay: fm(total) + ' ກີບ', createdDisplay: fd(selPr.createdAt), chainLabel: this.chainLabel(need),
         stepRows, currentStepNum: selPr.currentStep + 1,
