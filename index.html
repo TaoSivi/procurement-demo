@@ -394,6 +394,20 @@
       </sc-if>
 
       <div style="margin-top:32px;max-width:1080px">
+        <div style="font-weight:700;font-size:15px;color:#0B4D27;margin-bottom:4px">⚡ Workflow ອະນຸມັດ (ເສ້ນທາງສຳເລັດຮູບ)</div>
+        <p style="margin:0 0 14px;font-size:12.5px;color:#5C6D5A">ບັນທຶກເສ້ນທາງອະນຸມັດໄວ້ໃນ "ໜ້າສ້າງ PR" (ปุ่ม 💾) → ໃຊ້ຊ້ຳໄດ້ທຸກຄັ້ງ ໂດຍບໍ່ต้องเลือกชื่อใหม่</p>
+        <div style="background:#fff;border:1px solid #EEF2ED;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(16,40,24,0.04)">
+          <sc-for list="{{ workflowRows }}" as="wf" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid #F4F6F3">
+              <div><div style="font-weight:600;font-size:13.5px">⚡ {{ wf.name }}</div><div style="font-size:11.5px;color:#8B9A88">{{ wf.summary }}</div></div>
+              <sc-if value="{{ wf.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ wf.onDelete }}" style="flex-shrink:0;background:#FBE7E6;color:#B23B2E;border:1px solid #F3CFCB;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ລຶບ</button></sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noWorkflows }}" hint-placeholder-val="{{ true }}"><div style="padding:28px 16px;text-align:center;color:#8B9A88;font-size:13px">ຍັງບໍ່ມີ Workflow — ໄປໜ້າ "ສ້າງ PR" ຕັ້ງຄ່າຜູ້ອະນຸມັດ ແລ້ວກົດ 💾 ເພື່ອບັນທຶກ</div></sc-if>
+        </div>
+      </div>
+
+      <div style="margin-top:32px;max-width:1080px">
         <div style="font-weight:700;font-size:15px;color:#0B4D27;margin-bottom:4px">ຜັງໂຄງສ້າງອົງກອນ (Organization Chart)</div>
         <p style="margin:0 0 18px;font-size:12.5px;color:#5C6D5A">ປະທານ → CEO → ຜູ້ອຳນວຍການ → ພະແນກຕ່າງໆ (ຜູ້ອຳນວຍການຝ່າຍ → ຫົວໜ້າພະແນກ → ພະນັກງານ) · ປິດ/ເປີດໃຊ້ງານໄດ້ທັນທີ</p>
 
@@ -561,6 +575,15 @@
       <h3 style="margin:0;font-size:18px">{{ prFormModalTitle }}</h3>
       <button onClick="{{ onClosePrForm }}" style="background:none;border:none;font-size:20px;color:#8B9A88;cursor:pointer">×</button>
     </div>
+    <sc-if value="{{ hasWorkflows }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#EAF3FB;border:1px solid #BCD8F0;border-radius:10px;padding:12px 14px;margin-bottom:16px">
+        <label style="font-size:12px;color:#1D3F6E;font-weight:700">⚡ ໃຊ້ Workflow ທີ່ບັນທຶກໄວ້ (ຕື່ມผู้อนุมัดให้อัตโนมัติ)</label>
+        <select value="{{ applyWorkflowId }}" onChange="{{ onApplyWorkflow }}" style="width:100%;box-sizing:border-box;margin-top:6px;padding:9px 11px;border:1px solid #BCD8F0;border-radius:8px;font-size:13.5px;background:#fff">
+          <option value="">— ເລືອກ Workflow —</option>
+          <sc-for list="{{ workflowOptions }}" as="wf" hint-placeholder-count="2"><option value="{{ wf.id }}">{{ wf.name }}</option></sc-for>
+        </select>
+      </div>
+    </sc-if>
     <label style="font-size:12px;color:#5C6D5A;font-weight:600">ພະແນກ</label>
     <input value="{{ prFormDept }}" onChange="{{ onPrFormDeptChange }}" style="width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px;margin:4px 0 14px">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -670,6 +693,7 @@
         <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11.5px;color:#5C6D5A;width:120px;flex-shrink:0">ອະນຸມັດ PO</span>
           <select value="{{ prFormPoApprover }}" onChange="{{ onPrPoApproverChange }}" style="flex:1;box-sizing:border-box;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ໃຊ້ role (ຕາມขั้น) —</option><sc-for list="{{ prApproverPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select></div>
       </div>
+      <div onClick="{{ onSaveWorkflow }}" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#116F38;cursor:pointer;text-decoration:underline">💾 ບັນທຶກการตั้งค่าอนุมัดนี้เป็น Workflow (ໃຊ້ຊ້ຳຄັ້ງໜ້າ)</div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid #EEF1ED">
       <div style="font-size:13.5px;color:#5C6D5A">ຍອດລວມ: <span style="font-weight:700;color:#14231A;font-size:16px">{{ prFormTotal }}</span> ກີບ</div>
@@ -1826,7 +1850,7 @@ function parseIn(v) { return String(v).replace(/,/g, ''); }
 function seedData() {
   const settings = { t1: 10000000, t2: 100000000, quoteThreshold: 20000000, minQuotes: 2, quoteThreshold2: 80000000, minQuotes2: 3,
     coLao: 'ບໍລິສັດ ຕົວຢ່າງ ການຄ້າ ຈຳກັດ (DEMO)', coEn: 'Demo Trading Co., Ltd.',
-    coAddr: 'ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ (ຕົວຢ່າງ)', coPhone: '+856 20 0000 0000 · demo@example.com' };
+    coAddr: 'ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ (ຕົວຢ່າງ)', coPhone: '+856 20 0000 0000 · demo@example.com', workflows: [] };
   const vendors = [
     { id: 'v1', name: 'ຮ້ານວັດສະດຸກໍ່ສ້າງຈຳປາສັກ', taxId: '0100123456', currency: 'LAK', status: 'ACTIVE', isDeleted: false },
     { id: 'v2', name: 'Siam Trading Co., Ltd.', taxId: 'TH-88991122', currency: 'THB', status: 'ACTIVE', isDeleted: false },
@@ -1849,7 +1873,7 @@ class Component extends DCLogic {
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
-    prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [], prFormProcOfficer: '', prFormBudgetApprover: '', prFormQuoteApprover: '', prFormPoApprover: '',
+    prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [], prFormProcOfficer: '', prFormBudgetApprover: '', prFormQuoteApprover: '', prFormPoApprover: '', applyWorkflowId: '',
     qVendorId: '', qAmount: '', qFx: '', qNote: '', qFileName: '', qFileData: '',
     qNewVendorOpen: false, qNvName: '', qNvTax: '', qNvCur: 'LAK',
     selectingQuoteId: null, qSelectReason: '', filePreview: null,
@@ -1871,6 +1895,7 @@ class Component extends DCLogic {
     if (!d || !d.settings) d = seedData();
     // ຍົກລະດັບຂໍ້ມູນເກົ່າ (migration): ຕື່ມຄ່າ default ໃຫ້ field ທີ່ເພີ່ມພາຍຫຼັງ
     if (d.settings.quoteThreshold2 == null) d.settings.quoteThreshold2 = 80000000;
+    if (!d.settings.workflows) d.settings.workflows = [];
     if (d.settings.minQuotes2 == null) d.settings.minQuotes2 = 3;
     if (!d.users || !d.users.length) d.users = DEFAULT_USERS.map(x => ({ ...x }));
     d.users = d.users.map(x => ({ password: '1234', isActive: true, failedAttempts: 0, ...x }));
@@ -2276,6 +2301,40 @@ class Component extends DCLogic {
     const prs = this.state.prs.map(p => p.id === pr.id ? { ...p, comments: [...(p.comments || []), c] } : p);
     this.persist({ prs, prCommentText: '' });
     this.toast('success', 'ເພີ່ມຄວາມເห็นแล้ว');
+  }
+  // ===== Workflow templates: บันทึกการตั้งค่าอนุมัดไว้ใช้ซ้ำ =====
+  applyWorkflow(id) {
+    if (!id) { this.setState({ applyWorkflowId: '' }); return; }
+    const wf = (this.state.settings.workflows || []).find(w => w.id === id);
+    if (!wf) return;
+    this.setState({
+      applyWorkflowId: '',
+      prFormApprovers: [...(wf.approvers || [])], prFormWatchers: [...(wf.watchers || [])],
+      prFormProcOfficer: wf.procOfficer || '', prFormBudgetApprover: wf.budgetApprover || '',
+      prFormQuoteApprover: wf.quoteApprover || '', prFormPoApprover: wf.poApprover || '',
+    });
+    this.toast('success', `ໃຊ້ Workflow "${wf.name}" ແລ້ວ — ปรับเพิ่มได้ก่อนส่ง`);
+  }
+  saveCurrentAsWorkflow() {
+    const name = prompt('ຕັ້ງຊື່ Workflow (ເช่น "จัดซื้อไอที", "งบใหญ่ >50 ลาน"):', '');
+    if (name === null) return;
+    const nm = name.trim();
+    if (!nm) { this.toast('error', 'ຕ້ອງມີຊື່ Workflow'); return; }
+    if (!(this.state.prFormApprovers || []).length) { this.toast('error', 'ເລືອກຜູ້ອະນຸມັດຢ່າງໜ້ອຍ 1 ຄົนก่อนบันทึก'); return; }
+    const wf = { id: uid(), name: nm, approvers: [...(this.state.prFormApprovers || [])], watchers: [...(this.state.prFormWatchers || [])], procOfficer: this.state.prFormProcOfficer || null, budgetApprover: this.state.prFormBudgetApprover || null, quoteApprover: this.state.prFormQuoteApprover || null, poApprover: this.state.prFormPoApprover || null };
+    const settings = { ...this.state.settings, workflows: [...(this.state.settings.workflows || []), wf] };
+    const lg = this.log('CREATE', `ບັນທຶກ Workflow "${nm}"`, true);
+    this.persist({ settings, ...lg });
+    this.toast('success', `ບັນທຶກ Workflow "${nm}" ແລ້ວ — ໃຊ້ຊ້ຳໄດ້ຄັ້ງໜ້າ`);
+  }
+  deleteWorkflow(id) {
+    const u = this.me();
+    if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມລຶບ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
+    const wf = (this.state.settings.workflows || []).find(w => w.id === id);
+    const settings = { ...this.state.settings, workflows: (this.state.settings.workflows || []).filter(w => w.id !== id) };
+    const lg = this.log('DELETE', `ລຶບ Workflow "${wf ? wf.name : ''}"`, true);
+    this.persist({ settings, ...lg });
+    this.toast('success', 'ລຶບ Workflow ແລ້ວ');
   }
   startRfq(pr) {
     const u = this.me();
@@ -3115,6 +3174,16 @@ class Component extends DCLogic {
       prFormBudgetApprover: s.prFormBudgetApprover, onPrBudgetApproverChange: e => this.setState({ prFormBudgetApprover: e.target.value }),
       prFormQuoteApprover: s.prFormQuoteApprover, onPrQuoteApproverChange: e => this.setState({ prFormQuoteApprover: e.target.value }),
       prFormPoApprover: s.prFormPoApprover, onPrPoApproverChange: e => this.setState({ prFormPoApprover: e.target.value }),
+      hasWorkflows: ((s.settings && s.settings.workflows) || []).length > 0,
+      workflowOptions: ((s.settings && s.settings.workflows) || []).map(w => ({ id: w.id, name: w.name })),
+      noWorkflows: ((s.settings && s.settings.workflows) || []).length === 0,
+      workflowRows: ((s.settings && s.settings.workflows) || []).map(w => ({
+        name: w.name,
+        summary: 'ຜູ້ອະນຸມັດ: ' + ((w.approvers || []).map(id => this.uName(id)).join(' → ') || '—') + (w.budgetApprover ? ' · ງບ: ' + this.uName(w.budgetApprover) : '') + (w.quoteApprover ? ' · ໃບສະເໜີ: ' + this.uName(w.quoteApprover) : '') + (w.poApprover ? ' · PO: ' + this.uName(w.poApprover) : '') + (w.procOfficer ? ' · ຈັດຊື້: ' + this.uName(w.procOfficer) : ''),
+        canDelete: !!(u && u.role === 'ADMIN'), onDelete: () => this.deleteWorkflow(w.id),
+      })),
+      applyWorkflowId: s.applyWorkflowId, onApplyWorkflow: e => this.applyWorkflow(e.target.value),
+      onSaveWorkflow: () => this.saveCurrentAsWorkflow(),
       onPrApproverSearchChange: e => this.setState({ prFormApproverSearch: e.target.value }),
       onPrWatcherSearchChange: e => this.setState({ prFormWatcherSearch: e.target.value }),
       prApproverSearchActive, prWatcherSearchActive, prApproverNoResult, prWatcherNoResult, prNoApprover,
