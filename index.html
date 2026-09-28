@@ -26,7 +26,8 @@
     #sideNav { transform: translateX(-100%); transition: transform .25s ease !important; }
     #sideNav[data-open="1"] { transform: translateX(0); }
     #appMain { margin-left: 0 !important; padding: 64px 14px 48px !important; overflow-x: hidden; }
-    #detailOverlay { left: 0 !important; }
+    /* ໜ້າລາຍລະອຽດ: ເລີ່ມໃຕ້ແຖບເທິງຂອງມືຖື (52px) ບໍ່ດັ່ງນັ້ນປຸ່ມກັບຄືນ/ພິມ ຖືກບັງ */
+    #detailOverlay, #advOverlay { left: 0 !important; top: 52px !important; }
     #mobileTopBar { display: flex; }
     #navBackdrop[data-open="1"] { display: block; }
     .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -117,6 +118,11 @@
         <sc-if value="{{ showSidebarLabels }}" hint-placeholder-val="{{ true }}"><span style="white-space:nowrap">ໃບຂໍຊື້ (PR)</span></sc-if>
         <sc-if value="{{ hasMyTasks }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;background:#F3C01F;color:#0B4D27;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px">{{ myTaskCount }}</span></sc-if>
       </div>
+      <div onClick="{{ goAdv }}" title="ເບີກລ່ວງໜ້າ" style="display:flex;align-items:center;gap:11px;padding:{{ navPad }};border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:{{ navAdvColor }};background:{{ navAdvBg }};border-left:3px solid {{ navAdvAccent }};justify-content:{{ navJustify }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="2" y="6" width="20" height="13" rx="2"></rect><path d="M16 12.5h2"></path><path d="M2 10h20"></path><path d="M6 3.5h12"></path></svg>
+        <sc-if value="{{ showSidebarLabels }}" hint-placeholder-val="{{ true }}"><span style="white-space:nowrap">ເບີກລ່ວງໜ້າ</span></sc-if>
+        <sc-if value="{{ hasAdvTasks }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;background:#F3C01F;color:#0B4D27;font-size:11px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px">{{ advTaskCount }}</span></sc-if>
+      </div>
       <div onClick="{{ goGrn }}" title="ຮັບເຄື່ອງ (GRN)" style="display:flex;align-items:center;gap:11px;padding:{{ navPad }};border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:{{ navGrnColor }};background:{{ navGrnBg }};border-left:3px solid {{ navGrnAccent }};justify-content:{{ navJustify }}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 9l2-5h14l2 5"></path><path d="M3 9v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"></path><path d="M3 9h18M9.5 13h5"></path></svg>
         <sc-if value="{{ showSidebarLabels }}" hint-placeholder-val="{{ true }}"><span style="white-space:nowrap">ຮັບເຄື່ອງ (GRN)</span></sc-if>
@@ -202,6 +208,21 @@
           <div style="font-size:12px;color:#5C6D5A;margin-top:4px">ລາຍການບັນທຶກກວດສອບ</div>
         </div>
       </div>
+      <div style="font-weight:700;font-size:13.5px;color:#0B4D27;margin:-8px 0 10px">💵 ເບີກລ່ວງໜ້າ</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:28px">
+        <div onClick="{{ onCardAdvTasks }}" style="background:#0B4D27;border-radius:14px;padding:18px;box-shadow:0 4px 16px rgba(11,77,39,0.22);cursor:pointer">
+          <div style="font-size:25px;font-weight:800;color:#F3C01F">{{ advCardTasks }}</div>
+          <div style="font-size:12px;color:#D7E6DB;margin-top:4px">ເບີກລ່ວງໜ້າ ລໍຖ້າທ່ານດຳເນີນການ</div>
+        </div>
+        <div onClick="{{ onCardAdvMine }}" style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05);cursor:pointer">
+          <div style="font-size:25px;font-weight:800;color:#14231A">{{ advCardMine }}</div>
+          <div style="font-size:12px;color:#5C6D5A;margin-top:4px">ຂອງຂ້ອຍ ຍັງບໍ່ປິດ ({{ advCardMineAmount }} ກີບ)</div>
+        </div>
+        <div onClick="{{ onCardAdvOverdue }}" style="background:{{ advCardOverdueBg }};border:1px solid #EEF2ED;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05);cursor:pointer">
+          <div style="font-size:25px;font-weight:800;color:{{ advCardOverdueFg }}">{{ advCardOverdue }}</div>
+          <div style="font-size:12px;color:#5C6D5A;margin-top:4px">{{ advCardOverdueLabel }}</div>
+        </div>
+      </div>
       <div style="background:#F3F8F4;border:1px solid #DCE8DF;border-radius:12px;padding:20px 22px">
         <div style="font-weight:700;font-size:13.5px;color:#0B4D27;margin-bottom:8px">ນະໂຍບາຍປັດຈຸບັນ (ແກ້ໄຂໄດ້ທີ່ໜ້າ "ການຕັ້ງຄ່າ")</div>
         <div style="font-size:13px;color:#3C4C3A;line-height:1.9">
@@ -211,6 +232,7 @@
           <div>• ມູນຄ່າ ≥ <b>{{ qtDisplay }}</b> ກີບ → ຕ້ອງມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ <b>{{ minQuotesDisplay }}</b> ໃບກ່ອນອອກ PO</div>
           <div>• ມູນຄ່າ ≥ <b>{{ qt2Display }}</b> ກີບ → ຕ້ອງມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ <b>{{ minQuotes2Display }}</b> ໃບກ່ອນອອກ PO</div>
           <sc-if value="{{ dblOn }}" hint-placeholder-val="{{ true }}"><div>• ມູນຄ່າ &lt; <b>{{ dblDisplay }}</b> ກີບ → ຈັດຊື້ ຊື້ໂດຍກົງໄດ້ (ບໍ່ຕ້ອງໃບສະເໜີລາຄາ / ຫົວໜ້າອະນຸມັດ; PO ຍັງຕ້ອງອະນຸມັດ)</div></sc-if>
+          <div>• ເບີກລ່ວງໜ້າ: {{ advPolicyText }}</div>
         </div>
       </div>
     </div>
@@ -258,6 +280,106 @@
     </div>
     </sc-if>
 
+    <sc-if value="{{ isAdvPage }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Cash Advances">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+        <div>
+          <h2 style="margin:0 0 4px;font-size:22px">ເບີກລ່ວງໜ້າ</h2>
+          <p style="margin:0;color:#5C6D5A;font-size:13.5px">ຂໍເບີກ → ອະນຸມັດ → ຈ່າຍເງິນ → ຮັບເງິນ → ເຄຍ → ກວດເຄຍ → ສຳເລັດ</p>
+        </div>
+        <button onClick="{{ onOpenAdvForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">+ ຂໍເບີກລ່ວງໜ້າ</button>
+      </div>
+      <sc-if value="{{ advCanReport }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center">
+          <button onClick="{{ onAdvTabList }}" style="background:{{ tListBg }};color:{{ tListFg }};border:1px solid #DCE8DF;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">ລາຍການ</button>
+          <button onClick="{{ onAdvTabOut }}" style="background:{{ tOutBg }};color:{{ tOutFg }};border:1px solid #DCE8DF;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">ຍອດຄ້າງເຄຍ ({{ advOutCount }})</button>
+          <button onClick="{{ onAdvTabSum }}" style="background:{{ tSumBg }};color:{{ tSumFg }};border:1px solid #DCE8DF;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer">ສະຫຼຸບຄ່າໃຊ້ຈ່າຍ</button>
+          <div style="flex:1"></div>
+          <button onClick="{{ onExportAdvList }}" style="background:#fff;color:#116F38;border:1px solid #BFE0C9;border-radius:8px;padding:8px 12px;font-size:12.5px;cursor:pointer">⬇ Excel: ລາຍການເບີກ</button>
+          <button onClick="{{ onExportAdvLines }}" style="background:#fff;color:#116F38;border:1px solid #BFE0C9;border-radius:8px;padding:8px 12px;font-size:12.5px;cursor:pointer">⬇ Excel: ລາຍການໃຊ້ຈ່າຍ</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ advTabList }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px">
+          <button onClick="{{ onAdvFilterAll }}" style="background:{{ afAllBg }};color:{{ afAllFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ທັງໝົດ</button>
+          <button onClick="{{ onAdvFilterMine }}" style="background:{{ afMineBg }};color:{{ afMineFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ວຽກຂອງຂ້ອຍ ({{ advTaskCount }})</button>
+          <button onClick="{{ onAdvFilterMy }}" style="background:{{ afMyBg }};color:{{ afMyFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ທີ່ຂ້ອຍເບີກ</button>
+          <button onClick="{{ onAdvFilterOpen }}" style="background:{{ afOpenBg }};color:{{ afOpenFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ຍັງບໍ່ປິດ</button>
+          <button onClick="{{ onAdvFilterClosed }}" style="background:{{ afClosedBg }};color:{{ afClosedFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ປິດແລ້ວ</button>
+          <input value="{{ advSearch }}" onChange="{{ onAdvSearch }}" placeholder="🔍 ຄົ້ນຫາ ເລກທີ / ຊື່ / ພະແນກ / ຈຸດປະສົງ" style="flex:1;min-width:180px;box-sizing:border-box;padding:8px 12px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px">
+        </div>
+        <div class="scroll-x" style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,40,24,0.04),0 6px 16px rgba(16,40,24,0.05)">
+          <div style="min-width:760px">
+            <div style="display:grid;grid-template-columns:1.1fr 1.3fr 1.6fr 1fr 1.2fr 1fr 0.6fr;padding:12px 18px;font-size:11.5px;font-weight:700;color:#8B9A88;border-bottom:1px solid #EEF1ED">
+              <div>ເລກທີ</div><div>ຜູ້ເບີກ / ພະແນກ</div><div>ປະເພດ / ຈຸດປະສົງ</div><div style="text-align:right">ຍອດເບີກ (ກີບ)</div><div>ສະຖານະ</div><div>ກຳນົດເຄຍ</div><div></div>
+            </div>
+            <sc-for list="{{ advRows }}" as="ar" hint-placeholder-count="3">
+              <div style="display:grid;grid-template-columns:1.1fr 1.3fr 1.6fr 1fr 1.2fr 1fr 0.6fr;padding:13px 18px;font-size:13px;align-items:center;border-bottom:1px solid #F4F6F3;line-height:1.6">
+                <div style="font-family:ui-monospace,monospace">{{ ar.advNumber }}</div>
+                <div><div>{{ ar.requesterName }}</div><div style="font-size:11.5px;color:#8B9A88">{{ ar.department }}</div></div>
+                <div><div style="font-size:11.5px;color:#8B9A88">{{ ar.typeLabel }}</div><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ar.purpose }}</div></div>
+                <div style="font-weight:600;text-align:right">{{ ar.totalDisplay }}</div>
+                <div><span style="font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;background:{{ ar.statusBg }};color:{{ ar.statusFg }}">{{ ar.statusLabel }}</span></div>
+                <div style="font-size:12px"><div>{{ ar.dueDisplay }}</div><sc-if value="{{ ar.isOverdue }}" hint-placeholder-val="{{ false }}"><div style="color:#B23B2E;font-weight:700">{{ ar.overdueText }}</div></sc-if></div>
+                <div><button onClick="{{ ar.onView }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ເບິ່ງ</button></div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ advListEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:44px 18px;text-align:center;color:#8B9A88;font-size:13.5px;line-height:1.7">{{ advEmptyMsg }}</div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ advTabOut }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+          <div style="background:#fff;border:1px solid #EEF2ED;border-radius:12px;padding:14px 18px"><div style="font-size:22px;font-weight:800">{{ advOutCount }}</div><div style="font-size:12px;color:#5C6D5A">ລາຍການຍັງບໍ່ປິດ</div></div>
+          <div style="background:#fff;border:1px solid #EEF2ED;border-radius:12px;padding:14px 18px"><div style="font-size:22px;font-weight:800">{{ advOutTotal }}</div><div style="font-size:12px;color:#5C6D5A">ຍອດເງິນຄ້າງ (ກີບ)</div></div>
+          <div style="background:#FDF3F2;border:1px solid #F3CFCB;border-radius:12px;padding:14px 18px"><div style="font-size:22px;font-weight:800;color:#B23B2E">{{ advOutOverdue }}</div><div style="font-size:12px;color:#8A2E24">ເກີນກຳນົດເຄຍ</div></div>
+        </div>
+        <div class="scroll-x" style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;overflow:hidden">
+          <div style="min-width:760px">
+            <div style="display:grid;grid-template-columns:1.1fr 1.4fr 1fr 1.3fr 1fr 1fr 0.6fr;padding:12px 18px;font-size:11.5px;font-weight:700;color:#8B9A88;border-bottom:1px solid #EEF1ED">
+              <div>ເລກທີ</div><div>ຜູ້ເບີກ / ພະແນກ</div><div style="text-align:right">ຍອດເບີກ</div><div>ສະຖານະ</div><div>ກຳນົດເຄຍ</div><div>ເຫຼືອ / ເກີນ</div><div></div>
+            </div>
+            <sc-for list="{{ advOutRows }}" as="orw" hint-placeholder-count="2">
+              <div style="display:grid;grid-template-columns:1.1fr 1.4fr 1fr 1.3fr 1fr 1fr 0.6fr;padding:12px 18px;font-size:13px;align-items:center;border-bottom:1px solid #F4F6F3;background:{{ orw.rowBg }}">
+                <div style="font-family:ui-monospace,monospace">{{ orw.advNumber }}</div>
+                <div><div>{{ orw.requesterName }}</div><div style="font-size:11.5px;color:#8B9A88">{{ orw.department }}</div></div>
+                <div style="text-align:right;font-weight:600">{{ orw.totalDisplay }}</div>
+                <div><span style="font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;background:{{ orw.statusBg }};color:{{ orw.statusFg }}">{{ orw.statusLabel }}</span></div>
+                <div style="font-size:12.5px">{{ orw.dueDisplay }}</div>
+                <div style="font-size:12.5px;font-weight:700;color:{{ orw.overdueFg }}">{{ orw.overdueText }}</div>
+                <div><sc-if value="{{ orw.canView }}" hint-placeholder-val="{{ true }}"><button onClick="{{ orw.onView }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ເບິ່ງ</button></sc-if></div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ advOutEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:36px 18px;text-align:center;color:#8B9A88;font-size:13.5px">ບໍ່ມີເງິນເບີກຄ້າງເຄຍ 🎉</div></sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ advTabSum }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+          <span style="font-size:12.5px;color:#5C6D5A">ຈັດກຸ່ມຕາມ:</span>
+          <button onClick="{{ onSumByCat }}" style="background:{{ sCatBg }};color:{{ sCatFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ໝວດ</button>
+          <button onClick="{{ onSumByDept }}" style="background:{{ sDeptBg }};color:{{ sDeptFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ພະແນກ</button>
+          <button onClick="{{ onSumByMonth }}" style="background:{{ sMonthBg }};color:{{ sMonthFg }};border:1px solid #DCE8DF;border-radius:20px;padding:6px 14px;font-size:12.5px;cursor:pointer">ເດືອນ</button>
+          <span style="margin-left:auto;font-size:13px">ລວມໃຊ້ຈິງ: <b>{{ advSumTotal }} ກີບ</b></span>
+        </div>
+        <div style="background:#fff;border:1px solid #EEF2ED;border-radius:14px;padding:8px 18px">
+          <sc-for list="{{ advSumRows }}" as="sr" hint-placeholder-count="3">
+            <div style="padding:10px 0;border-bottom:1px solid #F4F6F3">
+              <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;line-height:1.6"><span>{{ sr.label }} <span style="color:#8B9A88;font-size:11.5px">· {{ sr.count }} ລາຍການເບີກ</span></span><b>{{ sr.amountDisplay }} ກີບ <span style="color:#8B9A88;font-weight:400">({{ sr.pct }}%)</span></b></div>
+              <div style="height:6px;background:#EEF1ED;border-radius:3px;margin-top:6px"><div style="height:6px;width:{{ sr.barW }}%;background:#116F38;border-radius:3px"></div></div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ advSumEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:30px 0;text-align:center;color:#8B9A88;font-size:13.5px">ຍັງບໍ່ມີລາຍການທີ່ກວດເຄຍຜ່ານແລ້ວ</div></sc-if>
+        </div>
+        <p style="font-size:11.5px;color:#8B9A88;margin-top:8px">ນັບສະເພາະລາຍການທີ່ຜູ້ກວດເຄຍກວດຜ່ານແລ້ວ</p>
+      </sc-if>
+    </div>
+    </sc-if>
     <sc-if value="{{ isGrnPage }}" hint-placeholder-val="{{ false }}">
     <div data-screen-label="Goods Receipt Notes">
       <h2 style="margin:0 0 4px;font-size:22px">ໃບຮັບເຄື່ອງ (GRN)</h2>
@@ -387,6 +509,21 @@
             </div>
             <div style="color:#8B9A88;font-size:12.5px;line-height:1.7">ຕໍ່າກວ່າຂັ້ນທີ 1 ຕ້ອງມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ 1 ໃບ (ຍົກເວັ້ນ ຊື້ໂດຍກົງ)</div>
           </div>
+          <div style="font-weight:700;font-size:15px;color:#0B4D27;margin:20px 0 14px">💵 ເບີກລ່ວງໜ້າ</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:#3C4C3A">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">ກຳນົດເຄຍ = ວັນສຳເລັດວຽກ + <input type="number" value="{{ setAdvDays }}" onChange="{{ onSetAdvDays }}" disabled="{{ settingsReadOnly }}" style="width:70px;padding:7px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;box-sizing:border-box"> ວັນ</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">ໃຊ້ເກີນຍອດເບີກໄດ້ບໍ່ເກີນ <input type="number" value="{{ setAdvOver }}" onChange="{{ onSetAdvOver }}" disabled="{{ settingsReadOnly }}" style="width:70px;padding:7px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;box-sizing:border-box"> % (ຈ່າຍເພີ່ມໄດ້ເລີຍ; ເກີນກວ່ານັ້ນຕ້ອງອະນຸມັດ)</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">ຊື້ເຄື່ອງເລັກນ້ອຍດ່ວນ ເບີກໄດ້ບໍ່ເກີນ <input type="text" inputmode="numeric" value="{{ setAdvCapDisplay }}" onChange="{{ onSetAdvCap }}" disabled="{{ settingsReadOnly }}" style="width:150px;padding:7px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;box-sizing:border-box;text-align:right"> ກີບ/ໃບ</div>
+            <div style="border:1px solid #EEF1ED;border-radius:10px;padding:12px 14px">
+              <div style="font-weight:700;font-size:12.5px;margin-bottom:8px">ໝວດໝູ່ຄ່າໃຊ້ຈ່າຍ <span style="font-weight:400;color:#8B9A88">(ປ່ຽນແລ້ວມີຜົນທັນທີ)</span></div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ expenseCatRows }}" as="ec" hint-placeholder-count="4"><span style="display:inline-flex;align-items:center;gap:6px;background:{{ ec.bg }};color:{{ ec.fg }};border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><span style="text-decoration:{{ ec.deco }}">{{ ec.name }}</span><sc-if value="{{ settingsEditable }}" hint-placeholder-val="{{ false }}"><button onClick="{{ ec.onToggle }}" title="{{ ec.toggleTitle }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">{{ ec.toggleLabel }}</button></sc-if></span></sc-for>
+              </div>
+              <sc-if value="{{ settingsEditable }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;gap:8px;margin-top:10px"><input value="{{ newCatName }}" onChange="{{ onNewCatName }}" placeholder="ຊື່ໝວດໃໝ່" style="flex:1;box-sizing:border-box;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><button onClick="{{ onAddCat }}" style="background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:13px;font-weight:700;cursor:pointer">+ ເພີ່ມ</button></div>
+              </sc-if>
+            </div>
+          </div>
           <div style="font-weight:700;font-size:15px;color:#0B4D27;margin:20px 0 14px">ຂໍ້ມູນບໍລິສັດເທິງເອກະສານ</div>
           <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
             <input value="{{ setCoLao }}" onChange="{{ onSetCoLao }}" disabled="{{ settingsReadOnly }}" placeholder="ຊື່ບໍລິສັດ (ພາສາລາວ)" style="width:100%;padding:8px 11px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;box-sizing:border-box">
@@ -412,6 +549,13 @@
             <p style="margin:0 0 12px;font-size:11.5px;color:#8B9A88">ກຳນົດຂັ້ນ ກວດກາ → ອະນຸມັດ → ສຳເລັດ. ແຕ່ລະຂັ້ນເພີ່ມຄົນອະນຸມັດໄດ້ຫຼາຍຄົນ (ຕ້ອງເຊັນຄົບທຸກຄົນ ຕາມລຳດັບ).</p>
             <label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ຊື່ Workflow</label>
             <input value="{{ wfName }}" onChange="{{ onWfName }}" placeholder="ເຊັ່ນ: ຈັດຊື້ໄອທີ, ງົບໃຫຍ່ >50 ລ້ານ" style="width:100%;box-sizing:border-box;margin:4px 0 14px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+            <sc-if value="{{ wfTypeEditable }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:8px;margin:-4px 0 14px;flex-wrap:wrap">
+                <button onClick="{{ onWfTypePr }}" style="background:{{ wfTypePrBg }};color:{{ wfTypePrFg }};border:1px solid #BFE0C9;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer">📄 ໃບຂໍຊື້ (PR)</button>
+                <button onClick="{{ onWfTypeAdv }}" style="background:{{ wfTypeAdvBg }};color:{{ wfTypeAdvFg }};border:1px solid #BFE0C9;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer">💵 ເບີກລ່ວງໜ້າ</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ wfIsPr }}" hint-placeholder-val="{{ true }}">
             <div style="margin-bottom:14px"><label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ມອບໝາຍຈັດຊື້ (ຜູ້ຫາໃບສະເໜີ/ອອກ PO)</label><select value="{{ wfProc }}" onChange="{{ onWfProc }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ໃຊ້ role —</option><sc-for list="{{ wfProcList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }}</option></sc-for></select></div>
 
             <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
@@ -458,6 +602,43 @@
                 <sc-for list="{{ wfPoChips }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;background:#F1F6F2;border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><b style="color:#116F38">{{ c.order }}.</b> {{ c.name }} <button onClick="{{ c.onRemove }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">×</button></span></sc-for>
               </div>
             </div>
+            </sc-if>
+            <sc-if value="{{ wfIsAdv }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
+                <label style="font-size:12px;color:#0B4D27;font-weight:700">1. ອະນຸມັດຂໍເບີກ</label>
+                <div style="font-size:11px;color:#8B9A88">ເພີ່ມໄດ້ຫຼາຍຄົນ — ເຊັນຕາມລຳດັບ. ຖ້າຜູ້ຂໍຢູ່ໃນລາຍຊື່ ລະບົບຂ້າມໃຫ້</div>
+                <div style="display:flex;gap:8px;margin-top:6px">
+                  <select value="{{ wfAdvApprPick }}" onChange="{{ onWfAdvApprPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+                  <button onClick="{{ onAddWfAdvAppr }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+                  <sc-for list="{{ wfAdvApprChips }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;background:#F1F6F2;border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><b style="color:#116F38">{{ c.order }}.</b> {{ c.name }} <button onClick="{{ c.onRemove }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">×</button></span></sc-for>
+                </div>
+              </div>
+              <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
+                <label style="font-size:12px;color:#0B4D27;font-weight:700">2. ຈ່າຍເງິນ (ການເງິນ / ຄັງເງິນ)</label>
+                <div style="font-size:11px;color:#8B9A88">ຄົນໃດຄົນໜຶ່ງໃນລາຍຊື່ ຈ່າຍ ແລະ ບັນທຶກການຈ່າຍ; ຮັບເງິນຄືນ / ຈ່າຍເພີ່ມ ຫຼັງເຄຍ</div>
+                <div style="display:flex;gap:8px;margin-top:6px">
+                  <select value="{{ wfAdvPayPick }}" onChange="{{ onWfAdvPayPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+                  <button onClick="{{ onAddWfAdvPay }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+                  <sc-for list="{{ wfAdvPayChips }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;background:#F1F6F2;border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><b style="color:#116F38">{{ c.order }}.</b> {{ c.name }} <button onClick="{{ c.onRemove }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">×</button></span></sc-for>
+                </div>
+              </div>
+              <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
+                <label style="font-size:12px;color:#0B4D27;font-weight:700">3. ກວດເຄຍ</label>
+                <div style="font-size:11px;color:#8B9A88">ຕ້ອງບໍ່ແມ່ນຄົນດຽວກັບຜູ້ຈ່າຍເງິນ</div>
+                <div style="display:flex;gap:8px;margin-top:6px">
+                  <select value="{{ wfAdvChkPick }}" onChange="{{ onWfAdvChkPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+                  <button onClick="{{ onAddWfAdvChk }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+                  <sc-for list="{{ wfAdvChkChips }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;background:#F1F6F2;border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><b style="color:#116F38">{{ c.order }}.</b> {{ c.name }} <button onClick="{{ c.onRemove }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">×</button></span></sc-for>
+                </div>
+              </div>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;margin-top:4px"><input type="checkbox" checked="{{ wfIsDefault }}" onChange="{{ onWfIsDefault }}" style="width:17px;height:17px;accent-color:#116F38"> ຕັ້ງເປັນ Workflow ຄ່າເລີ່ມຕົ້ນ (ເລືອກໃຫ້ອັດຕະໂນມັດຕອນຂໍເບີກ)</label>
+            </sc-if>
             <button onClick="{{ onSaveWfSettings }}" style="margin-top:16px;background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer">{{ wfSaveLabel }}</button>
           </div>
         </sc-if>
@@ -634,7 +815,7 @@
 
 <!-- ===== MODAL: ສ້າງ PR ===== -->
 <sc-if value="{{ prFormOpen }}" hint-placeholder-val="{{ false }}">
-<div style="position:fixed;inset:0;background:rgba(20,35,26,0.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px">
+<div style="position:fixed;inset:0;background:rgba(20,35,26,0.45);z-index:320;display:flex;align-items:center;justify-content:center;padding:24px">
   <div style="background:#fff;border-radius:14px;max-width:620px;width:100%;max-height:86vh;overflow-y:auto;padding:26px 28px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
       <h3 style="margin:0;font-size:18px">{{ prFormModalTitle }}</h3>
@@ -727,6 +908,338 @@
 </div>
 </sc-if>
 
+<!-- ===== ເບີກລ່ວງໜ້າ: ຟອມຂໍເບີກ ===== -->
+<sc-if value="{{ advFormOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(20,35,26,0.45);z-index:320;display:flex;align-items:flex-start;justify-content:center;padding:24px 12px;overflow-y:auto">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:760px;padding:24px 26px;box-sizing:border-box;box-shadow:0 20px 60px rgba(0,0,0,0.25);line-height:1.6">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0;font-size:18px">{{ advFormTitle }}</h3>
+      <button onClick="{{ onCloseAdvForm }}" style="background:none;border:none;font-size:22px;color:#8B9A88;cursor:pointer">×</button>
+    </div>
+    <sc-if value="{{ afLateWarn }}" hint-placeholder-val="{{ false }}"><div style="background:#FDF3F2;border:1px solid #F3CFCB;color:#8A2E24;border-radius:9px;padding:10px 14px;font-size:12.5px;margin-bottom:14px">{{ afLateWarn }}</div></sc-if>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+      <div>
+        <label style="font-size:12px;color:#5C6D5A;font-weight:600">ປະເພດການເບີກ</label>
+        <select value="{{ afType }}" onChange="{{ onAfType }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px;background:#fff"><sc-for list="{{ advTypeOptions }}" as="t" hint-placeholder-count="4"><option value="{{ t.value }}">{{ t.label }}</option></sc-for></select>
+      </div>
+      <sc-if value="{{ afShowPlace }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <label style="font-size:12px;color:#5C6D5A;font-weight:600">{{ afPlaceLabel }}</label>
+          <input value="{{ afPlace }}" onChange="{{ onAfPlace }}" placeholder="ເຊັ່ນ: ແຂວງຫຼວງພະບາງ" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+        </div>
+      </sc-if>
+    </div>
+    <label style="display:block;margin-top:12px;font-size:12px;color:#5C6D5A;font-weight:600">ຈຸດປະສົງ</label>
+    <textarea value="{{ afPurpose }}" onChange="{{ onAfPurpose }}" placeholder="ເບີກໄປເຮັດຫຍັງ..." style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px;min-height:56px;font-family:inherit;line-height:1.6"></textarea>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px">
+      <div>
+        <label style="font-size:12px;color:#5C6D5A;font-weight:600">ວັນເລີ່ມ (ບໍ່ບັງຄັບ)</label>
+        <input type="date" value="{{ afWorkStart }}" onChange="{{ onAfWorkStart }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+      </div>
+      <div>
+        <label style="font-size:12px;color:#5C6D5A;font-weight:600">{{ afWorkEndLabel }} *</label>
+        <input type="date" value="{{ afWorkEnd }}" onChange="{{ onAfWorkEnd }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+        <div style="font-size:11px;color:#8B9A88;margin-top:3px">{{ afDueHint }}</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #EEF1ED">
+      <label style="font-size:12px;color:#5C6D5A;font-weight:600">ຕິກໝວດຄ່າໃຊ້ຈ່າຍ ແລະ ໃສ່ຍອດປະມານການ</label>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+        <sc-for list="{{ advCatRows }}" as="c" hint-placeholder-count="4">
+          <div style="border:1px solid {{ c.rowBorder }};background:{{ c.rowBg }};border-radius:9px;padding:7px 10px">
+            <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;min-height:28px">
+              <input type="checkbox" aria-label="{{ c.name }}" checked="{{ c.checked }}" onChange="{{ c.onToggle }}" style="width:18px;height:18px;flex-shrink:0;accent-color:#116F38">
+              <span style="flex:1">{{ c.name }}</span>
+            </label>
+            <sc-if value="{{ c.checked }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:minmax(120px,160px) 1fr;gap:8px;margin:6px 0 2px 27px">
+                <input type="text" inputmode="numeric" value="{{ c.amountDisplay }}" onChange="{{ c.onAmount }}" placeholder="ຍອດ (ກີບ)" style="box-sizing:border-box;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;text-align:right">
+                <input value="{{ c.note }}" onChange="{{ c.onNote }}" placeholder="ລາຍລະອຽດ (ບໍ່ບັງຄັບ) ເຊັ່ນ 3 ຄືນ × 300,000" style="box-sizing:border-box;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px">
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:10px;font-size:14px">ຍອດເບີກທັງໝົດ: <b style="font-size:17px">{{ afTotalDisplay }}</b></div>
+      <sc-if value="{{ afCapWarn }}" hint-placeholder-val="{{ false }}"><div style="text-align:right;font-size:12px;margin-top:4px;color:#8A6A2A">{{ afCapWarn }}</div></sc-if>
+    </div>
+
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid #EEF1ED">
+      <label style="font-size:12px;color:#5C6D5A;font-weight:600">ຮັບເງິນແບບ</label>
+      <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+        <button onClick="{{ onAfPayCash }}" style="background:{{ afCashBg }};color:{{ afCashFg }};border:1px solid #BFE0C9;border-radius:8px;padding:9px 18px;font-size:13px;cursor:pointer;min-height:40px">💵 ເງິນສົດ</button>
+        <button onClick="{{ onAfPayTransfer }}" style="background:{{ afTrBg }};color:{{ afTrFg }};border:1px solid #BFE0C9;border-radius:8px;padding:9px 18px;font-size:13px;cursor:pointer;min-height:40px">🏦 ໂອນເຂົ້າບັນຊີ</button>
+      </div>
+      <sc-if value="{{ afPayTransfer }}" hint-placeholder-val="{{ false }}">
+        <input value="{{ afBank }}" onChange="{{ onAfBank }}" placeholder="ເລກບັນຊີ + ຊື່ທະນາຄານ ເຊັ່ນ BCEL 010-12-00-1234567" style="width:100%;box-sizing:border-box;margin-top:8px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+      </sc-if>
+    </div>
+
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid #EEF1ED">
+      <label style="font-size:12px;color:#5C6D5A;font-weight:600">Workflow ອະນຸມັດ</label>
+      <sc-if value="{{ hasAdvWf }}" hint-placeholder-val="{{ true }}">
+        <select value="{{ afWorkflowId }}" onChange="{{ onAfWorkflow }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px;background:#fff"><sc-for list="{{ advWfOptions }}" as="w" hint-placeholder-count="2"><option value="{{ w.id }}">{{ w.name }}</option></sc-for></select>
+        <div style="background:#F3F8F4;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#3C4C3A;line-height:1.7">{{ afRouteText }}</div>
+      </sc-if>
+      <sc-if value="{{ noAdvWf }}" hint-placeholder-val="{{ false }}"><div style="background:#FDF3F2;color:#8A2E24;border-radius:8px;padding:9px 12px;margin-top:6px;font-size:12.5px">ຍັງບໍ່ມີ Workflow ເບີກລ່ວງໜ້າ — ບັນທຶກຮ່າງໄດ້ ແຕ່ສົ່ງບໍ່ໄດ້. ກະລຸນາແຈ້ງ Admin</div></sc-if>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;flex-wrap:wrap">
+      <button onClick="{{ onSaveAdvDraft }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:8px;padding:11px 18px;font-size:13.5px;cursor:pointer;min-height:44px">ບັນທຶກຮ່າງ</button>
+      <button onClick="{{ onSubmitAdv }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">ສົ່ງຂໍອະນຸມັດ</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ===== ເບີກລ່ວງໜ້າ: ລາຍລະອຽດ (ລາຍການດຽວ ເຫັນທຸກຂັ້ນ) ===== -->
+<sc-if value="{{ showAdvDetail }}" hint-placeholder-val="{{ false }}">
+<div id="advOverlay" style="position:fixed;top:0;right:0;bottom:0;left:{{ sidebarWidth }};background:#FAF7F0;z-index:100;display:flex;flex-direction:column;overflow-y:auto;transition:left .18s ease;line-height:1.6">
+  <div style="padding:12px 24px 10px;background:#fff;border-bottom:1px solid #EEF1ED;flex-shrink:0">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button onClick="{{ va.onBack }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;min-height:38px">← ກັບໄປລາຍການ</button>
+        <div style="flex:1"></div>
+        <button onClick="{{ va.onPrintReq }}" style="background:#FBDCC0;color:#8A4B12;border:none;border-radius:7px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer">🖨 ໃບຂໍເບີກ</button>
+        <button onClick="{{ va.onPrintPay }}" disabled="{{ va.payDocDisabled }}" title="ພິມໄດ້ຫຼັງຈ່າຍເງິນ" style="background:#C9DCF0;color:#1D3F6E;border:none;border-radius:7px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:{{ va.payDocOpacity }}">🖨 ໃບຈ່າຍເງິນ</button>
+        <button onClick="{{ va.onPrintClr }}" disabled="{{ va.clrDocDisabled }}" title="ພິມໄດ້ຫຼັງສົ່ງເຄຍ" style="background:#D3E6C4;color:#2E5A20;border:none;border-radius:7px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;opacity:{{ va.clrDocOpacity }}">🖨 ໃບເຄຍເງິນ</button>
+      </div>
+      <div style="position:relative;padding:6px 10px 0">
+        <div style="position:absolute;top:13px;left:26px;right:26px;height:2px;background:#E4E9E1;border-radius:2px"></div>
+        <div style="position:absolute;top:13px;left:26px;height:2px;background:#116F38;border-radius:2px;width:{{ va.progressPct }}%;max-width:calc(100% - 52px)"></div>
+        <div style="position:relative;display:flex">
+          <sc-for list="{{ va.stepChips }}" as="sc" hint-placeholder-count="7">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px">
+              <div style="width:15px;height:15px;border-radius:50%;background:{{ sc.dotBg }};border:2.5px solid {{ sc.dotBorder }};box-sizing:border-box"></div>
+              <div style="font-size:10.5px;font-weight:{{ sc.weight }};color:{{ sc.fg }};text-align:center;line-height:1.35">{{ sc.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:20px 24px 40px">
+  <div style="max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+    <sc-if value="{{ va.showWaiting }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#EAF3FB;border:1px solid #BCD8F0;border-radius:10px;padding:12px 16px;font-size:13px;color:#1D3F6E">⏳ ກຳລັງລໍຖ້າ: <b>{{ va.waitingText }}</b></div>
+    </sc-if>
+    <sc-if value="{{ va.isRejected }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#FDF3F2;border:1px solid #F3CFCB;border-radius:10px;padding:12px 16px;font-size:13px;color:#8A2E24">✖ ຖືກປະຕິເສດ: {{ va.rejectReason }}</div>
+    </sc-if>
+    <sc-if value="{{ va.isOverdue }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#FDF3F2;border:1px solid #F3CFCB;border-radius:10px;padding:12px 16px;font-size:13px;color:#8A2E24;font-weight:700">{{ va.overdueText }} (ກຳນົດ {{ va.dueDisplay }})</div>
+    </sc-if>
+
+    <!-- ຂໍ້ມູນໃບຂໍເບີກ -->
+    <div style="background:#fff;border:1px solid #E4E9E1;border-radius:12px;padding:20px 22px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div style="font-family:ui-monospace,monospace;font-size:13px;color:#5C6D5A">{{ va.advNumber }}</div>
+          <div style="font-size:19px;font-weight:700;margin-top:2px">{{ va.purpose }}</div>
+          <div style="font-size:12.5px;color:#5C6D5A;margin-top:2px">{{ va.requesterName }} · {{ va.department }} · {{ va.typeLabel }}</div>
+        </div>
+        <div style="text-align:right">
+          <span style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;background:{{ va.statusBg }};color:{{ va.statusFg }}">{{ va.statusLabel }}</span>
+          <div style="font-size:21px;font-weight:800;margin-top:8px">{{ va.totalDisplay }}</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 18px;margin-top:14px;font-size:12.5px">
+        <sc-if value="{{ va.hasPlace }}" hint-placeholder-val="{{ false }}"><div><span style="color:#8B9A88">{{ va.placeLabel }}:</span> {{ va.place }}</div></sc-if>
+        <div><span style="color:#8B9A88">ໄລຍະເວລາ:</span> {{ va.workRange }}</div>
+        <div><span style="color:#8B9A88">ຮັບເງິນແບບ:</span> {{ va.payMethodLabel }}</div>
+        <sc-if value="{{ va.hasBank }}" hint-placeholder-val="{{ false }}"><div><span style="color:#8B9A88">ເລກບັນຊີ:</span> {{ va.bankAccount }}</div></sc-if>
+        <sc-if value="{{ va.hasDue }}" hint-placeholder-val="{{ false }}"><div><span style="color:#8B9A88">ກຳນົດເຄຍ:</span> <b>{{ va.dueDisplay }}</b></div></sc-if>
+      </div>
+      <div class="scroll-x" style="margin-top:14px">
+        <table style="width:100%;min-width:440px;border-collapse:collapse;font-size:13px">
+          <thead><tr style="background:#F3F8F4;color:#3C4C3A;font-size:11.5px"><th style="text-align:left;padding:8px 10px">#</th><th style="text-align:left;padding:8px 10px">ໝວດ (ປະມານການ)</th><th style="text-align:left;padding:8px 10px">ລາຍລະອຽດ</th><th style="text-align:right;padding:8px 10px">ຈຳນວນ (ກີບ)</th></tr></thead>
+          <tbody><sc-for list="{{ va.estRows }}" as="er" hint-placeholder-count="2"><tr><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF">{{ er.no }}</td><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF">{{ er.cat }}</td><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF;color:#5C6D5A">{{ er.note }}</td><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF;text-align:right;font-weight:600">{{ er.amountDisplay }}</td></tr></sc-for></tbody>
+        </table>
+      </div>
+      <sc-if value="{{ va.hasPayment }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;background:#EEF4FB;border-radius:8px;padding:9px 12px;font-size:12.5px;color:#1D3F6E">💵 ຈ່າຍແລ້ວ: {{ va.paymentText }}
+          <sc-if value="{{ va.hasPaymentProof }}" hint-placeholder-val="{{ false }}"><span onClick="{{ va.onViewPaymentProof }}" style="margin-left:6px;text-decoration:underline;cursor:pointer">ເບິ່ງຫຼັກຖານ</span></sc-if>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- ກ່ອງເຫດຜົນ (ປະຕິເສດ / ສົ່ງກັບ / ບໍ່ອະນຸມັດສ່ວນເກີນ) -->
+    <sc-if value="{{ va.reasonOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #F3CFCB;border-radius:12px;padding:16px 18px">
+        <label style="font-size:12.5px;font-weight:700;color:#8A2E24">{{ va.reasonTitle }}</label>
+        <textarea value="{{ va.advReason }}" onChange="{{ va.onReasonChange }}" style="width:100%;box-sizing:border-box;margin-top:6px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px;min-height:60px;font-family:inherit"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button onClick="{{ va.onReasonConfirm }}" style="background:#B23B2E;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;min-height:40px">ຢືນຢັນ</button>
+          <button onClick="{{ va.onReasonCancel }}" style="background:#EEF1ED;color:#5C6D5A;border:none;border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;min-height:40px">ຍົກເລີກ</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ຮ່າງ -->
+    <sc-if value="{{ va.showDraft }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #DCE8DF;border-radius:12px;padding:16px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:13px;color:#5C6D5A;flex:1;min-width:200px">ນີ້ແມ່ນຮ່າງ — ກວດຄືນແລ້ວສົ່ງຂໍອະນຸມັດ</span>
+        <button onClick="{{ va.onEditDraft }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;min-height:44px">✎ ແກ້ໄຂ</button>
+        <button onClick="{{ va.onCancelDraft }}" style="background:#fff;color:#B23B2E;border:1px solid #F3CFCB;border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;min-height:44px">ຍົກເລີກຮ່າງ</button>
+        <button onClick="{{ va.onSubmitDraft }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">ສົ່ງຂໍອະນຸມັດ</button>
+      </div>
+    </sc-if>
+
+    <!-- ອະນຸມັດ -->
+    <sc-if value="{{ va.showApprove }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #DCE8DF;border-radius:12px;padding:16px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:13px;flex:1;min-width:200px">ຂັ້ນຂອງທ່ານ: ພິຈາລະນາອະນຸມັດໃບຂໍເບີກນີ້</span>
+        <button onClick="{{ va.onRejectOpen }}" style="background:#fff;color:#B23B2E;border:1px solid #F3CFCB;border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;min-height:44px">ປະຕິເສດ</button>
+        <button onClick="{{ va.onApprove }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">✔ {{ va.approveLabel }}</button>
+      </div>
+    </sc-if>
+
+    <!-- ຈ່າຍເງິນ -->
+    <sc-if value="{{ va.showPay }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #BCD8F0;border-radius:12px;padding:16px 18px">
+        <div style="font-weight:700;font-size:14px;color:#1D3F6E;margin-bottom:10px">💵 ບັນທຶກການຈ່າຍເງິນ {{ va.totalDisplay }}</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+          <div><label style="font-size:12px;color:#5C6D5A;font-weight:600">ວິທີຈ່າຍ</label>
+            <select value="{{ va.payMethod }}" onChange="{{ va.onPayMethod }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 10px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px;background:#fff"><option value="CASH">ເງິນສົດ</option><option value="TRANSFER">ໂອນ</option></select></div>
+          <div><label style="font-size:12px;color:#5C6D5A;font-weight:600">ວັນທີຈ່າຍ</label>
+            <input type="date" value="{{ va.payDate }}" onChange="{{ va.onPayDate }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 10px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px"></div>
+          <div><label style="font-size:12px;color:#5C6D5A;font-weight:600">{{ va.payRefLabel }} *</label>
+            <input value="{{ va.payRef }}" onChange="{{ va.onPayRef }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 10px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px"></div>
+        </div>
+        <sc-if value="{{ va.hasBank }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:#5C6D5A;margin-top:8px">ບັນຊີຜູ້ເບີກ: <b>{{ va.bankAccount }}</b></div></sc-if>
+        <div style="margin-top:10px;font-size:12.5px"><label style="color:#5C6D5A;font-weight:600">ຫຼັກຖານການຈ່າຍ/ໂອນ (ບໍ່ບັງຄັບ)</label>
+          <sc-if value="{{ va.hasPayProof }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px">📎 {{ va.payProofName }} <span onClick="{{ va.onPayProofClear }}" style="color:#B23B2E;cursor:pointer;margin-left:8px;text-decoration:underline">ລຶບ</span></div></sc-if>
+          <div style="margin-top:4px"><input type="file" accept="image/*,application/pdf" onChange="{{ va.onPayProof }}" style="font-size:12.5px"></div>
+        </div>
+        <button onClick="{{ va.onConfirmPay }}" style="margin-top:14px;background:#1D5FA8;color:#fff;border:none;border-radius:8px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">ບັນທຶກວ່າຈ່າຍເງິນແລ້ວ</button>
+      </div>
+    </sc-if>
+
+    <!-- ຢືນຢັນຮັບເງິນ -->
+    <sc-if value="{{ va.showConfirm }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #BFE0C9;border-radius:12px;padding:16px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:13px;flex:1;min-width:220px">ການເງິນບັນທຶກວ່າຈ່າຍ <b>{{ va.totalDisplay }}</b> ໃຫ້ທ່ານແລ້ວ. ກະລຸນາກົດຢືນຢັນເມື່ອໄດ້ຮັບເງິນແທ້.</span>
+        <button onClick="{{ va.onConfirmReceive }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">✔ ຢືນຢັນໄດ້ຮັບເງິນແລ້ວ</button>
+      </div>
+    </sc-if>
+
+    <!-- ຟອມເຄຍເງິນ -->
+    <sc-if value="{{ va.showClear }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #F0DDB0;border-radius:12px;padding:16px 18px">
+        <div style="font-weight:700;font-size:14px;color:#6B4E12">🧾 ເຄຍເງິນ — ກຳນົດ {{ va.dueDisplay }}</div>
+        <sc-if value="{{ va.hasClrReturn }}" hint-placeholder-val="{{ false }}"><div style="background:#FFF4D6;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12.5px;color:#6B4E12">↩ ຜູ້ກວດເຄຍສົ່ງກັບໃຫ້ແກ້: {{ va.clrReturnReason }}</div></sc-if>
+        <div style="font-size:12px;color:#5C6D5A;margin:8px 0 6px">ຕິກເລືອກໝວດເພື່ອເພີ່ມລາຍການ (ໝວດສີຂຽວ = ທີ່ຂໍເບີກໄວ້). ໃບບິນຫຼາຍໃບໃນໝວດດຽວ → ຕິກຊ້ຳໄດ້</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ va.clrChips }}" as="ch" hint-placeholder-count="4"><button onClick="{{ ch.onAdd }}" style="background:{{ ch.bg }};border:1px solid {{ ch.border }};color:#14231A;border-radius:20px;padding:6px 12px;font-size:12.5px;cursor:pointer">+ {{ ch.name }}</button></sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+          <sc-for list="{{ va.clrRows }}" as="cr" hint-placeholder-count="2">
+            <div style="border:1px solid #E4E9E1;border-radius:10px;padding:10px 12px;background:#FCFDFB">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:13px">{{ cr.no }}. {{ cr.catName }}</b><button onClick="{{ cr.onRemove }}" title="ລຶບລາຍການ" style="background:none;border:none;color:#B23B2E;font-size:18px;cursor:pointer;padding:0 4px">×</button></div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:6px">
+                <input type="text" inputmode="numeric" value="{{ cr.amountDisplay }}" onChange="{{ cr.onAmount }}" placeholder="ຈຳນວນເງິນ (ກີບ)" style="box-sizing:border-box;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;text-align:right">
+                <input type="date" value="{{ cr.date }}" onChange="{{ cr.onDate }}" style="box-sizing:border-box;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px">
+                <input value="{{ cr.receiptNo }}" onChange="{{ cr.onReceiptNo }}" placeholder="ເລກໃບບິນ (ຖ້າມີ)" style="box-sizing:border-box;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px">
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:8px;font-size:12.5px">
+                <sc-if value="{{ cr.hasFile }}" hint-placeholder-val="{{ false }}"><span>📎 <span onClick="{{ cr.onViewFile }}" style="text-decoration:underline;cursor:pointer;color:#116F38">{{ cr.fileName }}</span> <span onClick="{{ cr.onClearFile }}" style="color:#B23B2E;cursor:pointer;margin-left:6px">ລຶບ</span></span></sc-if>
+                <sc-if value="{{ cr.showFileInput }}" hint-placeholder-val="{{ true }}"><label style="display:inline-flex;align-items:center;gap:6px;background:#E8F3EC;border:1px solid #BFE0C9;color:#116F38;border-radius:7px;padding:6px 12px;cursor:pointer">📷 ແນບຮູບໃບບິນ<input type="file" accept="image/*,application/pdf" onChange="{{ cr.onFile }}" style="display:none"></label></sc-if>
+                <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" aria-label="ບໍ່ມີໃບບິນ" checked="{{ cr.noReceipt }}" onChange="{{ cr.onToggleNoReceipt }}" style="width:16px;height:16px;accent-color:#B7791F"> ບໍ່ມີໃບບິນ</label>
+              </div>
+              <sc-if value="{{ cr.showReason }}" hint-placeholder-val="{{ false }}"><input value="{{ cr.reason }}" onChange="{{ cr.onReason }}" placeholder="ເຫດຜົນທີ່ບໍ່ມີໃບບິນ (ບັງຄັບ) ເຊັ່ນ ລົດຈັກຮັບຈ້າງ, ຮ້ານນ້ອຍບໍ່ມີບິນ" style="width:100%;box-sizing:border-box;margin-top:8px;padding:8px 10px;border:1px solid #F0DDB0;border-radius:7px;font-size:13px;background:#FFFBF0"></sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ va.clrEmpty }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;color:#8B9A88;font-size:13px;padding:14px">ຍັງບໍ່ມີລາຍການ — ຕິກເລືອກໝວດຂ້າງເທິງ</div></sc-if>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:13.5px">
+          <span>ໃຊ້ຈິງ: <b>{{ va.clrTotalDisplay }}</b> / ເບີກ {{ va.totalDisplay }}</span>
+          <b style="color:{{ va.clrDiffColor }}">{{ va.clrDiffText }}</b>
+        </div>
+        <sc-if value="{{ va.busy }}" hint-placeholder-val="{{ false }}"><div style="text-align:right;font-size:12px;color:#1D3F6E;margin-top:6px">⏳ ກຳລັງອັບໄຟລ໌...</div></sc-if>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button onClick="{{ va.onSaveClr }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;min-height:44px">ບັນທຶກໄວ້ກ່ອນ</button>
+          <button onClick="{{ va.onSubmitClr }}" style="background:#B7791F;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">ສົ່ງເຄຍ</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ສະຫຼຸບການເຄຍ (ຫຼັງສົ່ງ) -->
+    <sc-if value="{{ va.showClearSummary }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #E4E9E1;border-radius:12px;padding:18px 20px">
+        <div style="font-weight:700;font-size:14px;margin-bottom:10px">🧾 ການເຄຍ: ປະມານການ vs ໃຊ້ຈິງ</div>
+        <div class="scroll-x">
+          <table style="width:100%;min-width:460px;border-collapse:collapse;font-size:13px">
+            <thead><tr style="background:#F3F8F4;font-size:11.5px;color:#3C4C3A"><th style="text-align:left;padding:8px 10px">ໝວດ</th><th style="text-align:right;padding:8px 10px">ປະມານການ</th><th style="text-align:right;padding:8px 10px">ໃຊ້ຈິງ</th><th style="text-align:right;padding:8px 10px">ສ່ວນຕ່າງ</th></tr></thead>
+            <tbody><sc-for list="{{ va.cmpRows }}" as="cm" hint-placeholder-count="2"><tr><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF">{{ cm.cat }}</td><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF;text-align:right">{{ cm.estDisplay }}</td><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF;text-align:right;font-weight:600">{{ cm.actDisplay }}</td><td style="padding:8px 10px;border-bottom:1px solid #F0F3EF;text-align:right;color:{{ cm.diffColor }};font-weight:600">{{ cm.diffDisplay }}</td></tr></sc-for></tbody>
+          </table>
+        </div>
+        <div style="font-size:13px;margin-top:10px">ໃຊ້ຈິງທັງໝົດ <b>{{ va.clrSpentDisplay }}</b> / ເບີກ {{ va.totalDisplay }} → <b>{{ va.settleText }}</b></div>
+        <sc-if value="{{ va.hasNoReceipt }}" hint-placeholder-val="{{ false }}"><div style="font-size:12.5px;color:#8A6A2A;margin-top:6px">⚠ ມີ {{ va.noReceiptCount }} ລາຍການທີ່ບໍ່ມີໃບບິນ — ກວດເຫດຜົນຂ້າງລຸ່ມ</div></sc-if>
+        <div style="font-weight:700;font-size:13px;margin:14px 0 6px">ລາຍການໃບບິນ</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <sc-for list="{{ va.receiptRows }}" as="rr" hint-placeholder-count="2">
+            <div style="display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;border-bottom:1px solid #F0F3EF;padding:6px 0">
+              <span style="color:#8B9A88">{{ rr.no }}.</span><span>{{ rr.date }}</span><span style="flex:1;min-width:140px">{{ rr.cat }}</span><span style="color:#5C6D5A">ບິນ: {{ rr.receiptNo }}</span><b>{{ rr.amountDisplay }}</b>
+              <sc-if value="{{ rr.hasFile }}" hint-placeholder-val="{{ false }}"><span onClick="{{ rr.onViewFile }}" style="color:#116F38;text-decoration:underline;cursor:pointer">📎 ເບິ່ງໃບບິນ</span></sc-if>
+              <sc-if value="{{ rr.noReceipt }}" hint-placeholder-val="{{ false }}"><span style="background:#FFF4D6;color:#8A6A00;border-radius:12px;padding:2px 8px">⚠ ບໍ່ມີໃບບິນ: {{ rr.reason }}</span></sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ກວດເຄຍ -->
+    <sc-if value="{{ va.showCheck }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #BCD8F0;border-radius:12px;padding:16px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:13px;flex:1;min-width:220px">ຂັ້ນຂອງທ່ານ: ກວດໃບບິນ ແລະ ຍອດເງິນ. ຜົນ: <b>{{ va.settleText }}</b></span>
+        <button onClick="{{ va.onCheckReturnOpen }}" style="background:#fff;color:#B7791F;border:1px solid #F0DDB0;border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;min-height:44px">↩ ສົ່ງກັບໃຫ້ແກ້</button>
+        <button onClick="{{ va.onCheckApprove }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">✔ ກວດເຄຍຜ່ານ</button>
+      </div>
+    </sc-if>
+
+    <!-- ອະນຸມັດສ່ວນເກີນ -->
+    <sc-if value="{{ va.showOver }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #F0DDB0;border-radius:12px;padding:16px 18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:13px;flex:1;min-width:220px">ຂັ້ນຂອງທ່ານ: {{ va.overText }}</span>
+        <button onClick="{{ va.onOverRejectOpen }}" style="background:#fff;color:#B23B2E;border:1px solid #F3CFCB;border-radius:8px;padding:10px 16px;font-size:13px;cursor:pointer;min-height:44px">ບໍ່ອະນຸມັດສ່ວນເກີນ</button>
+        <button onClick="{{ va.onOverApprove }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">✔ ອະນຸມັດສ່ວນເກີນ</button>
+      </div>
+    </sc-if>
+
+    <!-- ປິດຍອດ (ຮັບເງິນຄືນ / ຈ່າຍເພີ່ມ) -->
+    <sc-if value="{{ va.showSettle }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #BCD8F0;border-radius:12px;padding:16px 18px">
+        <div style="font-weight:700;font-size:14px;color:#1D3F6E">{{ va.settleTitle }}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <input value="{{ va.settleRef }}" onChange="{{ va.onSettleRef }}" placeholder="ເລກໃບຮັບເງິນ / ເລກອ້າງອີງ *" style="flex:1;min-width:200px;box-sizing:border-box;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
+          <button onClick="{{ va.onSettle }}" style="background:#1D5FA8;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">ຢືນຢັນ ແລະ ປິດລາຍການ</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ va.isClosed }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#E3F3E7;border:1px solid #BFE0C9;border-radius:12px;padding:14px 18px;font-size:13.5px;color:#0B4D27">✅ ປິດລາຍການແລ້ວ — {{ va.closedText }}</div>
+    </sc-if>
+
+    <!-- ປະຫວັດ -->
+    <sc-if value="{{ va.hasTl }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid #E4E9E1;border-radius:12px;padding:16px 20px">
+        <div style="font-weight:700;font-size:13.5px;margin-bottom:10px">ປະຫວັດ</div>
+        <sc-for list="{{ va.tlRows }}" as="tr" hint-placeholder-count="3">
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12.5px;padding:5px 0">
+            <div style="width:9px;height:9px;border-radius:50%;background:{{ tr.dot }};margin-top:7px;flex-shrink:0"></div>
+            <div style="flex:1">{{ tr.text }}</div>
+            <div style="color:#8B9A88;white-space:nowrap">{{ tr.when }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+  </div>
+</div>
+</sc-if>
 <!-- ===== ໜ້າ: WIZARD PR → RFQ → PO (8 ຂັ້ນຕອນ) ===== -->
 <sc-if value="{{ showPrDetail }}" hint-placeholder-val="{{ false }}">
 <div id="detailOverlay" style="position:fixed;top:0;right:0;bottom:0;left:{{ sidebarWidth }};background:#FAF7F0;z-index:100;display:flex;flex-direction:column;overflow-y:auto;transition:left .18s ease">
@@ -1685,11 +2198,11 @@
     </div>
     <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:0;border:1px solid #E4E9E1">
       <thead><tr>
-        <th style="text-align:left;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">ລຳດັບ</th>
-        <th style="text-align:left;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">ລາຍການ</th>
-        <th style="text-align:right;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">ຈຳນວນ</th>
-        <th style="text-align:right;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">ລາຄາ/ໜ່ວຍ</th>
-        <th style="text-align:right;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">ລວມ</th>
+        <th style="text-align:left;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">{{ docH1 }}</th>
+        <th style="text-align:left;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">{{ docH2 }}</th>
+        <th style="text-align:right;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">{{ docH3 }}</th>
+        <th style="text-align:right;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">{{ docH4 }}</th>
+        <th style="text-align:right;padding:10px 12px;background:#0B4D27;color:#fff;font-size:11.5px;font-weight:600">{{ docH5 }}</th>
       </tr></thead>
       <tbody>
         <sc-for list="{{ docLines }}" as="l" hint-placeholder-count="2">
@@ -1710,6 +2223,15 @@
         </sc-for>
       </div>
     </div>
+    <sc-if value="{{ hasDocExtra }}" hint-placeholder-val="{{ false }}">
+      <div style="font-size:12.5px;font-weight:700;color:#0B4D27;margin:-14px 0 8px">{{ docExtraTitle }}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11.5px;border:1px solid #E4E9E1;margin-bottom:28px">
+        <thead><tr>
+          <th style="text-align:left;padding:7px 10px;background:#F3F8F4;border-bottom:1px solid #E4E9E1">{{ docX1 }}</th><th style="text-align:left;padding:7px 10px;background:#F3F8F4;border-bottom:1px solid #E4E9E1">{{ docX2 }}</th><th style="text-align:left;padding:7px 10px;background:#F3F8F4;border-bottom:1px solid #E4E9E1">{{ docX3 }}</th><th style="text-align:left;padding:7px 10px;background:#F3F8F4;border-bottom:1px solid #E4E9E1">{{ docX4 }}</th><th style="text-align:right;padding:7px 10px;background:#F3F8F4;border-bottom:1px solid #E4E9E1">{{ docX5 }}</th>
+        </tr></thead>
+        <tbody><sc-for list="{{ docExtraRows }}" as="xr" hint-placeholder-count="2"><tr><td style="padding:6px 10px;border-bottom:1px solid #EEF1ED">{{ xr.a }}</td><td style="padding:6px 10px;border-bottom:1px solid #EEF1ED">{{ xr.b }}</td><td style="padding:6px 10px;border-bottom:1px solid #EEF1ED">{{ xr.c }}</td><td style="padding:6px 10px;border-bottom:1px solid #EEF1ED">{{ xr.d }}</td><td style="padding:6px 10px;border-bottom:1px solid #EEF1ED;text-align:right">{{ xr.e }}</td></tr></sc-for></tbody>
+      </table>
+    </sc-if>
     <div style="display:grid;grid-template-columns:repeat({{ docSigCols }},1fr);gap:18px;margin-top:14px">
       <sc-for list="{{ docSignatures }}" as="sg" hint-placeholder-count="0">
         <div style="text-align:center;font-size:12px">
@@ -1787,6 +2309,119 @@ const ROLE_RIGHTS = {
 };
 const CHAIN = ['DEPT_HEAD', 'FINANCE_MANAGER', 'DIRECTOR'];
 const PO_STEPS = 4; // PO ຕ້ອງອະນຸມັດໃໝ່ແຍກຕ່າງຫາກ 4 ຂັ້ນ — ຄົນລະຊຸດກັບ PR: 0=ຜູ້ຂໍຊື້ກວດສະເປັກ, 1=ຫົວໜ້າພະແນກຜູ້ຂໍຊື້, 2=ຝ່າຍການເງິນ, 3=ຜູ້ອຳນວຍການ
+// ===== ເບີກລ່ວງໜ້າ (Cash advance) — ຄ່າຄົງທີ່ ແລະ logic ບໍລິສຸດ (ບໍ່ແຕະ DOM/state → ທົດສອບແຍກໄດ້) =====
+const ADV_TYPES = { TRAVEL: 'ເດີນທາງ / ປະຊຸມ', EVENT: 'ຈັດງານ / ກິດຈະກຳ', PURCHASE: 'ຊື້ເຄື່ອງເລັກນ້ອຍດ່ວນ', OTHER: 'ອື່ນໆ' };
+const DEFAULT_EXPENSE_CATS = [
+  { id: 'ec1', name: 'ຄ່າເດີນທາງ (ປີ້ຍົນ, ລົດ, ນ້ຳມັນ, ແທັກຊີ)', active: true },
+  { id: 'ec2', name: 'ຄ່າທີ່ພັກ', active: true },
+  { id: 'ec3', name: 'ເບ້ຍລ້ຽງ / ຄ່າອາຫານ', active: true },
+  { id: 'ec4', name: 'ຄ່າລົງທະບຽນ / ຝຶກອົບຮົມ', active: true },
+  { id: 'ec5', name: 'ຄ່າເຊົ່າສະຖານທີ່ / ອຸປະກອນ', active: true },
+  { id: 'ec6', name: 'ຄ່າອາຫານ-ເຄື່ອງດື່ມ ຮັບແຂກ', active: true },
+  { id: 'ec7', name: 'ຄ່າຕົບແຕ່ງ / ພິມປ້າຍ / ຂອງທີ່ລະນຶກ', active: true },
+  { id: 'ec8', name: 'ເຄື່ອງໃຊ້ຫ້ອງການ / ອຸປະກອນ', active: true },
+  { id: 'ec9', name: 'ຄ່າສ້ອມແປງ / ບຳລຸງຮັກສາ', active: true },
+  { id: 'ec10', name: 'ຄ່າທຳນຽມ / ຄ່າທຳນຽມລັດ', active: true },
+  { id: 'ec11', name: 'ອື່ນໆ', active: true },
+];
+// ສະຖານະ → ຂັ້ນໃນແຖບຄວາມຄືບໜ້າ (0..6)
+const ADV_STEPS = ['ຮ່າງ', 'ອະນຸມັດ', 'ຈ່າຍເງິນ', 'ຮັບເງິນ', 'ເຄຍ', 'ກວດເຄຍ', 'ສຳເລັດ'];
+const ADV_STATUS = {
+  DRAFT: { label: 'ຮ່າງ', step: 0, bg: '#EEF1ED', fg: '#5C6D5A' },
+  PENDING: { label: 'ລໍຖ້າອະນຸມັດ', step: 1, bg: '#FFF4D6', fg: '#8A6A00' },
+  REJECTED: { label: 'ຖືກປະຕິເສດ', step: 1, bg: '#FBE7E6', fg: '#B23B2E' },
+  TO_PAY: { label: 'ລໍຖ້າຈ່າຍເງິນ', step: 2, bg: '#E7EEF8', fg: '#1D3F6E' },
+  PAID: { label: 'ຈ່າຍແລ້ວ — ລໍຢືນຢັນຮັບ', step: 3, bg: '#E7EEF8', fg: '#1D3F6E' },
+  OPEN: { label: 'ລໍຖ້າເຄຍ', step: 4, bg: '#FFF4D6', fg: '#8A6A00' },
+  CHECKING: { label: 'ລໍຖ້າກວດເຄຍ', step: 5, bg: '#E7EEF8', fg: '#1D3F6E' },
+  OVER_APPROVAL: { label: 'ລໍອະນຸມັດສ່ວນເກີນ', step: 5, bg: '#FFF4D6', fg: '#8A6A00' },
+  SETTLE_RETURN: { label: 'ລໍສົ່ງເງິນເຫຼືອຄືນ', step: 5, bg: '#FFF4D6', fg: '#8A6A00' },
+  SETTLE_TOPUP: { label: 'ລໍຈ່າຍເງິນເພີ່ມ', step: 5, bg: '#E7EEF8', fg: '#1D3F6E' },
+  CLOSED: { label: 'ສຳເລັດ', step: 6, bg: '#E3F3E7', fg: '#116F38' },
+  CANCELLED: { label: 'ຍົກເລີກ', step: 0, bg: '#EEF1ED', fg: '#8B9A88' },
+};
+// ສະຖານະທີ່ເງິນຍັງຢູ່ນຳພະນັກງານ (ນັບເປັນ "ຄ້າງເຄຍ")
+const ADV_OUTSTANDING = ['PAID', 'OPEN', 'CHECKING', 'OVER_APPROVAL', 'SETTLE_RETURN', 'SETTLE_TOPUP'];
+// ສະຖານະທີ່ນັບ "ເກີນກຳນົດ" ໄດ້ (ຍັງບໍ່ໄດ້ສົ່ງເຄຍ)
+const ADV_CLEAR_DUE = ['PAID', 'OPEN'];
+
+// 'YYYY-MM-DD' ຕາມເວລາທ້ອງຖິ່ນ
+function advDayKey(d) {
+  const x = (d instanceof Date) ? d : new Date(d);
+  return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+}
+function advAddDays(dayKey, n) {
+  const [y, m, d] = dayKey.split('-').map(Number);
+  return advDayKey(new Date(y, m - 1, d + Number(n || 0)));
+}
+// ກຳນົດເຄຍ = ວັນສຳເລັດວຽກ + N ວັນ; ຖ້າໄດ້ຮັບເງິນຫຼັງວັນສຳເລັດວຽກ → ນັບຈາກວັນຮັບເງິນແທນ
+function advDueDate(workEnd, moneyAt, days) {
+  const recvKey = moneyAt ? advDayKey(moneyAt) : '';
+  const base = (workEnd && (!recvKey || workEnd >= recvKey)) ? workEnd : (recvKey || workEnd);
+  return base ? advAddDays(base, days) : '';
+}
+// ເກີນກຳນົດຈັກວັນ (0 = ບໍ່ເກີນ). ວັນກຳນົດເອງຍັງບໍ່ນັບວ່າເກີນ
+function advOverdueDays(dueDate, todayKey) {
+  if (!dueDate || !todayKey || todayKey <= dueDate) return 0;
+  const [y1, m1, d1] = dueDate.split('-').map(Number), [y2, m2, d2] = todayKey.split('-').map(Number);
+  return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000);
+}
+// ສ່ວນຕ່າງຫຼັງເຄຍ. ໃຊ້ເກີນ ≤ overPct% → ຈ່າຍເພີ່ມໄດ້ເລີຍ; ເກີນກວ່ານັ້ນ → ຕ້ອງອະນຸມັດສ່ວນເກີນ
+function advSettlement(advanced, spent, overPct) {
+  const a = Math.round(Number(advanced) || 0), sp = Math.round(Number(spent) || 0);
+  const diff = sp - a;
+  const allowedTopup = Math.floor(a * (Number(overPct) || 0) / 100);
+  if (diff === 0) return { diff, kind: 'NONE', returnAmt: 0, topupAmt: 0, allowedTopup };
+  if (diff < 0) return { diff, kind: 'RETURN', returnAmt: -diff, topupAmt: 0, allowedTopup };
+  if (diff <= allowedTopup) return { diff, kind: 'TOPUP', returnAmt: 0, topupAmt: diff, allowedTopup };
+  return { diff, kind: 'OVER', returnAmt: 0, topupAmt: diff, allowedTopup };
+}
+// ລາຍຊື່ຜູ້ຮັບຜິດຊອບຂັ້ນໃດໜຶ່ງ: ຕັດຜູ້ຂໍອອກ (ຂ້າມຕົນເອງ) ແລະ ຕັດຊື່ຊ້ຳ, ຮັກສາລຳດັບ
+function advResolve(list, requesterId) {
+  const out = [];
+  (list || []).forEach(id => { if (id && id !== requesterId && out.indexOf(id) < 0) out.push(id); });
+  return out;
+}
+function advSum(lines) { return (lines || []).reduce((t, l) => t + (Math.round(Number(l.amount) || 0)), 0); }
+// ກວດຟອມຂໍເບີກ → '' = ຜ່ານ, ຫຼື ຂໍ້ຄວາມຜິດພາດ
+function advValidateRequest(f, cap) {
+  if (!f.type || !ADV_TYPES[f.type]) return 'ກະລຸນາເລືອກປະເພດການເບີກ';
+  if (!String(f.purpose || '').trim()) return 'ກະລຸນາລະບຸຈຸດປະສົງ';
+  if (!f.workEnd) return 'ກະລຸນາລະບຸວັນສຳເລັດວຽກ (ໃຊ້ຄິດໄລ່ກຳນົດເຄຍ)';
+  if (f.workStart && f.workStart > f.workEnd) return 'ວັນເລີ່ມຕ້ອງບໍ່ຫຼັງວັນສຳເລັດວຽກ';
+  const lines = (f.lines || []).filter(l => Math.round(Number(l.amount) || 0) > 0);
+  if (!lines.length) return 'ກະລຸນາຕິກໝວດ ແລະ ໃສ່ຍອດປະມານການຢ່າງໜ້ອຍ 1 ໝວດ';
+  if ((f.lines || []).some(l => Number(l.amount) < 0)) return 'ຍອດເງິນຕ້ອງບໍ່ຕິດລົບ';
+  const total = advSum(lines);
+  if (f.type === 'PURCHASE' && cap > 0 && total > cap) return `ຊື້ເຄື່ອງເລັກນ້ອຍດ່ວນ ເບີກໄດ້ບໍ່ເກີນ ${Number(cap).toLocaleString('en-US')} ກີບ ຕໍ່ໃບ — ຍອດນີ້ໃຫ້ໃຊ້ໃບຂໍຊື້ (PR) ແທນ`;
+  if (f.payMethod === 'TRANSFER' && !String(f.bankAccount || '').trim()) return 'ຮັບເງິນແບບໂອນ — ກະລຸນາໃສ່ເລກບັນຊີ';
+  return '';
+}
+// ກວດແຖວການເຄຍ → '' = ຜ່ານ
+function advValidateClearing(rows) {
+  if (!rows || !rows.length) return 'ກະລຸນາເພີ່ມລາຍການໃຊ້ຈ່າຍຢ່າງໜ້ອຍ 1 ລາຍການ';
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i], no = i + 1;
+    if (!r.catId) return `ລາຍການທີ ${no}: ກະລຸນາເລືອກໝວດ`;
+    if (!(Math.round(Number(r.amount) || 0) > 0)) return `ລາຍການທີ ${no}: ຈຳນວນເງິນຕ້ອງຫຼາຍກວ່າ 0`;
+    if (!r.date) return `ລາຍການທີ ${no}: ກະລຸນາໃສ່ວັນທີ`;
+    if (r.noReceipt) { if (!String(r.reason || '').trim()) return `ລາຍການທີ ${no}: ບໍ່ມີໃບບິນ — ກະລຸນາລະບຸເຫດຜົນ`; }
+    else if (!r.file) return `ລາຍການທີ ${no}: ກະລຸນາແນບຮູບໃບບິນ ຫຼື ຕິກ "ບໍ່ມີໃບບິນ" ພ້ອມເຫດຜົນ`;
+  }
+  return '';
+}
+// ປະມານການ vs ໃຊ້ຈິງ ແຍກຕາມໝວດ (ລວມໝວດທີ່ມີຢູ່ຝັ່ງໃດຝັ່ງໜຶ່ງ)
+function advCompare(estLines, actualRows) {
+  const map = {}, order = [];
+  const add = (catId, k, v) => { if (!map[catId]) { map[catId] = { catId, est: 0, act: 0 }; order.push(catId); } map[catId][k] += Math.round(Number(v) || 0); };
+  (estLines || []).forEach(l => { if (Math.round(Number(l.amount) || 0) > 0) add(l.catId, 'est', l.amount); });
+  (actualRows || []).forEach(r => add(r.catId, 'act', r.amount));
+  return order.map(id => ({ ...map[id], diff: map[id].act - map[id].est }));
+}
+// Workflow ເບີກລ່ວງໜ້າ ຄ່າເລີ່ມຕົ້ນ (ສ້າງໃຫ້ຄັ້ງດຽວ ເພື່ອໃຫ້ລະບົບໃໝ່ຂໍເບີກໄດ້ທັນທີ; Admin ແກ້ໄດ້)
+function defaultAdvWorkflow() {
+  return { id: 'wf_adv_default', type: 'ADV', name: 'ເບີກລ່ວງໜ້າ (ຄ່າເລີ່ມຕົ້ນ)', advApprovers: ['u3'], advPayers: ['u6'], advCheckers: ['u3'], isDefault: true };
+}
 const DEFAULT_USERS = [
   { id: 'u1', name: 'ດວງຈັນ ມະນີວົງ', role: 'DEPT_HEAD', dept: 'ພະແນກບໍລິຫານ', initial: 'ດ', password: '1234', isActive: true, failedAttempts: 0 },
   { id: 'u2', name: 'ສຸກສະຫວັນ ພັນລັກ', role: 'TECHNICAL', dept: 'ພະແນກບໍລິຫານ', initial: 'ສ', password: '1234', isActive: true, failedAttempts: 0 },
@@ -1861,6 +2496,62 @@ function syncPush(data) {
     fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body }).catch(() => {});
   }, 900);
 }
+// ===== ໄຟລ໌ແນບ (ຮູບໃບບິນ): ບີບອັດຮູບ → ມີ Sync = ອັບໄປ Google Drive ຜ່ານ GAS (ເກັບແຕ່ id) / ບໍ່ມີ = ເກັບໃນ browser =====
+// ຮູບຈາກໂທລະສັບ 2-3MB → ຫຍໍ້ດ້ານຍາວສຸດ ແລະ ແປງເປັນ JPEG ໃຫ້ນ້ອຍລົງ (~100-250KB)
+function compressImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      const w = Math.max(1, Math.round(img.width * scale)), h = Math.max(1, Math.round(img.height * scale));
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('ອ່ານຮູບບໍ່ໄດ້')); };
+    img.src = url;
+  });
+}
+function readAsDataUrl(file) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('ອ່ານໄຟລ໌ບໍ່ໄດ້')); r.readAsDataURL(file); }); }
+// ຄືນ { name, mime, driveId } (ມີ Sync) ຫຼື { name, mime, data } (ບໍ່ມີ Sync). ຖິ້ມ Error ພ້ອມຂໍ້ຄວາມພາສາລາວຖ້າບໍ່ສຳເລັດ
+async function storeAttachment(file) {
+  const type = String(file.type || '').toLowerCase();
+  const isImg = /^image\/(jpeg|png|webp|gif|heic|heif)$/.test(type);
+  const isPdf = type === 'application/pdf';
+  if (isRiskyUpload(file) || (!isImg && !isPdf)) throw new Error(`ຮັບສະເພາະຮູບ ຫຼື PDF ("${file.name}")`);
+  const url = getSyncUrl();
+  let dataUrl;
+  if (isImg) dataUrl = await compressImage(file, url ? 1600 : 1200, url ? 0.72 : 0.6);
+  else {
+    if (file.size > (url ? 6 : 1.5) * 1024 * 1024) throw new Error(`PDF ໃຫຍ່ເກີນ (${url ? '6MB' : '1.5MB ໃນໂໝດບໍ່ມີ Sync'})`);
+    dataUrl = await readAsDataUrl(file);
+  }
+  const mime = isImg ? 'image/jpeg' : 'application/pdf';
+  const name = isImg ? String(file.name || 'receipt').replace(/\.[^.]+$/, '') + '.jpg' : file.name;
+  if (!url) return { name, mime, data: dataUrl };
+  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ __action: 'upload', name, mime, data: dataUrl.split(',')[1] }) });
+  const j = await r.json();
+  if (!j || !j.ok || !j.id) throw new Error('ອັບໄຟລ໌ຂຶ້ນ Drive ບໍ່ສຳເລັດ' + (j && j.error ? ` (${j.error})` : ''));
+  return { name, mime, driveId: j.id };
+}
+const _attCache = {};
+// ຄືນ data URL ສຳລັບສະແດງ (ດຶງຈາກ Drive ຜ່ານ GAS ຖ້າຈຳເປັນ, ມີ cache)
+async function loadAttachment(att) {
+  if (!att) throw new Error('ບໍ່ມີໄຟລ໌');
+  if (att.data) return att.data;
+  if (!att.driveId) throw new Error('ບໍ່ມີໄຟລ໌');
+  if (_attCache[att.driveId]) return _attCache[att.driveId];
+  const url = getSyncUrl(); if (!url) throw new Error('ໄຟລ໌ນີ້ຢູ່ໃນ Google Drive — ຕ້ອງເປີດ Sync ກ່ອນຈຶ່ງເບິ່ງໄດ້');
+  const r = await fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + 'file=' + encodeURIComponent(att.driveId));
+  const j = await r.json();
+  if (!j || !j.ok) throw new Error('ດຶງໄຟລ໌ຈາກ Drive ບໍ່ໄດ້');
+  return (_attCache[att.driveId] = 'data:' + j.mime + ';base64,' + j.data);
+}
+// ຈຸດທົດສອບ: script ນີ້ລັນໃນ scope ຂອງ x-dc → ເປີດຟັງຊັນ logic ໃຫ້ທົດສອບຈາກ DevTools ໄດ້ (ບໍ່ມີຂໍ້ມູນລັບ)
+const __procTest = (typeof window !== 'undefined') ? (window.__procTest = window.__procTest || {}) : {};
+Object.assign(__procTest, { storeAttachment, loadAttachment, advDueDate, advOverdueDays, advSettlement, advResolve, advSum, advValidateRequest, advValidateClearing, advCompare });
 function uid() { return 'id' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 function r2(n) { return Math.round((Number(n) + Number.EPSILON) * 100) / 100; }
 function fm(n) { return Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 2 }); }
@@ -1903,8 +2594,9 @@ function isRiskyUpload(file) { const t = String(file.type || '').toLowerCase(); 
 
 function seedData() {
   const settings = { t1: 10000000, t2: 100000000, quoteThreshold: 20000000, minQuotes: 2, quoteThreshold2: 80000000, minQuotes2: 3, directBuyLimit: 10000000,
+    expenseCats: DEFAULT_EXPENSE_CATS.map(c => ({ ...c })), advClearDays: 7, advOverPct: 10, advPurchaseCap: 2000000, advSeeded: true,
     coLao: 'ບໍລິສັດ ຕົວຢ່າງ ການຄ້າ ຈຳກັດ (DEMO)', coEn: 'Demo Trading Co., Ltd.',
-    coAddr: 'ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ (ຕົວຢ່າງ)', coPhone: '+856 20 0000 0000 · demo@example.com', workflows: [] };
+    coAddr: 'ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ (ຕົວຢ່າງ)', coPhone: '+856 20 0000 0000 · demo@example.com', workflows: [defaultAdvWorkflow()] };
   const vendors = [
     { id: 'v1', name: 'ຮ້ານວັດສະດຸກໍ່ສ້າງຈຳປາສັກ', taxId: '0100123456', currency: 'LAK', status: 'ACTIVE', isDeleted: false },
     { id: 'v2', name: 'Siam Trading Co., Ltd.', taxId: 'TH-88991122', currency: 'THB', status: 'ACTIVE', isDeleted: false },
@@ -1916,7 +2608,7 @@ function seedData() {
   const pos = [];
   const grns = [];
   const auditLogs = [];
-  return { settings, vendors, prs, pos, grns, auditLogs, users: DEFAULT_USERS.map(x => ({ ...x })), seq: { pr: 0, po: 0, grn: 0, qt: 0, audit: 0 }, currentUserId: null };
+  return { settings, vendors, prs, pos, grns, auditLogs, users: DEFAULT_USERS.map(x => ({ ...x })), seq: { pr: 0, po: 0, grn: 0, qt: 0, audit: 0, adv: 0 }, advances: [], currentUserId: null };
 }
 
 // ຕົວແທນ "ຜູ້ສ້າງ PR" ໃນ Workflow — ຖືກແທນດ້ວຍ id ຜູ້ຂໍຊື້ຕອນສ້າງ PR
@@ -1928,6 +2620,7 @@ class Component extends DCLogic {
     prFilter: 'all', prSearch: '', prCommentText: '', mobileNavOpen: false,
     vendorFormOpen: false, vNewName: '', vNewTax: '', vNewCur: 'LAK',
     wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '', wfEditingId: null,
+    wfType: 'PR', wfAdvApprList: [], wfAdvPayList: [], wfAdvChkList: [], wfAdvApprPick: '', wfAdvPayPick: '', wfAdvChkPick: '', wfIsDefault: false,
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
@@ -1939,8 +2632,10 @@ class Component extends DCLogic {
     docView: null,
     setDraft: null,
     showAddUser: false, newUserDraft: { name: '', dept: '', role: 'TECHNICAL', password: '1234' },
-    settings: null, vendors: [], prs: [], pos: [], grns: [], auditLogs: [], users: [],
-    seq: { pr: 0, po: 0, grn: 0, qt: 0, audit: 0 },
+    settings: null, vendors: [], prs: [], pos: [], grns: [], auditLogs: [], users: [], advances: [],
+    seq: { pr: 0, po: 0, grn: 0, qt: 0, audit: 0, adv: 0 },
+    advFormOpen: false, advEditingId: null, advForm: null, advDetailId: null, advFilter: 'all', advSearch: '', advTab: 'list', advSumBy: 'cat',
+    advReasonMode: null, advReason: '', advPay: null, advSettleRef: '', advClr: null, advBusy: false, newCatName: '',
   };
 
   componentDidMount() { this.boot(); }
@@ -1948,7 +2643,8 @@ class Component extends DCLogic {
     let d = null;
     // 1) ຖ້າຕັ້ງ Google Sheet sync ໄວ້ — ດຶງຂໍ້ມູນແຊร์ຫຼ້າສຸດກ່ອນ
     const remote = await syncPull();
-    if (remote && remote.settings) { d = remote; }
+    // ການເຂົ້າສູ່ລະບົບເປັນຂອງແຕ່ລະເຄື່ອງ — ບໍ່ເອົາ currentUserId ຈາກຂໍ້ມູນແຊ (ບໍ່ດັ່ງນັ້ນເຄື່ອງອື່ນຈະເຂົ້າເປັນຜູ້ໃຊ້ຄົນຫຼ້າສຸດໂດຍບໍ່ຕ້ອງໃສ່ລະຫັດ)
+    if (remote && remote.settings) { let localUser = null; try { localUser = (JSON.parse(localStorage.getItem(KEY) || '{}') || {}).currentUserId || null; } catch (e) {} d = { ...remote, currentUserId: localUser }; }
     // 2) ຖ້າບໍ່ມີ remote — ໃຊ້ localStorage ຂອງເຄື່ອງນີ້
     else { try { const raw = localStorage.getItem(KEY); if (raw) d = JSON.parse(raw); } catch (e) { d = null; } }
     if (!d || !d.settings) d = seedData();
@@ -1957,8 +2653,17 @@ class Component extends DCLogic {
     if (!d.settings.workflows) d.settings.workflows = [];
     if (d.settings.minQuotes2 == null) d.settings.minQuotes2 = 3;
     if (d.settings.directBuyLimit == null) d.settings.directBuyLimit = 10000000;
+    // ເບີກລ່ວງໜ້າ: ໝວດຄ່າໃຊ້ຈ່າຍ, ນະໂຍບາຍ, Workflow ຄ່າເລີ່ມຕົ້ນ (ສ້າງຄັ້ງດຽວ — ຖ້າ Admin ລຶບພາຍຫຼັງ ຈະບໍ່ສ້າງຄືນ)
+    if (!Array.isArray(d.settings.expenseCats)) d.settings.expenseCats = DEFAULT_EXPENSE_CATS.map(c => ({ ...c }));
+    if (d.settings.advClearDays == null) d.settings.advClearDays = 7;
+    if (d.settings.advOverPct == null) d.settings.advOverPct = 10;
+    if (d.settings.advPurchaseCap == null) d.settings.advPurchaseCap = 2000000;
+    if (!d.settings.advSeeded) { if (!d.settings.workflows.some(w => w.type === 'ADV')) d.settings.workflows = [...d.settings.workflows, defaultAdvWorkflow()]; d.settings.advSeeded = true; }
+    if (!Array.isArray(d.advances)) d.advances = [];
+    if (!d.seq) d.seq = { pr: 0, po: 0, grn: 0, qt: 0, audit: 0 };
+    if (d.seq.adv == null) d.seq.adv = 0;
     // ສ້ອມຄ່າເກົ່າທີ່ເຄີຍຖືກບັນທຶກເປັນ string ມີຈຸດ ("50,000,000") — ເຮັດໃຫ້ການປຽບທຽບວົງເງິນຜິດ
-    ['t1', 't2', 'quoteThreshold', 'minQuotes', 'quoteThreshold2', 'minQuotes2', 'directBuyLimit'].forEach(k => { if (typeof d.settings[k] === 'string') { const n = Number(parseIn(d.settings[k])); if (!isNaN(n)) d.settings[k] = n; } });
+    ['t1', 't2', 'quoteThreshold', 'minQuotes', 'quoteThreshold2', 'minQuotes2', 'directBuyLimit', 'advClearDays', 'advOverPct', 'advPurchaseCap'].forEach(k => { if (typeof d.settings[k] === 'string') { const n = Number(parseIn(d.settings[k])); if (!isNaN(n)) d.settings[k] = n; } });
     if (!d.users || !d.users.length) d.users = DEFAULT_USERS.map(x => ({ ...x }));
     d.users = d.users.map(x => ({ password: '1234', isActive: true, failedAttempts: 0, ...x }));
     // ທຳຄວາມສະອາດຂໍ້ມູນເກົ່າ: ຖ້າ fileData ບໍ່ແມ່ນ data: URL ທີ່ຖືກຕ້ອງ (ເຊັ່ນຄ່າຄ້າງຈາກສະບັບທົດລອງ) ໃຫ້ລຶບອອກ ເພື່ອບໍ່ໃຫ້ໄຟລ໌ເສຍພະຍາຍາມໂຫຼດ
@@ -1970,10 +2675,11 @@ class Component extends DCLogic {
 
   persist(patch) {
     this.setState(patch, () => {
-      const { settings, vendors, prs, pos, grns, auditLogs, seq, currentUserId, users } = this.state;
-      const payload = { settings, vendors, prs, pos, grns, auditLogs, seq, currentUserId, users };
+      const { settings, vendors, prs, pos, grns, auditLogs, seq, currentUserId, users, advances } = this.state;
+      const payload = { settings, vendors, prs, pos, grns, auditLogs, seq, currentUserId, users, advances };
       try { localStorage.setItem(KEY, JSON.stringify(payload)); } catch (e) {}
-      syncPush(payload); // ດັນຂຶ້ນ Google Sheet ຖ້າຕັ້ງ sync ໄວ້ (ບໍ່ຕັ້ງ = ຂ້າມ)
+      const { currentUserId: _me, ...shared } = payload;   // ຜູ້ທີ່ເຂົ້າລະບົບຢູ່ເຄື່ອງນີ້ ບໍ່ແຊຂຶ້ນ Sheet
+      syncPush(shared); // ດັນຂຶ້ນ Google Sheet ຖ້າຕັ້ງ sync ໄວ້ (ບໍ່ຕັ້ງ = ຂ້າມ)
     });
   }
 
@@ -2276,7 +2982,7 @@ class Component extends DCLogic {
     this.persist({ users });
     this.toast('success', 'ລຶບລາຍເຊັນແລ້ວ');
   }
-  goPage(p) { this.setState({ page: p, detailKind: null, detailId: null, action: null, docView: null, mobileNavOpen: false }); }
+  goPage(p) { this.setState({ page: p, detailKind: null, detailId: null, action: null, docView: null, mobileNavOpen: false, advDetailId: null, advFormOpen: false }); }
   goPrFilter(f) { this.setState({ page: 'pr', prFilter: f, prSearch: '', detailKind: null, detailId: null, action: null, docView: null }); }
   // ວຽກที่ "รอฉันทำ" — ใช้กับ filter 'mine' + dashboard badge
   isMyTask(pr, u) {
@@ -2441,19 +3147,24 @@ class Component extends DCLogic {
     this.persist({ settings, ...lg });
     this.toast('success', `ບັນທຶກ Workflow "${nm}" ແລ້ວ — ໃຊ້ຊ້ຳໄດ້ຄັ້ງໜ້າ`);
   }
+  // ຄ່າວ່າງຂອງຟອມສ້າງ Workflow (ທັງແບບ PR ແລະ ເບີກລ່ວງໜ້າ)
+  wfBlank() {
+    return { wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '',
+      wfType: 'PR', wfAdvApprList: [], wfAdvPayList: [], wfAdvChkList: [], wfAdvApprPick: '', wfAdvPayPick: '', wfAdvChkPick: '', wfIsDefault: false };
+  }
   toggleWfForm() {
     const u = this.me();
     if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມສ້າງ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
-    this.setState({ wfFormOpen: !this.state.wfFormOpen, wfEditingId: null, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '' });
+    this.setState({ wfFormOpen: !this.state.wfFormOpen, wfEditingId: null, ...this.wfBlank() });
   }
   editWorkflow(id) {
     const u = this.me();
     if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມແກ້ໄຂ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
     const w = (this.state.settings.workflows || []).find(x => x.id === id);
     if (!w) return;
-    this.setState({ wfFormOpen: true, wfEditingId: w.id, wfName: w.name || '', wfProc: w.procOfficer || '',
+    this.setState({ ...this.wfBlank(), wfFormOpen: true, wfEditingId: w.id, wfName: w.name || '', wfType: w.type === 'ADV' ? 'ADV' : 'PR', wfProc: w.procOfficer || '',
       wfPrList: [...(w.prApprovers || [])], wfBudgetList: [...(w.budgetApprovers || [])], wfQuoteList: [...(w.quoteApprovers || [])], wfPoList: [...(w.poApprovers || [])],
-      wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '' });
+      wfAdvApprList: [...(w.advApprovers || [])], wfAdvPayList: [...(w.advPayers || [])], wfAdvChkList: [...(w.advCheckers || [])], wfIsDefault: !!w.isDefault });
     setTimeout(() => { const el = document.getElementById('wfForm'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
   }
   addWfStageApprover(stage, id) {
@@ -2473,13 +3184,24 @@ class Component extends DCLogic {
     const s = this.state;
     const nm = (s.wfName || '').trim();
     if (!nm) { this.toast('error', 'ຕ້ອງມີຊື່ Workflow'); return; }
-    if (!(s.wfPrList || []).length && !(s.wfBudgetList || []).length && !(s.wfQuoteList || []).length && !(s.wfPoList || []).length && !s.wfProc) { this.toast('error', 'ກຳນົດຢ່າງໜ້ອຍ 1 ຂັ້ນ (ອະນຸມັດ PR/ງບ/ໃບສະເໜີ/PO/ຈັດຊື້)'); return; }
     const editing = s.wfEditingId && (s.settings.workflows || []).some(w => w.id === s.wfEditingId);
-    const wf = { id: editing ? s.wfEditingId : uid(), name: nm, prApprovers: [...(s.wfPrList || [])], procOfficer: s.wfProc || null, budgetApprovers: [...(s.wfBudgetList || [])], quoteApprovers: [...(s.wfQuoteList || [])], poApprovers: [...(s.wfPoList || [])] };
-    const list = s.settings.workflows || [];
+    let wf;
+    if (s.wfType === 'ADV') {
+      const appr = [...(s.wfAdvApprList || [])], pay = [...(s.wfAdvPayList || [])], chk = [...(s.wfAdvChkList || [])];
+      if (!appr.length || !pay.length || !chk.length) { this.toast('error', 'Workflow ເບີກລ່ວງໜ້າ ຕ້ອງມີຢ່າງໜ້ອຍ 1 ຄົນ ໃນທຸກຂັ້ນ (ອະນຸມັດ / ຈ່າຍເງິນ / ກວດເຄຍ)'); return; }
+      const both = pay.filter(id => chk.includes(id));
+      if (both.length) { this.toast('error', `"${both.map(id => this.uName(id)).join(', ')}" ຢູ່ທັງຂັ້ນຈ່າຍເງິນ ແລະ ກວດເຄຍ — ຕ້ອງແຍກຄົນ (ຜູ້ຈ່າຍ ≠ ຜູ້ກວດເຄຍ)`); return; }
+      wf = { id: editing ? s.wfEditingId : uid(), type: 'ADV', name: nm, advApprovers: appr, advPayers: pay, advCheckers: chk, isDefault: !!s.wfIsDefault };
+    } else {
+      if (!(s.wfPrList || []).length && !(s.wfBudgetList || []).length && !(s.wfQuoteList || []).length && !(s.wfPoList || []).length && !s.wfProc) { this.toast('error', 'ກຳນົດຢ່າງໜ້ອຍ 1 ຂັ້ນ (ອະນຸມັດ PR/ງບ/ໃບສະເໜີ/PO/ຈັດຊື້)'); return; }
+      wf = { id: editing ? s.wfEditingId : uid(), name: nm, prApprovers: [...(s.wfPrList || [])], procOfficer: s.wfProc || null, budgetApprovers: [...(s.wfBudgetList || [])], quoteApprovers: [...(s.wfQuoteList || [])], poApprovers: [...(s.wfPoList || [])] };
+    }
+    let list = s.settings.workflows || [];
+    // ຄ່າເລີ່ມຕົ້ນມີໄດ້ອັນດຽວ
+    if (wf.type === 'ADV' && wf.isDefault) list = list.map(w => (w.type === 'ADV' && w.id !== wf.id) ? { ...w, isDefault: false } : w);
     const settings = { ...s.settings, workflows: editing ? list.map(w => w.id === wf.id ? wf : w) : [...list, wf] };
-    const lg = this.log(editing ? 'UPDATE' : 'CREATE', `${editing ? 'ແກ້ໄຂ' : 'ສ້າງ'} Workflow "${nm}" (Settings)`, true);
-    this.persist({ settings, wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '', wfEditingId: null, ...lg });
+    const lg = this.log(editing ? 'UPDATE' : 'CREATE', `${editing ? 'ແກ້ໄຂ' : 'ສ້າງ'} Workflow${wf.type === 'ADV' ? ' ເບີກລ່ວງໜ້າ' : ''} "${nm}" (Settings)`, true);
+    this.persist({ settings, wfFormOpen: false, wfEditingId: null, ...this.wfBlank(), ...lg });
     this.toast('success', `${editing ? 'ບັນທຶກການແກ້ໄຂ' : 'ສ້າງ'} Workflow "${nm}" ແລ້ວ`);
   }
   deleteWorkflow(id) {
@@ -2491,6 +3213,328 @@ class Component extends DCLogic {
     const lg = this.log('DELETE', `ລຶບ Workflow "${wf ? wf.name : ''}"`, true);
     this.persist({ settings, ...lg });
     this.toast('success', 'ລຶບ Workflow ແລ້ວ');
+  }
+  // ===================== ເບີກລ່ວງໜ້າ (Cash advance) =====================
+  advWorkflows() { return ((this.state.settings && this.state.settings.workflows) || []).filter(w => w.type === 'ADV'); }
+  advDefaultWfId() { const l = this.advWorkflows(); const d = l.find(w => w.isDefault) || l[0]; return d ? d.id : ''; }
+  advCats() { return (this.state.settings && this.state.settings.expenseCats) || []; }
+  advCatName(id) { const c = this.advCats().find(x => x.id === id); return c ? c.name : '—'; }
+  advToday() { return advDayKey(new Date()); }
+  advOverdue(a) { return (a && ADV_CLEAR_DUE.includes(a.status)) ? advOverdueDays(a.dueDate, this.advToday()) : 0; }
+  advIsActiveUser(id) { const x = this.state.users.find(v => v.id === id); return !!(x && x.isActive); }
+  // ເບິ່ງລາຍງານລວມໄດ້: ການເງິນ / Admin / ຜູ້ກວດສອບ / ຄົນທີ່ເປັນຜູ້ຈ່າຍ ຫຼື ຜູ້ກວດເຄຍ ໃນ Workflow ເບີກລ່ວງໜ້າ
+  advCanReport(u) {
+    if (!u) return false;
+    if (['ADMIN', 'AUDITOR', 'FINANCE_MANAGER', 'BUDGET_CONTROLLER'].includes(u.role)) return true;
+    return this.advWorkflows().some(w => (w.advPayers || []).includes(u.id) || (w.advCheckers || []).includes(u.id));
+  }
+  canSeeAdv(a, u) {
+    if (!u || !a) return false;
+    if (u.role === 'ADMIN' || u.role === 'AUDITOR') return true;
+    if (a.requesterId === u.id) return true;
+    return (a.approvers || []).includes(u.id) || (a.payers || []).includes(u.id) || (a.checkers || []).includes(u.id);
+  }
+  // ສິ່ງທີ່ u ເຮັດໄດ້ໃນລາຍການນີ້ຕອນນີ້. allowAdmin=false → ບໍ່ນັບສິດ Admin ອະນຸມັດແທນ (ໃຊ້ນັບ "ວຽກຂອງຂ້ອຍ")
+  advActor(a, u, allowAdmin = true) {
+    if (!u || !a) return {};
+    const isReq = a.requesterId === u.id;
+    const admin = allowAdmin && u.role === 'ADMIN' && !isReq;
+    const payer = (a.payers || []).includes(u.id) || admin;
+    const st = a.status, r = {};
+    if (st === 'DRAFT') r.draft = isReq;
+    if (st === 'PENDING') r.approve = !isReq && (u.id === (a.approvers || [])[(a.approvals || []).length] || admin);
+    if (st === 'TO_PAY') r.pay = !isReq && payer;
+    if (st === 'PAID') r.confirm = isReq;
+    if (st === 'OPEN') r.clear = isReq;
+    // ຜູ້ກວດເຄຍ ຕ້ອງບໍ່ແມ່ນຄົນທີ່ຈ່າຍເງິນລາຍການນີ້ (ແຍກໜ້າທີ່)
+    if (st === 'CHECKING') r.check = !isReq && ((a.checkers || []).includes(u.id) || admin) && !(a.payment && a.payment.by === u.id);
+    if (st === 'OVER_APPROVAL') r.over = !isReq && (u.id === (a.approvers || [])[((a.settlement && a.settlement.overApprovals) || []).length] || admin);
+    if (st === 'SETTLE_RETURN') r.settleReturn = !isReq && payer;
+    if (st === 'SETTLE_TOPUP') r.settleTopup = !isReq && payer;
+    return r;
+  }
+  isAdvTask(a, u) { return Object.values(this.advActor(a, u, false)).some(Boolean); }
+  // ກຳນົດຜູ້ຮັບຜິດຊອບແຕ່ລະຂັ້ນຕອນສົ່ງ (ຂ້າມຜູ້ຂໍ + ຄົນທີ່ປິດໃຊ້ງານ) — ຄືນ { route } ຫຼື { error }
+  advRoute(rec, u) {
+    const mine = (this.state.advances || []).filter(x => x.requesterId === u.id && x.id !== rec.id);
+    const late = mine.find(x => this.advOverdue(x) > 0);
+    if (late) return { error: `ທ່ານມີເງິນເບີກ ${late.advNumber} ເກີນກຳນົດເຄຍ ${this.advOverdue(late)} ວັນ — ກະລຸນາເຄຍກ່ອນຈຶ່ງຂໍເບີກໃໝ່ໄດ້` };
+    const wf = this.advWorkflows().find(w => w.id === rec.workflowId);
+    if (!wf) return { error: 'ບໍ່ພົບ Workflow ເບີກລ່ວງໜ້າ — ກະລຸນາຕິດຕໍ່ Admin ໃຫ້ສ້າງທີ່ ⚙ ການຕັ້ງຄ່າ' };
+    const pick = list => advResolve(list, u.id).filter(id => this.advIsActiveUser(id));
+    const approvers = pick(wf.advApprovers), payers = pick(wf.advPayers), checkers = pick(wf.advCheckers);
+    if (!approvers.length) return { error: `Workflow "${wf.name}" ບໍ່ມີຜູ້ອະນຸມັດທີ່ບໍ່ແມ່ນທ່ານ — ກະລຸນາເລືອກ Workflow ອື່ນ` };
+    if (!payers.length) return { error: `Workflow "${wf.name}" ບໍ່ມີຜູ້ຈ່າຍເງິນທີ່ບໍ່ແມ່ນທ່ານ — ກະລຸນາເລືອກ Workflow ອື່ນ` };
+    if (!checkers.length) return { error: `Workflow "${wf.name}" ບໍ່ມີຜູ້ກວດເຄຍທີ່ບໍ່ແມ່ນທ່ານ — ກະລຸນາເລືອກ Workflow ອື່ນ` };
+    return { route: { approvers, payers, checkers } };
+  }
+  advFormLines(f) {
+    const amounts = f.amounts || {}, notes = f.notes || {};
+    return this.advCats().filter(c => Object.prototype.hasOwnProperty.call(amounts, c.id))
+      .map(c => ({ catId: c.id, amount: Math.round(Number(parseIn(amounts[c.id])) || 0), note: String(notes[c.id] || '').trim() }));
+  }
+  openAdvForm(id) {
+    const u = this.me();
+    const a = id ? (this.state.advances || []).find(x => x.id === id) : null;
+    if (a && (a.requesterId !== u.id || a.status !== 'DRAFT')) { this.toast('error', 'ແກ້ໄຂໄດ້ສະເພາະຮ່າງຂອງຕົນເອງ'); return; }
+    const f = a
+      ? { type: a.type, purpose: a.purpose || '', place: a.place || '', workStart: a.workStart || '', workEnd: a.workEnd || '', payMethod: a.payMethod || 'CASH', bankAccount: a.bankAccount || '', workflowId: a.workflowId || this.advDefaultWfId(),
+          amounts: Object.fromEntries((a.lines || []).map(l => [l.catId, String(l.amount)])), notes: Object.fromEntries((a.lines || []).map(l => [l.catId, l.note || ''])) }
+      : { type: 'TRAVEL', purpose: '', place: '', workStart: '', workEnd: '', payMethod: 'CASH', bankAccount: '', workflowId: this.advDefaultWfId(), amounts: {}, notes: {} };
+    this.setState({ advFormOpen: true, advEditingId: a ? a.id : null, advForm: f });
+  }
+  setAdvForm(k, v) { this.setState({ advForm: { ...this.state.advForm, [k]: v } }); }
+  toggleAdvCat(catId) {
+    const f = this.state.advForm, amounts = { ...(f.amounts || {}) };
+    if (Object.prototype.hasOwnProperty.call(amounts, catId)) delete amounts[catId]; else amounts[catId] = '';
+    this.setState({ advForm: { ...f, amounts } });
+  }
+  setAdvCatAmount(catId, v) { const f = this.state.advForm; this.setState({ advForm: { ...f, amounts: { ...(f.amounts || {}), [catId]: parseIn(v) } } }); }
+  setAdvCatNote(catId, v) { const f = this.state.advForm; this.setState({ advForm: { ...f, notes: { ...(f.notes || {}), [catId]: v } } }); }
+  // ບັນທຶກຮ່າງ (submit=false) ຫຼື ບັນທຶກ + ສົ່ງຂໍອະນຸມັດ (submit=true)
+  saveAdv(submit) {
+    const u = this.me(), s = this.state, f = s.advForm;
+    const lines = this.advFormLines(f).filter(l => l.amount !== 0 || l.note);
+    const cap = Number(s.settings.advPurchaseCap) || 0;
+    const err = submit ? advValidateRequest({ ...f, lines }, cap) : (!String(f.purpose || '').trim() ? 'ກະລຸນາລະບຸຈຸດປະສົງ' : '');
+    if (err) { this.toast('error', err); return; }
+    const now = new Date().toISOString();
+    const fields = { type: f.type, purpose: f.purpose.trim(), place: String(f.place || '').trim(), workStart: f.workStart || '', workEnd: f.workEnd || '', lines, total: advSum(lines),
+      payMethod: f.payMethod, bankAccount: f.payMethod === 'TRANSFER' ? String(f.bankAccount || '').trim() : '', workflowId: f.workflowId || '' };
+    let seq = s.seq, rec;
+    if (s.advEditingId) {
+      const ex = (s.advances || []).find(x => x.id === s.advEditingId);
+      if (!ex || ex.requesterId !== u.id || ex.status !== 'DRAFT') { this.toast('error', 'ແກ້ໄຂໄດ້ສະເພາະຮ່າງຂອງຕົນເອງ'); return; }
+      rec = { ...ex, ...fields };
+    } else {
+      const n = (seq.adv || 0) + 1;
+      seq = { ...seq, adv: n };
+      rec = { id: uid(), advNumber: `ADV-${new Date().getFullYear()}-${String(n).padStart(6, '0')}`, requesterId: u.id, department: u.dept, status: 'DRAFT', createdAt: now, approvals: [], ...fields };
+    }
+    let msg = `ບັນທຶກຮ່າງ ${rec.advNumber} ແລ້ວ`, submitErr = '';
+    if (submit) {
+      const res = this.advRoute(rec, u);
+      if (res.error) submitErr = res.error;
+      else { rec = { ...rec, ...res.route, status: 'PENDING', approvals: [], submittedAt: now, rejectReason: null }; msg = `ສົ່ງ ${rec.advNumber} ຂໍອະນຸມັດແລ້ວ — ຕໍ່ໄປ: ${this.uName(rec.approvers[0])}`; }
+    }
+    const advances = s.advEditingId ? s.advances.map(x => x.id === rec.id ? rec : x) : [rec, ...(s.advances || [])];
+    const lg = this.log(rec.status === 'PENDING' ? 'SUBMIT' : (s.advEditingId ? 'UPDATE' : 'CREATE'), `${rec.status === 'PENDING' ? 'ສົ່ງຂໍອະນຸມັດ' : 'ບັນທຶກຮ່າງ'} ເບີກລ່ວງໜ້າ ${rec.advNumber} (${ADV_TYPES[rec.type]}, ${fm(rec.total)} ກີບ)`, true);
+    this.persist({ advances, seq: { ...seq, audit: lg.seq.audit }, auditLogs: lg.auditLogs, advFormOpen: false, advEditingId: null, advDetailId: rec.id, advReasonMode: null, advReason: '' });
+    if (submitErr) this.toast('error', `ບັນທຶກເປັນຮ່າງໄວ້ແລ້ວ ແຕ່ສົ່ງບໍ່ໄດ້: ${submitErr}`); else this.toast('success', msg);
+  }
+  // ສົ່ງຮ່າງທີ່ບັນທຶກໄວ້ຈາກໜ້າລາຍລະອຽດ
+  submitAdvDraft(a) {
+    const u = this.me();
+    if (!this.advActor(a, u).draft) { this.deny(`ພະຍາຍາມສົ່ງ ${a.advNumber}`, 'ສະເພາະຜູ້ຂໍເບີກ (ເຈົ້າຂອງຮ່າງ)'); return; }
+    const err = advValidateRequest(a, Number(this.state.settings.advPurchaseCap) || 0);
+    if (err) { this.toast('error', err + ' — ກົດ "ແກ້ໄຂ" ເພື່ອແກ້'); return; }
+    const res = this.advRoute(a, u);
+    if (res.error) { this.toast('error', res.error); return; }
+    const now = new Date().toISOString();
+    this.advUpdate(a, { ...res.route, status: 'PENDING', approvals: [], submittedAt: now, rejectReason: null }, 'SUBMIT', `ສົ່ງຂໍອະນຸມັດ ເບີກລ່ວງໜ້າ ${a.advNumber} (${fm(a.total)} ກີບ)`, `ສົ່ງຂໍອະນຸມັດແລ້ວ — ຕໍ່ໄປ: ${this.uName(res.route.approvers[0])}`);
+  }
+  cancelAdvDraft(a) {
+    if (!this.advActor(a, this.me()).draft) return;
+    this.advUpdate(a, { status: 'CANCELLED', cancelledAt: new Date().toISOString() }, 'UPDATE', `ຍົກເລີກຮ່າງ ເບີກລ່ວງໜ້າ ${a.advNumber}`, `ຍົກເລີກ ${a.advNumber} ແລ້ວ`);
+  }
+  // ບັນທຶກການປ່ຽນແປງ 1 ລາຍການ + audit + toast (ອີງຂໍ້ມູນລ່າສຸດໃນ state ກັນກົດຊ້ຳ)
+  advUpdate(a, patch, action, detail, toastMsg, extraState) {
+    const advances = this.state.advances.map(x => x.id === a.id ? { ...x, ...patch } : x);
+    const lg = this.log(action, detail, true);
+    this.persist({ advances, ...lg, advReasonMode: null, advReason: '', ...(extraState || {}) });
+    if (toastMsg) this.toast('success', toastMsg);
+  }
+  advFresh(a) { return (this.state.advances || []).find(x => x.id === a.id) || a; }
+  advOverrideTag(a, u, expectedIds) { return (u.role === 'ADMIN' && !(expectedIds || []).includes(u.id)) ? ' — ⚠ Admin ອະນຸມັດແທນ' : ''; }
+  approveAdv(a0) {
+    const u = this.me(), a = this.advFresh(a0);
+    if (!this.advActor(a, u).approve) { this.deny(`ພະຍາຍາມອະນຸມັດ ${a.advNumber}`, `ຂັ້ນນີ້ກຳນົດໃຫ້ "${this.uName((a.approvers || [])[(a.approvals || []).length])}" (SoD)`); return; }
+    const exp = a.approvers[a.approvals.length];
+    const approvals = [...a.approvals, { userId: u.id, at: new Date().toISOString() }];
+    const done = approvals.length >= a.approvers.length;
+    this.advUpdate(a, { approvals, status: done ? 'TO_PAY' : 'PENDING' }, 'APPROVE',
+      `ອະນຸມັດ ເບີກລ່ວງໜ້າ ${a.advNumber} (${approvals.length}/${a.approvers.length})${this.advOverrideTag(a, u, [exp])}`,
+      done ? `ອະນຸມັດຄົບແລ້ວ — ລໍຖ້າ ${a.payers.map(id => this.uName(id)).join(' / ')} ຈ່າຍເງິນ` : `ອະນຸມັດແລ້ວ (${approvals.length}/${a.approvers.length}) — ຕໍ່ໄປ: ${this.uName(a.approvers[approvals.length])}`);
+  }
+  rejectAdv(a0) {
+    const u = this.me(), a = this.advFresh(a0), reason = (this.state.advReason || '').trim();
+    if (!this.advActor(a, u).approve) { this.deny(`ພະຍາຍາມປະຕິເສດ ${a.advNumber}`, 'ບໍ່ແມ່ນຂັ້ນຂອງທ່ານ (SoD)'); return; }
+    if (!reason) { this.toast('error', 'ກະລຸນາລະບຸເຫດຜົນການປະຕິເສດ'); return; }
+    this.advUpdate(a, { status: 'REJECTED', rejectReason: reason, rejectedBy: u.id, rejectedAt: new Date().toISOString() }, 'REJECT', `ປະຕິເສດ ເບີກລ່ວງໜ້າ ${a.advNumber} — ${reason}`, 'ປະຕິເສດແລ້ວ');
+  }
+  payAdv(a0) {
+    const u = this.me(), a = this.advFresh(a0), p = this.state.advPay || {};
+    if (!this.advActor(a, u).pay) { this.deny(`ພະຍາຍາມຈ່າຍເງິນ ${a.advNumber}`, `ສະເພາະຜູ້ຈ່າຍເງິນທີ່ກຳນົດ: ${(a.payers || []).map(id => this.uName(id)).join(', ')} (SoD)`); return; }
+    if (this.state.advBusy) { this.toast('error', 'ກຳລັງອັບໄຟລ໌ — ກະລຸນາລໍຖ້າ'); return; }
+    const method = p.method || a.payMethod, ref = String(p.ref || '').trim(), date = p.date || this.advToday();
+    if (!ref) { this.toast('error', method === 'TRANSFER' ? 'ກະລຸນາໃສ່ເລກອ້າງອີງການໂອນ' : 'ກະລຸນາໃສ່ເລກໃບຈ່າຍເງິນ'); return; }
+    if (date > this.advToday()) { this.toast('error', 'ວັນຈ່າຍເງິນຕ້ອງບໍ່ເກີນມື້ນີ້'); return; }
+    const payment = { by: u.id, at: new Date().toISOString(), date, method, ref, proof: p.proof || null };
+    const days = Number(this.state.settings.advClearDays) || 7;
+    const [y, m, d] = date.split('-').map(Number);
+    this.advUpdate(a, { status: 'PAID', payment, dueDate: advDueDate(a.workEnd, new Date(y, m - 1, d), days) }, 'PAY',
+      `ຈ່າຍເງິນເບີກລ່ວງໜ້າ ${a.advNumber} ${fm(a.total)} ກີບ (${method === 'TRANSFER' ? 'ໂອນ' : 'ເງິນສົດ'}, ເລກອ້າງອີງ ${ref})${this.advOverrideTag(a, u, a.payers)}`,
+      `ບັນທຶກການຈ່າຍແລ້ວ — ລໍຖ້າ ${this.uName(a.requesterId)} ຢືນຢັນຮັບເງິນ`, { advPay: null });
+  }
+  confirmAdvReceived(a0) {
+    const u = this.me(), a = this.advFresh(a0);
+    if (!this.advActor(a, u).confirm) { this.deny(`ພະຍາຍາມຢືນຢັນຮັບເງິນ ${a.advNumber}`, 'ສະເພາະຜູ້ເບີກເງິນ'); return; }
+    const now = new Date(), days = Number(this.state.settings.advClearDays) || 7;
+    const dueDate = advDueDate(a.workEnd, now, days);
+    this.advUpdate(a, { status: 'OPEN', receivedAt: now.toISOString(), dueDate }, 'RECEIVE', `ຢືນຢັນໄດ້ຮັບເງິນເບີກລ່ວງໜ້າ ${a.advNumber} ${fm(a.total)} ກີບ`, `ຢືນຢັນຮັບເງິນແລ້ວ — ກຳນົດເຄຍ ${fd(dueDate)}`);
+  }
+  // ----- ການເຄຍ: ແຖວໃນຟອມເກັບໃນ state (advClr) ຈົນກວ່າຈະບັນທຶກ -----
+  advClrRows(a) {
+    const c = this.state.advClr;
+    if (c && c.advId === a.id) return c.rows;
+    return ((a.clearing && a.clearing.lines) || []).map(r => ({ ...r }));
+  }
+  setAdvClrRows(a, rows) { this.setState({ advClr: { advId: a.id, rows } }); }
+  addAdvClrRow(a, catId) { this.setAdvClrRows(a, [...this.advClrRows(a), { id: uid(), catId, amount: '', date: this.advToday(), receiptNo: '', noReceipt: false, reason: '', file: null }]); }
+  editAdvClrRow(a, rowId, patch) { this.setAdvClrRows(a, this.advClrRows(a).map(r => r.id === rowId ? { ...r, ...patch } : r)); }
+  removeAdvClrRow(a, rowId) { this.setAdvClrRows(a, this.advClrRows(a).filter(r => r.id !== rowId)); }
+  async uploadAdvClrFile(a, rowId, e) {
+    const file = e.target.files && e.target.files[0]; e.target.value = '';
+    if (!file) return;
+    this.setState({ advBusy: true });
+    try { const att = await storeAttachment(file); this.editAdvClrRow(a, rowId, { file: att, noReceipt: false }); }
+    catch (err) { this.toast('error', err.message || 'ແນບໄຟລ໌ບໍ່ສຳເລັດ'); }
+    finally { this.setState({ advBusy: false }); }
+  }
+  async uploadAdvPayProof(e) {
+    const file = e.target.files && e.target.files[0]; e.target.value = '';
+    if (!file) return;
+    this.setState({ advBusy: true });
+    try { const att = await storeAttachment(file); this.setState({ advPay: { ...(this.state.advPay || {}), proof: att } }); }
+    catch (err) { this.toast('error', err.message || 'ແນບໄຟລ໌ບໍ່ສຳເລັດ'); }
+    finally { this.setState({ advBusy: false }); }
+  }
+  advCleanRows(rows) { return rows.map(r => ({ id: r.id, catId: r.catId, amount: Math.round(Number(parseIn(r.amount)) || 0), date: r.date || '', receiptNo: String(r.receiptNo || '').trim(), noReceipt: !!r.noReceipt, reason: String(r.reason || '').trim(), file: r.noReceipt ? null : (r.file || null) })); }
+  saveAdvClearingDraft(a0) {
+    const u = this.me(), a = this.advFresh(a0);
+    if (!this.advActor(a, u).clear) return;
+    const lines = this.advCleanRows(this.advClrRows(a));
+    this.advUpdate(a, { clearing: { ...(a.clearing || {}), lines } }, 'UPDATE', `ບັນທຶກຮ່າງການເຄຍ ${a.advNumber} (${lines.length} ລາຍການ)`, 'ບັນທຶກການເຄຍໄວ້ແລ້ວ (ຍັງບໍ່ໄດ້ສົ່ງ)', { advClr: null });
+  }
+  submitAdvClearing(a0) {
+    const u = this.me(), a = this.advFresh(a0);
+    if (!this.advActor(a, u).clear) { this.deny(`ພະຍາຍາມສົ່ງເຄຍ ${a.advNumber}`, 'ສະເພາະຜູ້ເບີກເງິນ'); return; }
+    if (this.state.advBusy) { this.toast('error', 'ກຳລັງອັບໄຟລ໌ — ກະລຸນາລໍຖ້າ'); return; }
+    const lines = this.advCleanRows(this.advClrRows(a));
+    const err = advValidateClearing(lines);
+    if (err) { this.toast('error', err); return; }
+    const total = advSum(lines);
+    const clearing = { lines, total, submittedAt: new Date().toISOString(), returnReason: null };
+    this.advUpdate(a, { status: 'CHECKING', clearing }, 'SUBMIT', `ສົ່ງເຄຍ ${a.advNumber}: ເບີກ ${fm(a.total)} / ໃຊ້ຈິງ ${fm(total)} ກີບ (${lines.length} ລາຍການ, ບໍ່ມີໃບບິນ ${lines.filter(l => l.noReceipt).length})`,
+      `ສົ່ງເຄຍແລ້ວ — ລໍຖ້າ ${a.checkers.map(id => this.uName(id)).join(' / ')} ກວດ`, { advClr: null });
+  }
+  returnAdvClearing(a0) {
+    const u = this.me(), a = this.advFresh(a0), reason = (this.state.advReason || '').trim();
+    if (!this.advActor(a, u).check) { this.deny(`ພະຍາຍາມສົ່ງກັບການເຄຍ ${a.advNumber}`, 'ສະເພາະຜູ້ກວດເຄຍ (ບໍ່ແມ່ນຜູ້ຈ່າຍເງິນ)'); return; }
+    if (!reason) { this.toast('error', 'ກະລຸນາລະບຸສິ່ງທີ່ຕ້ອງແກ້ໄຂ'); return; }
+    this.advUpdate(a, { status: 'OPEN', clearing: { ...a.clearing, returnReason: reason, returnedBy: u.id, returnedAt: new Date().toISOString() } }, 'REJECT', `ສົ່ງການເຄຍ ${a.advNumber} ກັບໃຫ້ແກ້ໄຂ — ${reason}`, 'ສົ່ງກັບໃຫ້ຜູ້ເບີກແກ້ໄຂແລ້ວ');
+  }
+  approveAdvClearing(a0) {
+    const u = this.me(), a = this.advFresh(a0);
+    if (!this.advActor(a, u).check) { this.deny(`ພະຍາຍາມກວດເຄຍ ${a.advNumber}`, 'ສະເພາະຜູ້ກວດເຄຍທີ່ກຳນົດ ແລະ ຕ້ອງບໍ່ແມ່ນຜູ້ຈ່າຍເງິນ (SoD)'); return; }
+    const pct = Number(this.state.settings.advOverPct) || 0;
+    const stl = advSettlement(a.total, a.clearing.total, pct);
+    const now = new Date().toISOString();
+    const next = { NONE: 'CLOSED', RETURN: 'SETTLE_RETURN', TOPUP: 'SETTLE_TOPUP', OVER: 'OVER_APPROVAL' }[stl.kind];
+    const patch = { status: next, check: { by: u.id, at: now }, settlement: { ...stl, overApprovals: [] }, ...(next === 'CLOSED' ? { closedAt: now } : {}) };
+    const what = { NONE: 'ໃຊ້ພໍດີ — ປິດລາຍການ', RETURN: `ໃຊ້ໜ້ອຍກວ່າ — ຜູ້ເບີກຕ້ອງສົ່ງຄືນ ${fm(stl.returnAmt)} ກີບ`, TOPUP: `ໃຊ້ເກີນ ${fm(stl.topupAmt)} ກີບ (≤${pct}%) — ຈ່າຍເພີ່ມໄດ້`, OVER: `ໃຊ້ເກີນ ${fm(stl.topupAmt)} ກີບ (ເກີນ ${pct}%) — ສົ່ງໃຫ້ຜູ້ອະນຸມັດ ອະນຸມັດສ່ວນເກີນ` }[stl.kind];
+    this.advUpdate(a, patch, 'APPROVE', `ກວດເຄຍ ${a.advNumber} ຜ່ານ: ${what}${this.advOverrideTag(a, u, a.checkers)}`, `ກວດເຄຍຜ່ານ — ${what}`);
+  }
+  approveAdvOver(a0) {
+    const u = this.me(), a = this.advFresh(a0);
+    if (!this.advActor(a, u).over) { this.deny(`ພະຍາຍາມອະນຸມັດສ່ວນເກີນ ${a.advNumber}`, 'ບໍ່ແມ່ນຂັ້ນຂອງທ່ານ (SoD)'); return; }
+    const exp = a.approvers[a.settlement.overApprovals.length];
+    const overApprovals = [...a.settlement.overApprovals, { userId: u.id, at: new Date().toISOString() }];
+    const done = overApprovals.length >= a.approvers.length;
+    this.advUpdate(a, { status: done ? 'SETTLE_TOPUP' : 'OVER_APPROVAL', settlement: { ...a.settlement, overApprovals, overApproved: done } }, 'APPROVE',
+      `ອະນຸມັດສ່ວນເກີນ ${a.advNumber} ${fm(a.settlement.topupAmt)} ກີບ (${overApprovals.length}/${a.approvers.length})${this.advOverrideTag(a, u, [exp])}`,
+      done ? `ອະນຸມັດສ່ວນເກີນຄົບແລ້ວ — ລໍຖ້າການເງິນຈ່າຍເພີ່ມ ${fm(a.settlement.topupAmt)} ກີບ` : `ອະນຸມັດແລ້ວ — ຕໍ່ໄປ: ${this.uName(a.approvers[overApprovals.length])}`);
+  }
+  // ບໍ່ອະນຸມັດສ່ວນເກີນ → ບໍລິສັດຈ່າຍເພີ່ມສູງສຸດເທົ່າທີ່ນະໂຍບາຍອະນຸຍາດ (X%); ສ່ວນທີ່ເຫຼືອພະນັກງານຮັບຜິດຊອບ
+  rejectAdvOver(a0) {
+    const u = this.me(), a = this.advFresh(a0), reason = (this.state.advReason || '').trim();
+    if (!this.advActor(a, u).over) { this.deny(`ພະຍາຍາມປະຕິເສດສ່ວນເກີນ ${a.advNumber}`, 'ບໍ່ແມ່ນຂັ້ນຂອງທ່ານ (SoD)'); return; }
+    if (!reason) { this.toast('error', 'ກະລຸນາລະບຸເຫດຜົນ'); return; }
+    const pay = a.settlement.allowedTopup;
+    const settlement = { ...a.settlement, overRejected: true, overRejectReason: reason, overRejectedBy: u.id, topupAmt: pay };
+    const now = new Date().toISOString();
+    this.advUpdate(a, { status: pay > 0 ? 'SETTLE_TOPUP' : 'CLOSED', settlement, ...(pay > 0 ? {} : { closedAt: now }) }, 'REJECT',
+      `ບໍ່ອະນຸມັດສ່ວນເກີນ ${a.advNumber} — ຈ່າຍເພີ່ມສູງສຸດ ${fm(pay)} ກີບ ຕາມນະໂຍບາຍ — ${reason}`,
+      pay > 0 ? `ບໍ່ອະນຸມັດສ່ວນເກີນ — ຈ່າຍເພີ່ມໃຫ້ພຽງ ${fm(pay)} ກີບ` : 'ບໍ່ອະນຸມັດສ່ວນເກີນ — ປິດລາຍການ');
+  }
+  settleAdv(a0) {
+    const u = this.me(), a = this.advFresh(a0), ref = String(this.state.advSettleRef || '').trim();
+    const act = this.advActor(a, u);
+    if (!act.settleReturn && !act.settleTopup) { this.deny(`ພະຍາຍາມປິດຍອດ ${a.advNumber}`, 'ສະເພາະຜູ້ຈ່າຍເງິນທີ່ກຳນົດ (SoD)'); return; }
+    if (!ref) { this.toast('error', 'ກະລຸນາໃສ່ເລກໃບຮັບເງິນ / ເລກອ້າງອີງ'); return; }
+    const isReturn = a.status === 'SETTLE_RETURN', amt = isReturn ? a.settlement.returnAmt : a.settlement.topupAmt;
+    const now = new Date().toISOString();
+    this.advUpdate(a, { status: 'CLOSED', closedAt: now, settlement: { ...a.settlement, doneBy: u.id, doneAt: now, ref } }, isReturn ? 'RECEIVE' : 'PAY',
+      `${isReturn ? 'ຮັບເງິນເຫຼືອຄືນ' : 'ຈ່າຍເງິນເພີ່ມ'} ${a.advNumber} ${fm(amt)} ກີບ (ເລກອ້າງອີງ ${ref})${this.advOverrideTag(a, u, a.payers)} — ປິດລາຍການ`,
+      `${isReturn ? 'ຢືນຢັນຮັບເງິນຄືນ' : 'ບັນທຶກຈ່າຍເພີ່ມ'} ແລ້ວ — ປິດລາຍການ ${a.advNumber}`, { advSettleRef: '' });
+  }
+  viewAdvFile(att) {
+    if (!att) return;
+    this.setState({ advBusy: true });
+    loadAttachment(att)
+      .then(data => this.setState({ filePreview: { name: att.name, data, isImg: data.indexOf('data:image') === 0 } }))
+      .catch(err => this.toast('error', err.message || 'ເປີດໄຟລ໌ບໍ່ໄດ້'))
+      .finally(() => this.setState({ advBusy: false }));
+  }
+  openAdv(id) {
+    const u = this.me(), a = (this.state.advances || []).find(x => x.id === id);
+    if (!a) return;
+    if (!this.canSeeAdv(a, u)) { this.deny(`ພະຍາຍາມເປີດ ${a.advNumber}`, 'ເບິ່ງໄດ້ສະເພາະຜູ້ທີ່ກ່ຽວຂ້ອງ'); return; }
+    this.setState({ advDetailId: id, advReasonMode: null, advReason: '', advPay: null, advSettleRef: '', advClr: null });
+  }
+  goAdvFilter(f) { this.setState({ page: 'adv', advFilter: f, advTab: 'list', advDetailId: null, detailKind: null, detailId: null, docView: null, mobileNavOpen: false }); }
+  // ----- ໝວດໝູ່ຄ່າໃຊ້ຈ່າຍ (Admin) — ບັນທຶກທັນທີ, ບໍ່ຜ່ານປຸ່ມ "ບັນທຶກການຕັ້ງຄ່າ" -----
+  addExpenseCat() {
+    const u = this.me();
+    if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມເພີ່ມໝວດຄ່າໃຊ້ຈ່າຍ', 'ສະເພາະຜູ້ດູແລລະບົບ'); return; }
+    const name = String(this.state.newCatName || '').trim();
+    if (!name) { this.toast('error', 'ກະລຸນາໃສ່ຊື່ໝວດ'); return; }
+    if (this.advCats().some(c => c.name === name)) { this.toast('error', 'ມີໝວດຊື່ນີ້ແລ້ວ'); return; }
+    const expenseCats = [...this.advCats(), { id: uid(), name, active: true }];
+    const lg = this.log('CREATE', `ເພີ່ມໝວດຄ່າໃຊ້ຈ່າຍ "${name}"`, true);
+    this.persist({ settings: { ...this.state.settings, expenseCats }, newCatName: '', ...lg });
+  }
+  toggleExpenseCat(id) {
+    const u = this.me();
+    if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມແກ້ໄຂໝວດຄ່າໃຊ້ຈ່າຍ', 'ສະເພາະຜູ້ດູແລລະບົບ'); return; }
+    const c = this.advCats().find(x => x.id === id); if (!c) return;
+    const expenseCats = this.advCats().map(x => x.id === id ? { ...x, active: !x.active } : x);
+    const lg = this.log('UPDATE', `${c.active ? 'ປິດ' : 'ເປີດ'}ໃຊ້ໝວດຄ່າໃຊ້ຈ່າຍ "${c.name}"`, true);
+    this.persist({ settings: { ...this.state.settings, expenseCats }, ...lg });
+  }
+  exportAdvCsv(kind) {
+    const u = this.me();
+    if (!this.advCanReport(u)) { this.deny('ພະຍາຍາມ export ເບີກລ່ວງໜ້າ', 'ສະເພາະການເງິນ / Admin / ຜູ້ກວດສອບ'); return; }
+    const list = (this.state.advances || []).filter(a => a.status !== 'DRAFT' && a.status !== 'CANCELLED');
+    const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    let rows;
+    if (kind === 'lines') {
+      rows = [['ເລກທີ', 'ຜູ້ເບີກ', 'ພະແນກ', 'ໝວດ', 'ວັນທີ', 'ເລກໃບບິນ', 'ບໍ່ມີໃບບິນ (ເຫດຜົນ)', 'ຈຳນວນເງິນ (ກີບ)']];
+      list.filter(a => a.clearing && a.clearing.submittedAt).forEach(a => a.clearing.lines.forEach(l => rows.push([a.advNumber, this.uName(a.requesterId), a.department, this.advCatName(l.catId), l.date, l.receiptNo, l.noReceipt ? l.reason : '', l.amount])));
+    } else {
+      rows = [['ເລກທີ', 'ຜູ້ເບີກ', 'ພະແນກ', 'ປະເພດ', 'ຈຸດປະສົງ', 'ຍອດເບີກ', 'ຍອດໃຊ້ຈິງ', 'ສ່ວນຕ່າງ', 'ສະຖານະ', 'ວັນຈ່າຍ', 'ກຳນົດເຄຍ', 'ເກີນກຳນົດ (ວັນ)']];
+      list.forEach(a => {
+        const spent = a.clearing && a.clearing.submittedAt ? a.clearing.total : '';
+        rows.push([a.advNumber, this.uName(a.requesterId), a.department, ADV_TYPES[a.type], a.purpose, a.total, spent, spent === '' ? '' : spent - a.total, (ADV_STATUS[a.status] || {}).label, a.payment ? a.payment.date : '', a.dueDate || '', this.advOverdue(a) || '']);
+      });
+    }
+    const csv = '﻿' + rows.map(r => r.map(esc).join(',')).join('\r\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url; link.download = `${kind === 'lines' ? 'advance_expenses' : 'advances'}_${this.advToday()}.csv`;
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    this.persist(this.log('EXPORT', `Export CSV ເບີກລ່ວງໜ້າ (${kind === 'lines' ? 'ລາຍການໃຊ້ຈ່າຍ' : 'ລາຍການເບີກ'}, ${rows.length - 1} ແຖວ)`, true));
   }
   startRfq(pr) {
     const u = this.me();
@@ -2856,7 +3900,11 @@ class Component extends DCLogic {
     if (!(t1 > 0) || !(t2 > t1)) { this.toast('error', 'ວົງເງິນບໍ່ຖືກຕ້ອງ — ວົງເງິນ 2 ຂັ້ນຕ້ອງສູງກວ່າ 1 ຂັ້ນ'); return; }
     if (!(qt > 0) || !(qt2 > qt) || !(mq2 >= mq)) { this.toast('error', 'ນະໂຍບາຍໃບສະເໜີລາຄາບໍ່ຖືກຕ້ອງ — ຂັ້ນທີ 2 ຕ້ອງມີວົງເງິນສູງກວ່າ ແລະ ຈຳນວນໃບບໍ່ໜ້ອຍກວ່າຂັ້ນທີ 1'); return; }
     if (!(dbl >= 0)) { this.toast('error', 'ວົງເງິນຊື້ໂດຍກົງບໍ່ຖືກຕ້ອງ (0 = ປິດ)'); return; }
-    const settings = { ...d, t1, t2, quoteThreshold: qt, minQuotes: mq, quoteThreshold2: qt2, minQuotes2: mq2, directBuyLimit: dbl };
+    const advDays = Math.round(num('advClearDays')), advPct = num('advOverPct'), advCap = num('advPurchaseCap');
+    if (!(advDays >= 0) || !(advPct >= 0) || !(advCap >= 0)) { this.toast('error', 'ຄ່າເບີກລ່ວງໜ້າບໍ່ຖືກຕ້ອງ (ຕ້ອງເປັນຕົວເລກ ≥ 0)'); return; }
+    // ລວມສະເພາະຊ່ອງທີ່ຟອມນີ້ແກ້ ເຂົ້າກັບການຕັ້ງຄ່າປັດຈຸບັນ — setDraft ເປັນສຳເນົາເກົ່າ, ຖ້າ spread ທັງກ້ອນຈະທັບ Workflow/ໝວດ ທີ່ເພີ່ມຫຼັງເປີດໜ້າ
+    const settings = { ...this.state.settings, coLao: d.coLao, coEn: d.coEn, coAddr: d.coAddr, coPhone: d.coPhone,
+      t1, t2, quoteThreshold: qt, minQuotes: mq, quoteThreshold2: qt2, minQuotes2: mq2, directBuyLimit: dbl, advClearDays: advDays, advOverPct: advPct, advPurchaseCap: advCap };
     const lg = this.log('UPDATE', `ແກ້ໄຂການຕັ້ງຄ່າ: 1ຂັ້ນ≤${fm(t1)}, 2ຂັ້ນ≤${fm(t2)}, ໃບສະເໜີ≥${fm(qt)}→${mq} ໃບ, ≥${fm(qt2)}→${mq2} ໃບ, ຊື້ໂດຍກົງ<${fm(dbl)}`, true);
     this.persist({ settings, setDraft: { ...settings }, ...lg });
     this.toast('success', 'ບັນທຶກການຕັ້ງຄ່າສຳເລັດ');
@@ -2975,6 +4023,7 @@ class Component extends DCLogic {
     if (!dv) return null;
     const st = this.state.settings;
     const base = { docCoLao: st.coLao, docCoEn: st.coEn, docCoAddr: st.coAddr, docCoPhone: st.coPhone, docPrintedAt: fdt(new Date().toISOString()) };
+    if (String(dv.kind).indexOf('adv-') === 0) return this.advDocData(dv, base);
     if (dv.kind === 'pr') {
       const pr = this.state.prs.find(p => p.id === dv.id); if (!pr) return null;
       return { ...base, ...this.prDocData(pr) };
@@ -3011,6 +4060,335 @@ class Component extends DCLogic {
     return null;
   }
 
+  // ----- props ຂອງໂມດູນເບີກລ່ວງໜ້າ (ລວມເຂົ້າ renderVals) -----
+  advProps(s, u) {
+    const all = s.advances || [];
+    const visible = u ? all.filter(a => this.canSeeAdv(a, u)) : [];
+    const today = this.advToday();
+    const canReport = this.advCanReport(u);
+    const money = n => fm(n) + ' ກີບ';
+    const tasks = u ? visible.filter(a => this.isAdvTask(a, u)) : [];
+    const mineOut = u ? all.filter(a => a.requesterId === u.id && ADV_OUTSTANDING.includes(a.status)) : [];
+    const overdueScope = canReport ? all : mineOut;
+    const overdueList = overdueScope.filter(a => this.advOverdue(a) > 0);
+    const stLabel = a => ADV_STATUS[a.status] || ADV_STATUS.DRAFT;
+
+    // ---------- ລາຍການ ----------
+    const f = s.advFilter || 'all';
+    const q = String(s.advSearch || '').trim().toLowerCase();
+    let rows = visible;
+    if (f === 'mine') rows = tasks;
+    else if (f === 'my') rows = rows.filter(a => a.requesterId === u.id);
+    else if (f === 'open') rows = rows.filter(a => ADV_OUTSTANDING.includes(a.status));
+    else if (f === 'closed') rows = rows.filter(a => ['CLOSED', 'REJECTED', 'CANCELLED'].includes(a.status));
+    if (q) rows = rows.filter(a => [a.advNumber, this.uName(a.requesterId), a.department, a.purpose].join(' ').toLowerCase().includes(q));
+    const advRows = rows.map(a => {
+      const od = this.advOverdue(a), st = stLabel(a);
+      return { advNumber: a.advNumber, requesterName: this.uName(a.requesterId), department: a.department, typeLabel: ADV_TYPES[a.type] || '—', purpose: a.purpose,
+        totalDisplay: fm(a.total), statusLabel: st.label, statusBg: st.bg, statusFg: st.fg,
+        dueDisplay: a.dueDate ? fd(a.dueDate) : '—', overdueText: od ? `ເກີນ ${od} ວັນ` : '', isOverdue: od > 0, isTask: u ? this.isAdvTask(a, u) : false,
+        onView: () => this.openAdv(a.id) };
+    });
+    const fBtn = k => ({ bg: f === k ? '#116F38' : '#fff', fg: f === k ? '#fff' : '#3C4C3A' });
+    const tab = canReport ? (s.advTab || 'list') : 'list';
+    const tBtn = k => ({ bg: tab === k ? '#0B4D27' : '#fff', fg: tab === k ? '#fff' : '#3C4C3A' });
+
+    // ---------- ລາຍງານຍອດຄ້າງເຄຍ ----------
+    const outList = (canReport ? all : []).filter(a => ADV_OUTSTANDING.includes(a.status))
+      .sort((x, y) => (this.advOverdue(y) - this.advOverdue(x)) || String(x.dueDate || '').localeCompare(String(y.dueDate || '')));
+    const advOutRows = outList.map(a => {
+      const od = this.advOverdue(a), st = stLabel(a);
+      const remain = a.dueDate ? advOverdueDays(today, a.dueDate) : 0;   // ມື້ທີ່ຍັງເຫຼືອກ່ອນຄົບກຳນົດ
+      const dueText = !ADV_CLEAR_DUE.includes(a.status) ? 'ສົ່ງເຄຍແລ້ວ' : od ? `ເກີນ ${od} ວັນ` : !a.dueDate ? '—' : remain ? `ອີກ ${remain} ວັນ` : 'ຄົບກຳນົດມື້ນີ້';
+      return { advNumber: a.advNumber, requesterName: this.uName(a.requesterId), department: a.department, totalDisplay: fm(a.total), statusLabel: st.label, statusBg: st.bg, statusFg: st.fg,
+        dueDisplay: a.dueDate ? fd(a.dueDate) : '—', overdueText: dueText,
+        overdueFg: od ? '#B23B2E' : '#5C6D5A', rowBg: od ? '#FDF3F2' : '#fff', canView: this.canSeeAdv(a, u), onView: () => this.openAdv(a.id) };
+    });
+
+    // ---------- ສະຫຼຸບຄ່າໃຊ້ຈ່າຍ (ສະເພາະລາຍການທີ່ກວດເຄຍຜ່ານແລ້ວ) ----------
+    const by = s.advSumBy || 'cat';
+    const cleared = all.filter(a => ['OVER_APPROVAL', 'SETTLE_RETURN', 'SETTLE_TOPUP', 'CLOSED'].includes(a.status) && a.clearing);
+    const groups = {};
+    cleared.forEach(a => (a.clearing.lines || []).forEach(l => {
+      const key = by === 'cat' ? this.advCatName(l.catId) : by === 'dept' ? a.department : (() => { const d = new Date(a.clearing.submittedAt); return `${LAO_MONTHS[d.getMonth()]} ${d.getFullYear()}|${d.getFullYear()}${String(d.getMonth()).padStart(2, '0')}`; })();
+      if (!groups[key]) groups[key] = { amount: 0, advs: {} };
+      groups[key].amount += l.amount; groups[key].advs[a.id] = 1;
+    }));
+    const sumTotal = Object.values(groups).reduce((t, g) => t + g.amount, 0);
+    let advSumRows = Object.keys(groups).map(k => ({ label: k.split('|')[0], sortKey: k.split('|')[1] || '', amount: groups[k].amount, count: Object.keys(groups[k].advs).length }));
+    advSumRows = (by === 'month' ? advSumRows.sort((x, y) => y.sortKey.localeCompare(x.sortKey)) : advSumRows.sort((x, y) => y.amount - x.amount))
+      .map(r => ({ ...r, amountDisplay: fm(r.amount), pct: sumTotal ? Math.round(r.amount * 1000 / sumTotal) / 10 : 0, barW: sumTotal ? Math.max(2, Math.round(r.amount * 100 / sumTotal)) : 0 }));
+    const sBtn = k => ({ bg: by === k ? '#116F38' : '#fff', fg: by === k ? '#fff' : '#3C4C3A' });
+
+    // ---------- ຟອມຂໍເບີກ ----------
+    const af = s.advForm || { amounts: {}, notes: {} };
+    const amounts = af.amounts || {}, notes = af.notes || {};
+    const catsForForm = this.advCats().filter(c => c.active || Object.prototype.hasOwnProperty.call(amounts, c.id));
+    const advCatRows = catsForForm.map(c => {
+      const checked = Object.prototype.hasOwnProperty.call(amounts, c.id);
+      return { id: c.id, name: c.name, checked, rowBg: checked ? '#F3F8F4' : '#fff', rowBorder: checked ? '#BFE0C9' : '#EEF1ED', amountDisplay: checked ? fmtIn(amounts[c.id]) : '', note: notes[c.id] || '',
+        onToggle: () => this.toggleAdvCat(c.id), onAmount: e => this.setAdvCatAmount(c.id, e.target.value), onNote: e => this.setAdvCatNote(c.id, e.target.value) };
+    });
+    const formTotal = advSum(this.advFormLines(af));
+    const wfList = this.advWorkflows();
+    const selWf = wfList.find(w => w.id === af.workflowId);
+    const routeTxt = (list) => (u ? advResolve(list, u.id) : list || []).map(id => this.uName(id)).join(' → ') || '⚠ ບໍ່ມີ (ຂ້າມທ່ານແລ້ວ)';
+    const myLate = u ? all.filter(a => a.requesterId === u.id && this.advOverdue(a) > 0) : [];
+    const cap = Number(s.settings.advPurchaseCap) || 0;
+
+    // ---------- ລາຍລະອຽດ ----------
+    const a = s.advDetailId ? all.find(x => x.id === s.advDetailId) : null;
+    let va = null;
+    if (a && u && this.canSeeAdv(a, u)) {
+      const act = this.advActor(a, u);
+      const st = stLabel(a);
+      const curStep = st.step;
+      const isClosed = a.status === 'CLOSED', isRej = a.status === 'REJECTED', isCan = a.status === 'CANCELLED';
+      const stepChips = ADV_STEPS.map((label, i) => {
+        const done = !isCan && (isClosed || i < curStep);
+        const cur = !isCan && !isClosed && i === curStep;
+        if (isRej && i === 1) return { label: 'ຖືກປະຕິເສດ', dotBg: '#B23B2E', dotBorder: '#B23B2E', fg: '#B23B2E', weight: 700 };
+        if (done) return { label, dotBg: '#116F38', dotBorder: '#116F38', fg: '#3C4C3A', weight: 600 };
+        if (cur) return { label, dotBg: '#fff', dotBorder: '#116F38', fg: '#116F38', weight: 700 };
+        return { label, dotBg: '#fff', dotBorder: '#D9E1D6', fg: '#98A69B', weight: 500 };
+      });
+      const progressPct = isClosed ? 100 : isCan ? 0 : Math.round(curStep * 100 / (ADV_STEPS.length - 1));
+      const stl = a.settlement || null;
+      const names = ids => (ids || []).map(id => this.uName(id)).join(' / ');
+      let waitingText = '';
+      if (a.status === 'PENDING') waitingText = `${this.uName(a.approvers[a.approvals.length])} ອະນຸມັດ (${a.approvals.length + 1}/${a.approvers.length})`;
+      else if (a.status === 'TO_PAY') waitingText = `${names(a.payers)} ຈ່າຍເງິນ`;
+      else if (a.status === 'PAID') waitingText = `${this.uName(a.requesterId)} ຢືນຢັນວ່າໄດ້ຮັບເງິນແລ້ວ`;
+      else if (a.status === 'OPEN') waitingText = `${this.uName(a.requesterId)} ເຄຍເງິນ (ກຳນົດ ${fd(a.dueDate)})`;
+      else if (a.status === 'CHECKING') waitingText = `${names((a.checkers || []).filter(id => !(a.payment && a.payment.by === id)))} ກວດການເຄຍ`;
+      else if (a.status === 'OVER_APPROVAL') waitingText = `${this.uName(a.approvers[(stl.overApprovals || []).length])} ອະນຸມັດສ່ວນເກີນ ${money(stl.topupAmt)}`;
+      else if (a.status === 'SETTLE_RETURN') waitingText = `${this.uName(a.requesterId)} ສົ່ງເງິນເຫຼືອຄືນ ${money(stl.returnAmt)} ໃຫ້ ${names(a.payers)} ແລະ ໃຫ້ການເງິນກົດຢືນຢັນ`;
+      else if (a.status === 'SETTLE_TOPUP') waitingText = `${names(a.payers)} ຈ່າຍເງິນເພີ່ມ ${money(stl.topupAmt)}`;
+      const anyAct = Object.values(act).some(Boolean);
+      // ປະຫວັດ
+      const tl = [];
+      const push = (at, text, color) => { if (at) tl.push({ at, when: fdt(at), text, dot: color || '#116F38' }); };
+      push(a.createdAt, `${this.uName(a.requesterId)} ສ້າງໃບຂໍເບີກ`, '#98A69B');
+      push(a.submittedAt, `ສົ່ງຂໍອະນຸມັດ`, '#98A69B');
+      (a.approvals || []).forEach((ap, i) => push(ap.at, `${this.uName(ap.userId)} ອະນຸມັດ (${i + 1}/${(a.approvers || []).length})`));
+      if (a.rejectedAt) push(a.rejectedAt, `${this.uName(a.rejectedBy)} ປະຕິເສດ — ${a.rejectReason}`, '#B23B2E');
+      if (a.payment) push(a.payment.at, `${this.uName(a.payment.by)} ຈ່າຍເງິນ ${money(a.total)} (${a.payment.method === 'TRANSFER' ? 'ໂອນ' : 'ເງິນສົດ'}, ${a.payment.ref})`);
+      push(a.receivedAt, `${this.uName(a.requesterId)} ຢືນຢັນໄດ້ຮັບເງິນ`);
+      if (a.clearing && a.clearing.returnedAt) push(a.clearing.returnedAt, `${this.uName(a.clearing.returnedBy)} ສົ່ງການເຄຍກັບໃຫ້ແກ້ — ${a.clearing.returnReason}`, '#B7791F');
+      if (a.clearing && a.clearing.submittedAt) push(a.clearing.submittedAt, `ສົ່ງເຄຍ: ໃຊ້ຈິງ ${money(a.clearing.total)}`);
+      if (a.check) push(a.check.at, `${this.uName(a.check.by)} ກວດເຄຍຜ່ານ`);
+      if (stl) (stl.overApprovals || []).forEach(ap => push(ap.at, `${this.uName(ap.userId)} ອະນຸມັດສ່ວນເກີນ`));
+      if (stl && stl.overRejected) push((a.closedAt || (a.check && a.check.at)), `${this.uName(stl.overRejectedBy)} ບໍ່ອະນຸມັດສ່ວນເກີນ — ${stl.overRejectReason}`, '#B23B2E');
+      if (stl && stl.doneAt) push(stl.doneAt, `${this.uName(stl.doneBy)} ${a.settlement.returnAmt ? 'ຮັບເງິນຄືນ' : 'ຈ່າຍເພີ່ມ'} (${stl.ref})`);
+      push(a.closedAt, 'ປິດລາຍການ', '#116F38');
+      push(a.cancelledAt, 'ຍົກເລີກ', '#98A69B');
+      tl.sort((x, y) => String(x.at).localeCompare(String(y.at)));
+
+      // ການເຄຍ (ຟອມ)
+      const clrRows = act.clear ? this.advClrRows(a) : [];
+      const clrTotal = advSum(clrRows.map(r => ({ amount: parseIn(r.amount) })));
+      const clrDiff = clrTotal - a.total;
+      const estIds = (a.lines || []).map(l => l.catId);
+      const clrChips = this.advCats().filter(c => c.active || estIds.includes(c.id)).map(c => ({ name: c.name, bg: estIds.includes(c.id) ? '#E3F3E7' : '#fff', border: estIds.includes(c.id) ? '#BFE0C9' : '#D9E1D6', onAdd: () => this.addAdvClrRow(a, c.id) }));
+      // ການເຄຍ (ສະຫຼຸບ ຫຼັງສົ່ງ)
+      const clearedLines = (a.clearing && a.clearing.submittedAt) ? a.clearing.lines : [];
+      const cmp = advCompare(a.lines, clearedLines);
+      const pct = Number(s.settings.advOverPct) || 0;
+      const preview = clearedLines.length ? advSettlement(a.total, a.clearing.total, pct) : null;
+      const settleTxt = stl0 => !stl0 ? '' : ({ NONE: 'ໃຊ້ພໍດີກັບຍອດເບີກ', RETURN: `ໃຊ້ໜ້ອຍກວ່າ — ຜູ້ເບີກສົ່ງເງິນຄືນ ${money(stl0.returnAmt)}`, TOPUP: `ໃຊ້ເກີນ ${money(stl0.topupAmt)} (ບໍ່ເກີນ ${pct}%) — ບໍລິສັດຈ່າຍເພີ່ມ`, OVER: `ໃຊ້ເກີນ ${money(stl0.topupAmt)} — ເກີນ ${pct}% ຕ້ອງໃຫ້ຜູ້ອະນຸມັດ ອະນຸມັດສ່ວນເກີນ` })[stl0.kind];
+      const pay = s.advPay || {};
+      const payMethod = pay.method || a.payMethod;
+      va = {
+        advNumber: a.advNumber, statusLabel: st.label, statusBg: st.bg, statusFg: st.fg,
+        requesterName: this.uName(a.requesterId), department: a.department, typeLabel: ADV_TYPES[a.type] || '—', purpose: a.purpose,
+        hasPlace: !!a.place, placeLabel: a.type === 'EVENT' ? 'ຊື່ງານ / ສະຖານທີ່' : 'ສະຖານທີ່ / ປາຍທາງ', place: a.place,
+        workRange: (a.workStart ? fd(a.workStart) + ' – ' : '') + (a.workEnd ? fd(a.workEnd) : '—'),
+        payMethodLabel: a.payMethod === 'TRANSFER' ? 'ໂອນເຂົ້າບັນຊີ' : 'ເງິນສົດ', hasBank: !!a.bankAccount, bankAccount: a.bankAccount,
+        totalDisplay: money(a.total), dueDisplay: a.dueDate ? fd(a.dueDate) : '—', hasDue: !!a.dueDate,
+        overdueText: this.advOverdue(a) ? `⚠ ເກີນກຳນົດເຄຍ ${this.advOverdue(a)} ວັນ` : '', isOverdue: this.advOverdue(a) > 0,
+        estRows: (a.lines || []).map((l, i) => ({ no: i + 1, cat: this.advCatName(l.catId), note: l.note || '', amountDisplay: fm(l.amount) })),
+        stepChips, progressPct, waitingText, showWaiting: !!waitingText && !anyAct,
+        rejectReason: a.rejectReason || '', isRejected: isRej,
+        tlRows: tl, hasTl: tl.length > 0,
+        onBack: () => this.setState({ advDetailId: null, advClr: null }),
+        onPrintReq: () => this.setState({ docView: { kind: 'adv-req', id: a.id } }),
+        onPrintPay: a.payment ? (() => this.setState({ docView: { kind: 'adv-pay', id: a.id } })) : (() => {}), payDocDisabled: !a.payment, payDocOpacity: a.payment ? 1 : 0.4,
+        onPrintClr: (a.clearing && a.clearing.submittedAt) ? (() => this.setState({ docView: { kind: 'adv-clr', id: a.id } })) : (() => {}), clrDocDisabled: !(a.clearing && a.clearing.submittedAt), clrDocOpacity: (a.clearing && a.clearing.submittedAt) ? 1 : 0.4,
+        // ຮ່າງ
+        showDraft: !!act.draft, onEditDraft: () => this.openAdvForm(a.id), onSubmitDraft: () => this.submitAdvDraft(a), onCancelDraft: () => this.cancelAdvDraft(a),
+        // ເຫດຜົນ (ປະຕິເສດ / ສົ່ງກັບ / ບໍ່ອະນຸມັດສ່ວນເກີນ)
+        reasonOpen: !!s.advReasonMode, reasonTitle: { reject: 'ເຫດຜົນການປະຕິເສດ', ret: 'ສິ່ງທີ່ຕ້ອງແກ້ໄຂ (ສົ່ງກັບໃຫ້ຜູ້ເບີກ)', over: 'ເຫດຜົນທີ່ບໍ່ອະນຸມັດສ່ວນເກີນ' }[s.advReasonMode] || '',
+        advReason: s.advReason || '', onReasonChange: e => this.setState({ advReason: e.target.value }),
+        onReasonCancel: () => this.setState({ advReasonMode: null, advReason: '' }),
+        onReasonConfirm: () => ({ reject: () => this.rejectAdv(a), ret: () => this.returnAdvClearing(a), over: () => this.rejectAdvOver(a) })[s.advReasonMode](),
+        // ອະນຸມັດ
+        showApprove: !!act.approve && !s.advReasonMode, onApprove: () => this.approveAdv(a), onRejectOpen: () => this.setState({ advReasonMode: 'reject', advReason: '' }),
+        approveLabel: `ອະນຸມັດ (${(a.approvals || []).length + 1}/${(a.approvers || []).length})`,
+        // ຈ່າຍເງິນ
+        showPay: !!act.pay, payMethod, payIsTransfer: payMethod === 'TRANSFER', payRef: pay.ref || '', payDate: pay.date || today, payProofName: pay.proof ? pay.proof.name : '', hasPayProof: !!pay.proof,
+        onPayMethod: e => this.setState({ advPay: { ...pay, method: e.target.value } }), onPayRef: e => this.setState({ advPay: { ...pay, ref: e.target.value } }),
+        onPayDate: e => this.setState({ advPay: { ...pay, date: e.target.value } }), onPayProof: e => this.uploadAdvPayProof(e), onPayProofClear: () => this.setState({ advPay: { ...pay, proof: null } }),
+        onConfirmPay: () => this.payAdv(a), payRefLabel: payMethod === 'TRANSFER' ? 'ເລກອ້າງອີງການໂອນ' : 'ເລກໃບຈ່າຍເງິນ',
+        hasPayment: !!a.payment, paymentText: a.payment ? `${a.payment.method === 'TRANSFER' ? 'ໂອນ' : 'ເງິນສົດ'} · ວັນທີ ${fd(a.payment.date)} · ເລກອ້າງອີງ ${a.payment.ref} · ໂດຍ ${this.uName(a.payment.by)}` : '',
+        hasPaymentProof: !!(a.payment && a.payment.proof), onViewPaymentProof: () => this.viewAdvFile(a.payment && a.payment.proof),
+        // ຢືນຢັນຮັບເງິນ
+        showConfirm: !!act.confirm, onConfirmReceive: () => this.confirmAdvReceived(a),
+        // ຟອມເຄຍ
+        showClear: !!act.clear, clrChips,
+        clrReturnReason: (a.clearing && a.clearing.returnReason) || '', hasClrReturn: !!(a.clearing && a.clearing.returnReason && a.status === 'OPEN'),
+        clrRows: clrRows.map((r, i) => ({ no: i + 1, catName: this.advCatName(r.catId), amountDisplay: fmtIn(r.amount), date: r.date, receiptNo: r.receiptNo, noReceipt: !!r.noReceipt, reason: r.reason,
+          hasFile: !!r.file, fileName: r.file ? r.file.name : '', showFileInput: !r.noReceipt && !r.file, showReason: !!r.noReceipt,
+          onAmount: e => this.editAdvClrRow(a, r.id, { amount: parseIn(e.target.value) }), onDate: e => this.editAdvClrRow(a, r.id, { date: e.target.value }),
+          onReceiptNo: e => this.editAdvClrRow(a, r.id, { receiptNo: e.target.value }), onReason: e => this.editAdvClrRow(a, r.id, { reason: e.target.value }),
+          onToggleNoReceipt: () => this.editAdvClrRow(a, r.id, { noReceipt: !r.noReceipt, file: null }),
+          onFile: e => this.uploadAdvClrFile(a, r.id, e), onViewFile: () => this.viewAdvFile(r.file), onClearFile: () => this.editAdvClrRow(a, r.id, { file: null }),
+          onRemove: () => this.removeAdvClrRow(a, r.id) })),
+        clrEmpty: act.clear && !clrRows.length,
+        clrTotalDisplay: money(clrTotal), clrDiffText: clrRows.length ? (clrDiff === 0 ? 'ໃຊ້ພໍດີ' : clrDiff < 0 ? `ເຫຼືອ ${money(-clrDiff)} (ຕ້ອງສົ່ງຄືນ)` : `ໃຊ້ເກີນ ${money(clrDiff)}`) : '',
+        clrDiffColor: clrDiff > 0 ? '#B7791F' : '#116F38',
+        onSaveClr: () => this.saveAdvClearingDraft(a), onSubmitClr: () => this.submitAdvClearing(a),
+        // ສະຫຼຸບການເຄຍ
+        showClearSummary: clearedLines.length > 0,
+        cmpRows: cmp.map((r, i) => ({ no: i + 1, cat: this.advCatName(r.catId), estDisplay: fm(r.est), actDisplay: fm(r.act), diffDisplay: (r.diff > 0 ? '+' : '') + fm(r.diff), diffColor: r.diff > 0 ? '#B7791F' : r.diff < 0 ? '#116F38' : '#5C6D5A' })),
+        receiptRows: clearedLines.map((l, i) => ({ no: i + 1, cat: this.advCatName(l.catId), date: fd(l.date), receiptNo: l.receiptNo || '—', amountDisplay: fm(l.amount),
+          hasFile: !!l.file, onViewFile: () => this.viewAdvFile(l.file), noReceipt: !!l.noReceipt, reason: l.reason })),
+        noReceiptCount: clearedLines.filter(l => l.noReceipt).length, hasNoReceipt: clearedLines.some(l => l.noReceipt),
+        clrSpentDisplay: clearedLines.length ? money(a.clearing.total) : '', settleText: settleTxt(stl || preview),
+        // ກວດເຄຍ
+        showCheck: !!act.check && !s.advReasonMode, onCheckApprove: () => this.approveAdvClearing(a), onCheckReturnOpen: () => this.setState({ advReasonMode: 'ret', advReason: '' }),
+        // ສ່ວນເກີນ
+        showOver: !!act.over && !s.advReasonMode, overText: stl ? `ໃຊ້ເກີນ ${money(stl.topupAmt)} (ນະໂຍບາຍອະນຸມັດອັດຕະໂນມັດໄດ້ບໍ່ເກີນ ${money(stl.allowedTopup)})` : '',
+        onOverApprove: () => this.approveAdvOver(a), onOverRejectOpen: () => this.setState({ advReasonMode: 'over', advReason: '' }),
+        // ປິດຍອດ
+        showSettle: !!(act.settleReturn || act.settleTopup), settleIsReturn: !!act.settleReturn,
+        settleTitle: act.settleReturn ? `ຢືນຢັນໄດ້ຮັບເງິນເຫຼືອຄືນ ${stl ? money(stl.returnAmt) : ''}` : `ຈ່າຍເງິນເພີ່ມ ${stl ? money(stl.topupAmt) : ''}`,
+        settleRef: s.advSettleRef || '', onSettleRef: e => this.setState({ advSettleRef: e.target.value }), onSettle: () => this.settleAdv(a),
+        isClosed, closedText: isClosed ? [
+          stl && stl.doneAt ? `${stl.returnAmt ? 'ຮັບເງິນຄືນ ' + money(stl.returnAmt) : 'ຈ່າຍເພີ່ມ ' + money(stl.topupAmt)} · ເລກອ້າງອີງ ${stl.ref}` : (!stl || stl.kind === 'NONE' ? 'ໃຊ້ພໍດີ — ບໍ່ມີສ່ວນຕ່າງ' : ''),
+          stl && stl.overRejected ? `ບໍ່ອະນຸມັດສ່ວນເກີນ: ${stl.overRejectReason}` : '',
+        ].filter(Boolean).join(' · ') : '',
+        busy: !!s.advBusy,
+      };
+    }
+
+    return {
+      isAdvPage: s.page === 'adv', goAdv: () => this.goAdvFilter('all'),
+      advTaskCount: tasks.length, hasAdvTasks: tasks.length > 0,
+      // ໜ້າພາບລວມ
+      advCardTasks: tasks.length, advCardMine: mineOut.length, advCardMineAmount: fm(mineOut.reduce((t, x) => t + (x.total || 0), 0)),
+      advCardOverdue: overdueList.length, advCardOverdueLabel: canReport ? 'ເກີນກຳນົດເຄຍ (ທັງໝົດ)' : 'ຂອງຂ້ອຍເກີນກຳນົດເຄຍ',
+      advCardOverdueBg: overdueList.length ? '#FDF3F2' : '#fff', advCardOverdueFg: overdueList.length ? '#B23B2E' : '#14231A',
+      onCardAdvTasks: () => this.goAdvFilter('mine'), onCardAdvMine: () => this.goAdvFilter('my'),
+      onCardAdvOverdue: () => canReport ? this.setState({ page: 'adv', advTab: 'out', advDetailId: null, detailKind: null, detailId: null, docView: null }) : this.goAdvFilter('my'),
+      advPolicyText: `ຊື້ເຄື່ອງເລັກນ້ອຍດ່ວນ ເບີກໄດ້ບໍ່ເກີນ ${fm(cap)} ກີບ/ໃບ · ກຳນົດເຄຍ = ວັນສຳເລັດວຽກ + ${Number(s.settings.advClearDays) || 7} ວັນ · ໃຊ້ເກີນ ≤ ${Number(s.settings.advOverPct) || 0}% ຈ່າຍເພີ່ມໄດ້ເລີຍ`,
+      // ໜ້າລາຍການ
+      advTabList: tab === 'list', advTabOut: tab === 'out', advTabSum: tab === 'sum', advCanReport: canReport,
+      tListBg: tBtn('list').bg, tListFg: tBtn('list').fg, tOutBg: tBtn('out').bg, tOutFg: tBtn('out').fg, tSumBg: tBtn('sum').bg, tSumFg: tBtn('sum').fg,
+      onAdvTabList: () => this.setState({ advTab: 'list' }), onAdvTabOut: () => this.setState({ advTab: 'out' }), onAdvTabSum: () => this.setState({ advTab: 'sum' }),
+      afAllBg: fBtn('all').bg, afAllFg: fBtn('all').fg, afMineBg: fBtn('mine').bg, afMineFg: fBtn('mine').fg, afMyBg: fBtn('my').bg, afMyFg: fBtn('my').fg,
+      afOpenBg: fBtn('open').bg, afOpenFg: fBtn('open').fg, afClosedBg: fBtn('closed').bg, afClosedFg: fBtn('closed').fg,
+      onAdvFilterAll: () => this.setState({ advFilter: 'all' }), onAdvFilterMine: () => this.setState({ advFilter: 'mine' }), onAdvFilterMy: () => this.setState({ advFilter: 'my' }),
+      onAdvFilterOpen: () => this.setState({ advFilter: 'open' }), onAdvFilterClosed: () => this.setState({ advFilter: 'closed' }),
+      advSearch: s.advSearch || '', onAdvSearch: e => this.setState({ advSearch: e.target.value }),
+      advRows, advListEmpty: advRows.length === 0,
+      advEmptyMsg: q ? 'ບໍ່ພົບລາຍການທີ່ຄົ້ນຫາ' : f === 'mine' ? 'ບໍ່ມີວຽກເບີກລ່ວງໜ້າທີ່ລໍຖ້າທ່ານ 🎉' : 'ຍັງບໍ່ມີລາຍການເບີກລ່ວງໜ້າ — ກົດ "+ ຂໍເບີກລ່ວງໜ້າ" ເພື່ອເລີ່ມ',
+      onOpenAdvForm: () => this.openAdvForm(null),
+      advOutRows, advOutEmpty: advOutRows.length === 0, advOutCount: outList.length, advOutOverdue: outList.filter(x => this.advOverdue(x) > 0).length,
+      advOutTotal: fm(outList.reduce((t, x) => t + (x.total || 0), 0)),
+      advSumRows, advSumEmpty: advSumRows.length === 0, advSumTotal: fm(sumTotal),
+      sCatBg: sBtn('cat').bg, sCatFg: sBtn('cat').fg, sDeptBg: sBtn('dept').bg, sDeptFg: sBtn('dept').fg, sMonthBg: sBtn('month').bg, sMonthFg: sBtn('month').fg,
+      onSumByCat: () => this.setState({ advSumBy: 'cat' }), onSumByDept: () => this.setState({ advSumBy: 'dept' }), onSumByMonth: () => this.setState({ advSumBy: 'month' }),
+      onExportAdvList: () => this.exportAdvCsv('list'), onExportAdvLines: () => this.exportAdvCsv('lines'),
+      // ຟອມ
+      advFormOpen: !!s.advFormOpen, advFormTitle: s.advEditingId ? 'ແກ້ໄຂຮ່າງ ໃບຂໍເບີກລ່ວງໜ້າ' : 'ຂໍເບີກເງິນລ່ວງໜ້າ',
+      advTypeOptions: Object.keys(ADV_TYPES).map(k => ({ value: k, label: ADV_TYPES[k] })),
+      afType: af.type || 'TRAVEL', onAfType: e => this.setAdvForm('type', e.target.value),
+      afPurpose: af.purpose || '', onAfPurpose: e => this.setAdvForm('purpose', e.target.value),
+      afShowPlace: af.type === 'TRAVEL' || af.type === 'EVENT', afPlaceLabel: af.type === 'EVENT' ? 'ຊື່ງານ / ສະຖານທີ່' : 'ສະຖານທີ່ / ປາຍທາງ',
+      afPlace: af.place || '', onAfPlace: e => this.setAdvForm('place', e.target.value),
+      afWorkStart: af.workStart || '', onAfWorkStart: e => this.setAdvForm('workStart', e.target.value),
+      afWorkEnd: af.workEnd || '', onAfWorkEnd: e => this.setAdvForm('workEnd', e.target.value),
+      afWorkEndLabel: af.type === 'TRAVEL' ? 'ວັນກັບ (ສຳເລັດວຽກ)' : af.type === 'EVENT' ? 'ວັນຈົບງານ' : 'ວັນສຳເລັດວຽກ',
+      afDueHint: af.workEnd ? `ກຳນົດເຄຍປະມານ: ${fd(advAddDays(af.workEnd, Number(s.settings.advClearDays) || 7))}` : 'ໃຊ້ຄິດໄລ່ກຳນົດເຄຍ',
+      advCatRows, afTotalDisplay: money(formTotal),
+      afCapWarn: af.type === 'PURCHASE' && cap > 0 ? (formTotal > cap ? `⚠ ເກີນເພດານ ${fm(cap)} ກີບ — ຍອດນີ້ຕ້ອງໃຊ້ໃບຂໍຊື້ (PR)` : `ເພດານຊື້ເຄື່ອງເລັກນ້ອຍດ່ວນ: ບໍ່ເກີນ ${fm(cap)} ກີບ/ໃບ`) : '',
+      afCapOver: af.type === 'PURCHASE' && cap > 0 && formTotal > cap,
+      afPayCash: af.payMethod !== 'TRANSFER', afPayTransfer: af.payMethod === 'TRANSFER',
+      onAfPayCash: () => this.setAdvForm('payMethod', 'CASH'), onAfPayTransfer: () => this.setAdvForm('payMethod', 'TRANSFER'),
+      afCashBg: af.payMethod !== 'TRANSFER' ? '#116F38' : '#fff', afCashFg: af.payMethod !== 'TRANSFER' ? '#fff' : '#3C4C3A',
+      afTrBg: af.payMethod === 'TRANSFER' ? '#116F38' : '#fff', afTrFg: af.payMethod === 'TRANSFER' ? '#fff' : '#3C4C3A',
+      afBank: af.bankAccount || '', onAfBank: e => this.setAdvForm('bankAccount', e.target.value),
+      advWfOptions: wfList.map(w => ({ id: w.id, name: w.name + (w.isDefault ? ' (ຄ່າເລີ່ມຕົ້ນ)' : '') })), hasAdvWf: wfList.length > 0, noAdvWf: wfList.length === 0,
+      afWorkflowId: af.workflowId || '', onAfWorkflow: e => this.setAdvForm('workflowId', e.target.value),
+      afRouteText: selWf ? `ອະນຸມັດ: ${routeTxt(selWf.advApprovers)}  ·  ຈ່າຍເງິນ: ${routeTxt(selWf.advPayers)}  ·  ກວດເຄຍ: ${routeTxt(selWf.advCheckers)}` : '',
+      afLateWarn: myLate.length ? `⚠ ທ່ານມີເງິນເບີກເກີນກຳນົດເຄຍ (${myLate.map(x => x.advNumber).join(', ')}) — ບັນທຶກຮ່າງໄດ້ ແຕ່ສົ່ງຂໍອະນຸມັດບໍ່ໄດ້ຈົນກວ່າຈະເຄຍ` : '',
+      onSaveAdvDraft: () => this.saveAdv(false), onSubmitAdv: () => this.saveAdv(true), onCloseAdvForm: () => this.setState({ advFormOpen: false, advEditingId: null }),
+      // ລາຍລະອຽດ
+      showAdvDetail: !!va, va: va || {},
+      // ການຕັ້ງຄ່າ
+      expenseCatRows: this.advCats().map(c => ({ name: c.name, active: c.active, bg: c.active ? '#F1F6F2' : '#F4F4F2', fg: c.active ? '#14231A' : '#98A69B', deco: c.active ? 'none' : 'line-through', toggleLabel: c.active ? '×' : '↺', toggleTitle: c.active ? 'ປິດໃຊ້ໝວດນີ້' : 'ເປີດໃຊ້ຄືນ', onToggle: () => this.toggleExpenseCat(c.id) })),
+      newCatName: s.newCatName || '', onNewCatName: e => this.setState({ newCatName: e.target.value }), onAddCat: () => this.addExpenseCat(),
+    };
+  }
+  // ----- ຂໍ້ມູນເອກະສານພິມ 3 ໃບ (ໃຊ້ template ດຽວກັບເອກະສານຈັດຊື້) -----
+  advDocData(dv, base) {
+    const a = (this.state.advances || []).find(x => x.id === dv.id); if (!a) return null;
+    const usr = id => this.state.users.find(x => x.id === id);
+    const sig = (id, label, at, signed) => { const x = usr(id); return { name: x ? x.name : '', roleLine: x ? `${ROLE_LABEL[x.role] || ''} ${x.dept || ''}` : '', label, date: (signed && at) ? fd(at) : '________', img: (signed && x && x.signature) || '', hasImg: !!(signed && x && x.signature) }; };
+    const reqMeta = [{ k: 'ຜູ້ເບີກ', v: this.uName(a.requesterId) }, { k: 'ພະແນກ', v: a.department }];
+    const pct = Number(this.state.settings.advOverPct) || 0;
+    if (dv.kind === 'adv-req') {
+      const approvals = a.approvals || [];
+      const sigs = (a.approvers || []).map((id, i) => sig(id, `ຜູ້ອະນຸມັດ (ຂັ້ນ ${i + 1})`, approvals[i] && approvals[i].at, !!approvals[i]));
+      sigs.push(sig(a.requesterId, 'ຜູ້ຂໍເບີກ', a.submittedAt || a.createdAt, true));
+      const docApprovals = (a.approvers || []).map((id, i) => {
+        const x = usr(id), ap = approvals[i];
+        const rejectedHere = a.status === 'REJECTED' && i === approvals.length;
+        return { name: x ? x.name : '—', role: x ? ROLE_LABEL[x.role] : '—', dept: x ? x.dept : '—', status: ap ? `ອະນຸມັດ ${fdt(ap.at)}` : rejectedHere ? 'ປະຕິເສດ' : 'ລໍຖ້າ', remark: rejectedHere ? a.rejectReason : '' };
+      });
+      return { ...base, docTitle: 'ໃບຂໍເບີກເງິນລ່ວງໜ້າ', docTitleEn: 'CASH ADVANCE REQUEST', docSigCols: Math.min(4, sigs.length),
+        docMetaLeft: [...reqMeta, { k: 'ປະເພດ', v: ADV_TYPES[a.type] }, { k: 'ຈຸດປະສົງ', v: a.purpose }, ...(a.place ? [{ k: a.type === 'EVENT' ? 'ຊື່ງານ / ສະຖານທີ່' : 'ສະຖານທີ່', v: a.place }] : []), { k: 'ໄລຍະເວລາ', v: (a.workStart ? fd(a.workStart) + ' – ' : '') + fd(a.workEnd) }],
+        docMetaRight: [{ k: 'ເລກທີ', v: a.advNumber }, { k: 'ວັນທີ', v: fd(a.submittedAt || a.createdAt) }, { k: 'ຮັບເງິນແບບ', v: a.payMethod === 'TRANSFER' ? 'ໂອນ' : 'ເງິນສົດ' }, ...(a.bankAccount ? [{ k: 'ເລກບັນຊີ', v: a.bankAccount }] : []), { k: 'ສະຖານະ', v: (ADV_STATUS[a.status] || {}).label }],
+        docH: ['ລຳດັບ', 'ໝວດຄ່າໃຊ້ຈ່າຍ', 'ລາຍລະອຽດ', '', 'ຈຳນວນເງິນ (ກີບ)'],
+        docLines: (a.lines || []).map((l, i) => ({ no: i + 1, desc: this.advCatName(l.catId), qty: l.note || '', price: '', total: fm(l.amount) })),
+        docTotals: [{ k: 'ຍອດຂໍເບີກທັງໝົດ (ກີບ)', v: fm(a.total), bg: '#F3F8F4', weight: 700 }],
+        docApprovals, hasApprovals: docApprovals.length > 0, docSignatures: sigs };
+    }
+    if (dv.kind === 'adv-pay') {
+      const p = a.payment; if (!p) return null;
+      const stl = a.settlement;
+      const lines = [{ no: 1, desc: `ຈ່າຍເງິນເບີກລ່ວງໜ້າ ຕາມ ${a.advNumber}`, qty: fd(p.date), price: p.ref, total: fm(a.total) }];
+      let net = a.total;
+      if (stl && stl.doneAt && stl.returnAmt) { lines.push({ no: 2, desc: 'ຮັບເງິນເຫຼືອຄືນ (ຫຼັງເຄຍ)', qty: fd(stl.doneAt), price: stl.ref, total: '-' + fm(stl.returnAmt) }); net -= stl.returnAmt; }
+      if (stl && stl.doneAt && !stl.returnAmt && stl.topupAmt) { lines.push({ no: 2, desc: 'ຈ່າຍເງິນເພີ່ມ (ຫຼັງເຄຍ)', qty: fd(stl.doneAt), price: stl.ref, total: fm(stl.topupAmt) }); net += stl.topupAmt; }
+      const sigs = [sig(p.by, 'ຜູ້ຈ່າຍເງິນ', p.at, true), sig(a.requesterId, 'ຜູ້ຮັບເງິນ', a.receivedAt, !!a.receivedAt)];
+      return { ...base, docTitle: 'ໃບຈ່າຍເງິນລ່ວງໜ້າ', docTitleEn: 'PAYMENT VOUCHER — CASH ADVANCE', docSigCols: 2,
+        docMetaLeft: [{ k: 'ຈ່າຍໃຫ້', v: this.uName(a.requesterId) }, { k: 'ພະແນກ', v: a.department }, { k: 'ຈຸດປະສົງ', v: a.purpose }],
+        docMetaRight: [{ k: 'ອ້າງອີງ', v: a.advNumber }, { k: 'ວັນຈ່າຍ', v: fd(p.date) }, { k: 'ວິທີຈ່າຍ', v: p.method === 'TRANSFER' ? 'ໂອນ' : 'ເງິນສົດ' }, ...(a.bankAccount && p.method === 'TRANSFER' ? [{ k: 'ເລກບັນຊີ', v: a.bankAccount }] : [])],
+        docH: ['ລຳດັບ', 'ລາຍການ', 'ວັນທີ', 'ເລກອ້າງອີງ', 'ຈຳນວນເງິນ (ກີບ)'], docLines: lines,
+        docTotals: [{ k: 'ຍອດສຸດທິ (ກີບ)', v: fm(net), bg: '#F3F8F4', weight: 700 }],
+        docApprovals: [], hasApprovals: false, docSignatures: sigs };
+    }
+    if (dv.kind === 'adv-clr') {
+      const c = a.clearing; if (!c || !c.submittedAt) return null;
+      const stl = a.settlement || advSettlement(a.total, c.total, pct);
+      const cmp = advCompare(a.lines, c.lines);
+      const diffLabel = stl.kind === 'RETURN' ? `ສົ່ງຄືນ ${fm(stl.returnAmt)}` : stl.kind === 'NONE' ? 'ພໍດີ' : `ຈ່າຍເພີ່ມ ${fm(stl.topupAmt)}`;
+      const sigs = [sig(a.requesterId, 'ຜູ້ເຄຍເງິນ', c.submittedAt, true), sig(a.check && a.check.by, 'ຜູ້ກວດເຄຍ', a.check && a.check.at, !!a.check)];
+      if (a.settlement && a.settlement.doneBy) sigs.push(sig(a.settlement.doneBy, 'ການເງິນ (ປິດຍອດ)', a.settlement.doneAt, true));
+      return { ...base, docTitle: 'ໃບເຄຍເງິນລ່ວງໜ້າ', docTitleEn: 'CASH ADVANCE CLEARING', docSigCols: sigs.length,
+        docMetaLeft: [...reqMeta, { k: 'ອ້າງອີງ', v: a.advNumber }, { k: 'ຈຸດປະສົງ', v: a.purpose }],
+        docMetaRight: [{ k: 'ວັນທີສົ່ງເຄຍ', v: fd(c.submittedAt) }, { k: 'ກຳນົດເຄຍ', v: a.dueDate ? fd(a.dueDate) : '—' }, { k: 'ສະຖານະ', v: (ADV_STATUS[a.status] || {}).label }],
+        docH: ['ລຳດັບ', 'ໝວດຄ່າໃຊ້ຈ່າຍ', 'ປະມານການ', 'ໃຊ້ຈິງ', 'ສ່ວນຕ່າງ'],
+        docLines: cmp.map((r, i) => ({ no: i + 1, desc: this.advCatName(r.catId), qty: fm(r.est), price: fm(r.act), total: (r.diff > 0 ? '+' : '') + fm(r.diff) })),
+        docTotals: [{ k: 'ຍອດເບີກ (ກີບ)', v: fm(a.total), bg: '#fff', weight: 400 }, { k: 'ຍອດໃຊ້ຈິງ (ກີບ)', v: fm(c.total), bg: '#fff', weight: 400 }, { k: 'ສ່ວນຕ່າງ', v: diffLabel, bg: '#F3F8F4', weight: 700 }],
+        docExtraTitle: `ລາຍການໃບບິນ (${c.lines.length} ລາຍການ${c.lines.some(l => l.noReceipt) ? `, ບໍ່ມີໃບບິນ ${c.lines.filter(l => l.noReceipt).length}` : ''})`,
+        docX: ['ລຳດັບ', 'ວັນທີ', 'ໝວດ', 'ເລກໃບບິນ / ໝາຍເຫດ', 'ຈຳນວນເງິນ (ກີບ)'],
+        docExtraRows: c.lines.map((l, i) => ({ a: i + 1, b: fd(l.date), c: this.advCatName(l.catId), d: l.noReceipt ? `⚠ ບໍ່ມີໃບບິນ: ${l.reason}` : (l.receiptNo || (l.file ? 'ແນບຮູບ' : '—')), e: fm(l.amount) })),
+        docApprovals: [], hasApprovals: false, docSignatures: sigs };
+    }
+    return null;
+  }
   renderVals() {
     const s = this.state;
     const u = this.me();
@@ -3311,6 +4689,7 @@ class Component extends DCLogic {
 
     return {
       loaded: true, showLogin: !u, showApp: !!u, loginRows,
+      ...this.advProps(s, u),
       syncLabel: getSyncUrl() ? '☁ Sync ເປີດ — ຂໍ້ມູນແຊຜ່ານ Google Sheet' : '💾 Sync ປິດ — ເກັບໃນເຄື່ອງນີ້ (localStorage)',
       syncColor: getSyncUrl() ? '#116F38' : '#98A69B',
       onConfigSync: () => { const cur = getSyncUrl(); const v = prompt('ວາງ URL ຂອງ Google Apps Script Web App\\n(ວ່າງໄວ້ = ປິດ sync, ໃຊ້ localStorage):', cur); if (v !== null) { setSyncUrl(v.trim()); location.reload(); } },
@@ -3325,7 +4704,7 @@ class Component extends DCLogic {
       isDashboard: s.page === 'dashboard', isPrPage: s.page === 'pr', isPoPage: s.page === 'po', isGrnPage: s.page === 'grn', isVendorPage: s.page === 'vendor', isSettingsPage: s.page === 'settings', isAuditPage: s.page === 'audit',
       goDashboard: () => this.goPage('dashboard'), goPr: () => this.goPage('pr'), goPo: () => this.goPage('po'), goGrn: () => this.goPage('grn'), goVendor: () => this.goPage('vendor'), goSettings: () => this.goPage('settings'), goAudit: () => this.goPage('audit'),
       mobileNavOpen01: s.mobileNavOpen ? '1' : '0', onToggleMobileNav: () => this.setState({ mobileNavOpen: !s.mobileNavOpen }), onCloseMobileNav: () => this.setState({ mobileNavOpen: false }),
-      navDashboardBg: nb('dashboard'), navDashboardColor: nc('dashboard'), navDashboardAccent: na('dashboard'), navPrBg: nb('pr'), navPrColor: nc('pr'), navPrAccent: na('pr'), navPoBg: nb('po'), navPoColor: nc('po'), navGrnBg: nb('grn'), navGrnColor: nc('grn'), navGrnAccent: na('grn'), navVendorBg: nb('vendor'), navVendorColor: nc('vendor'), navVendorAccent: na('vendor'), navSettingsBg: nb('settings'), navSettingsColor: nc('settings'), navSettingsAccent: na('settings'), navAuditBg: nb('audit'), navAuditColor: nc('audit'), navAuditAccent: na('audit'),
+      navDashboardBg: nb('dashboard'), navDashboardColor: nc('dashboard'), navDashboardAccent: na('dashboard'), navPrBg: nb('pr'), navPrColor: nc('pr'), navPrAccent: na('pr'), navPoBg: nb('po'), navPoColor: nc('po'), navGrnBg: nb('grn'), navGrnColor: nc('grn'), navGrnAccent: na('grn'), navVendorBg: nb('vendor'), navVendorColor: nc('vendor'), navVendorAccent: na('vendor'), navSettingsBg: nb('settings'), navSettingsColor: nc('settings'), navSettingsAccent: na('settings'), navAuditBg: nb('audit'), navAuditColor: nc('audit'), navAuditAccent: na('audit'), navAdvBg: nb('adv'), navAdvColor: nc('adv'), navAdvAccent: na('adv'),
       sidebarCollapsed: collapsed, sidebarWidth, navJustify, navPad, showSidebarLabels: !collapsed, onToggleSidebar: () => this.toggleSidebar(),
       isAdminUser: !!(u && u.role === 'ADMIN'),
       sigUserOptions: s.users.map(x => ({ id: x.id, name: x.name })),
@@ -3395,15 +4774,29 @@ class Component extends DCLogic {
       prFormBudgetApprover: s.prFormBudgetApprover, onPrBudgetApproverChange: e => this.setState({ prFormBudgetApprover: e.target.value }),
       prFormQuoteApprover: s.prFormQuoteApprover, onPrQuoteApproverChange: e => this.setState({ prFormQuoteApprover: e.target.value }),
       prFormPoApprover: s.prFormPoApprover, onPrPoApproverChange: e => this.setState({ prFormPoApprover: e.target.value }),
-      hasWorkflows: ((s.settings && s.settings.workflows) || []).length > 0,
-      workflowOptions: ((s.settings && s.settings.workflows) || []).map(w => ({ id: w.id, name: w.name })),
+      hasWorkflows: ((s.settings && s.settings.workflows) || []).filter(w => w.type !== 'ADV').length > 0,
+      workflowOptions: ((s.settings && s.settings.workflows) || []).filter(w => w.type !== 'ADV').map(w => ({ id: w.id, name: w.name })),
       noWorkflows: ((s.settings && s.settings.workflows) || []).length === 0,
-      workflowRows: ((s.settings && s.settings.workflows) || []).map(w => ({
+      workflowRows: ((s.settings && s.settings.workflows) || []).map(w => w.type === 'ADV' ? ({
+        name: `💵 ${w.name}${w.isDefault ? ' ⭐ ຄ່າເລີ່ມຕົ້ນ' : ''}`,
+        summary: `ເບີກລ່ວງໜ້າ · ອະນຸມັດ: ${(w.advApprovers || []).map(id => this.uName(id)).join(' → ') || '—'} · ຈ່າຍເງິນ: ${(w.advPayers || []).map(id => this.uName(id)).join(' / ') || '—'} · ກວດເຄຍ: ${(w.advCheckers || []).map(id => this.uName(id)).join(' / ') || '—'}`,
+        canDelete: !!(u && u.role === 'ADMIN'), onDelete: () => this.deleteWorkflow(w.id), onEdit: () => this.editWorkflow(w.id),
+      }) : ({
         name: w.name,
         summary: ((w.prApprovers || []).length ? 'PR: ' + w.prApprovers.map(id => this.uName(id)).join(' → ') : 'PR: role ອັດຕະໂນມັດ') + (w.procOfficer ? ' · ຈັດຊື້: ' + this.uName(w.procOfficer) : '') + ((w.budgetApprovers || []).length ? ' · ງບ: ' + w.budgetApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.quoteApprovers || []).length ? ' · ໃບສະເໜີ: ' + w.quoteApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.poApprovers || []).length ? ' · PO: ' + w.poApprovers.map(id => this.uName(id)).join(' → ') : ''),
         canDelete: !!(u && u.role === 'ADMIN'), onDelete: () => this.deleteWorkflow(w.id), onEdit: () => this.editWorkflow(w.id),
       })),
       wfFormOpen: s.wfFormOpen, wfFormBtnLabel: s.wfFormOpen ? 'ຍົກເລີກ' : '+ ສ້າງ Workflow', wfFormTitle: s.wfEditingId ? '✎ ແກ້ໄຂ Workflow' : 'ສ້າງ Workflow ໃໝ່', wfSaveLabel: s.wfEditingId ? 'ບັນທຶກການແກ້ໄຂ' : 'ບັນທຶກ Workflow', onToggleWfForm: () => this.toggleWfForm(), onSaveWfSettings: () => this.saveWorkflowFromSettings(),
+      wfIsPr: s.wfType !== 'ADV', wfIsAdv: s.wfType === 'ADV', wfTypeEditable: !s.wfEditingId,
+      onWfTypePr: () => this.setState({ wfType: 'PR' }), onWfTypeAdv: () => this.setState({ wfType: 'ADV' }),
+      wfTypePrBg: s.wfType !== 'ADV' ? '#116F38' : '#fff', wfTypePrFg: s.wfType !== 'ADV' ? '#fff' : '#3C4C3A', wfTypeAdvBg: s.wfType === 'ADV' ? '#116F38' : '#fff', wfTypeAdvFg: s.wfType === 'ADV' ? '#fff' : '#3C4C3A',
+      wfIsDefault: !!s.wfIsDefault, onWfIsDefault: () => this.setState({ wfIsDefault: !s.wfIsDefault }),
+      wfAdvApprPick: s.wfAdvApprPick, onWfAdvApprPick: e => this.setState({ wfAdvApprPick: e.target.value }), onAddWfAdvAppr: () => this.addWfStageApprover('wfAdvAppr', s.wfAdvApprPick),
+      wfAdvApprChips: (s.wfAdvApprList || []).map((id, i) => ({ id, order: i + 1, name: this.uName(id), onRemove: () => this.removeWfStageApprover('wfAdvAppr', id) })),
+      wfAdvPayPick: s.wfAdvPayPick, onWfAdvPayPick: e => this.setState({ wfAdvPayPick: e.target.value }), onAddWfAdvPay: () => this.addWfStageApprover('wfAdvPay', s.wfAdvPayPick),
+      wfAdvPayChips: (s.wfAdvPayList || []).map((id, i) => ({ id, order: i + 1, name: this.uName(id), onRemove: () => this.removeWfStageApprover('wfAdvPay', id) })),
+      wfAdvChkPick: s.wfAdvChkPick, onWfAdvChkPick: e => this.setState({ wfAdvChkPick: e.target.value }), onAddWfAdvChk: () => this.addWfStageApprover('wfAdvChk', s.wfAdvChkPick),
+      wfAdvChkChips: (s.wfAdvChkList || []).map((id, i) => ({ id, order: i + 1, name: this.uName(id), onRemove: () => this.removeWfStageApprover('wfAdvChk', id) })),
       wfPickList: s.users.filter(x => x.isActive).map(x => ({ id: x.id, name: x.name, role: ROLE_LABEL[x.role] || '' })),
       wfProcList: s.users.filter(x => x.isActive && x.role === 'PROCUREMENT').map(x => ({ id: x.id, name: x.name })),
       wfName: s.wfName, onWfName: e => this.setState({ wfName: e.target.value }),
@@ -3455,6 +4848,9 @@ class Component extends DCLogic {
       setMinQuotes: d.minQuotes, onSetMinQuotes: e => this.setD('minQuotes', e.target.value),
       setMinQuotes2: d.minQuotes2, onSetMinQuotes2: e => this.setD('minQuotes2', e.target.value),
       setDblDisplay: fmtIn(d.directBuyLimit), onSetDbl: e => this.setD('directBuyLimit', e.target.value),
+      setAdvDays: d.advClearDays, onSetAdvDays: e => this.setD('advClearDays', e.target.value),
+      setAdvOver: d.advOverPct, onSetAdvOver: e => this.setD('advOverPct', e.target.value),
+      setAdvCapDisplay: fmtIn(d.advPurchaseCap), onSetAdvCap: e => this.setD('advPurchaseCap', e.target.value),
       setCoLao: d.coLao, onSetCoLao: e => this.setD('coLao', e.target.value),
       setCoEn: d.coEn, onSetCoEn: e => this.setD('coEn', e.target.value),
       setCoAddr: d.coAddr, onSetCoAddr: e => this.setD('coAddr', e.target.value),
@@ -3506,6 +4902,9 @@ class Component extends DCLogic {
       docLines: doc ? doc.docLines : [], docTotals: doc ? doc.docTotals : [],
       docSignatures: doc ? doc.docSignatures : [], docSigCols: doc ? doc.docSigCols : 3,
       docApprovals: doc && doc.docApprovals ? doc.docApprovals : [], hasDocApprovals: !!(doc && doc.docApprovals && doc.docApprovals.length),
+      docH1: doc && doc.docH ? doc.docH[0] : 'ລຳດັບ', docH2: doc && doc.docH ? doc.docH[1] : 'ລາຍການ', docH3: doc && doc.docH ? doc.docH[2] : 'ຈຳນວນ', docH4: doc && doc.docH ? doc.docH[3] : 'ລາຄາ/ໜ່ວຍ', docH5: doc && doc.docH ? doc.docH[4] : 'ລວມ',
+      hasDocExtra: !!(doc && doc.docExtraRows && doc.docExtraRows.length), docExtraTitle: doc && doc.docExtraTitle ? doc.docExtraTitle : '', docExtraRows: (doc && doc.docExtraRows) || [],
+      docX1: doc && doc.docX ? doc.docX[0] : '', docX2: doc && doc.docX ? doc.docX[1] : '', docX3: doc && doc.docX ? doc.docX[2] : '', docX4: doc && doc.docX ? doc.docX[3] : '', docX5: doc && doc.docX ? doc.docX[4] : '',
 
       toastOpen: !!s.toast, toastText: s.toast ? s.toast.text : '',
       toastBg: s.toast && s.toast.kind === 'error' ? '#FBE7E6' : '#E3F3E7',
