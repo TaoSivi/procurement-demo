@@ -422,7 +422,7 @@
             <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
               <label style="font-size:12px;color:#0B4D27;font-weight:700">2. ກວດງົບປະມານ</label>
               <div style="display:flex;gap:8px;margin-top:6px">
-                <select value="{{ wfBudgetPick }}" onChange="{{ onWfBudgetPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
+                <select value="{{ wfBudgetPick }}" onChange="{{ onWfBudgetPick }}" style="flex:1;padding:8px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px"><option value="">— ເລືອກຄົນ —</option><option value="__REQUESTER__">👤 ຜູ້ສ້າງ PR (ຄົນດຽວກັບຜູ້ຂໍຊື້)</option><sc-for list="{{ wfPickList }}" as="a" hint-placeholder-count="3"><option value="{{ a.id }}">{{ a.name }} · {{ a.role }}</option></sc-for></select>
                 <button onClick="{{ onAddWfBudget }}" style="flex-shrink:0;background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:0 16px;font-size:16px;font-weight:700;cursor:pointer">+</button>
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
@@ -1882,6 +1882,9 @@ function seedData() {
   return { settings, vendors, prs, pos, grns, auditLogs, users: DEFAULT_USERS.map(x => ({ ...x })), seq: { pr: 0, po: 0, grn: 0, qt: 0, audit: 0 }, currentUserId: null };
 }
 
+// ຕົວແທນ "ຜູ້ສ້າງ PR" ໃນ Workflow — ຖືກແທນດ້ວຍ id ຜູ້ຂໍຊື້ຕອນສ້າງ PR
+const REQ_TOKEN = '__REQUESTER__';
+
 class Component extends DCLogic {
   state = {
     loaded: false, currentUserId: null, page: 'dashboard', toast: null, sidebarCollapsed: false, sigTargetUserId: '',
@@ -1941,7 +1944,7 @@ class Component extends DCLogic {
 
   me() { return this.state.users.find(u => u.id === this.state.currentUserId) || null; }
 
-  uName(id) { const u = this.state.users.find(x => x.id === id); return u ? u.name : '—'; }
+  uName(id) { if (id === REQ_TOKEN) return '👤 ຜູ້ສ້າງ PR'; const u = this.state.users.find(x => x.id === id); return u ? u.name : '—'; }
 
   log(action, detail, ok, actorOverride) {
     const u = actorOverride || this.me();
@@ -2233,7 +2236,8 @@ class Component extends DCLogic {
     const _wf = (this.state.settings.workflows || []).find(w => w.id === this.state.prFormWorkflowId);
     const route = _wf ? (_wf.prApprovers || []).filter(id => id && id !== u.id) : [];
     const watchers = (this.state.prFormWatchers || []).filter(id => id && id !== u.id && !route.includes(id));
-    const dsw = _wf ? { workflowId: _wf.id, procurementOfficer: _wf.procOfficer || null, budgetApprovers: [...(_wf.budgetApprovers || [])], quoteApprovers: [...(_wf.quoteApprovers || [])], poApprovers: [...(_wf.poApprovers || [])] } : { workflowId: null, procurementOfficer: null, budgetApprovers: [], quoteApprovers: [], poApprovers: [] };
+    const _reqId = (this.state.editingPrId && (this.state.prs.find(p => p.id === this.state.editingPrId) || {}).requesterId) || u.id;
+    const dsw = _wf ? { workflowId: _wf.id, procurementOfficer: _wf.procOfficer || null, budgetApprovers: [...new Set((_wf.budgetApprovers || []).map(id => id === REQ_TOKEN ? _reqId : id))], quoteApprovers: [...(_wf.quoteApprovers || [])], poApprovers: [...(_wf.poApprovers || [])] } : { workflowId: null, procurementOfficer: null, budgetApprovers: [], quoteApprovers: [], poApprovers: [] };
     if (this.state.editingPrId) {
       const existing = this.state.prs.find(p => p.id === this.state.editingPrId);
       if (!existing) { this.setState({ prFormOpen: false, editingPrId: null }); return; }
