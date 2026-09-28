@@ -400,8 +400,8 @@
         </div>
         <p style="margin:0 0 14px;font-size:12.5px;color:#5C6D5A">Admin ສ້າງ Workflow ໄວ້ບ່ອນນີ້ (ຂັ້ນ ອະນຸມັດ PR → ກວດງົບ → ໃບສະເໜີ → PO) → ຕອນສ້າງ PR ເລືອກ Workflow ໄດ້ເລີຍ → ໃຊ້ຊ້ຳໄດ້ທຸກຄັ້ງ</p>
         <sc-if value="{{ wfFormOpen }}" hint-placeholder-val="{{ false }}">
-          <div style="background:#fff;border:1px solid #DCE8DF;border-radius:12px;padding:18px 20px;margin-bottom:16px">
-            <div style="font-weight:700;font-size:13.5px;color:#0B4D27;margin-bottom:4px">ສ້າງ Workflow ໃໝ່</div>
+          <div id="wfForm" style="background:#fff;border:1px solid #DCE8DF;border-radius:12px;padding:18px 20px;margin-bottom:16px;scroll-margin-top:72px">
+            <div style="font-weight:700;font-size:13.5px;color:#0B4D27;margin-bottom:4px">{{ wfFormTitle }}</div>
             <p style="margin:0 0 12px;font-size:11.5px;color:#8B9A88">ກຳນົດຂັ້ນ ກວດກາ → ອະນຸມັດ → ສຳເລັດ. ແຕ່ລະຂັ້ນເພີ່ມຄົນອະນຸມັດໄດ້ຫຼາຍຄົນ (ຕ້ອງເຊັນຄົບທຸກຄົນ ຕາມລຳດັບ).</p>
             <label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ຊື່ Workflow</label>
             <input value="{{ wfName }}" onChange="{{ onWfName }}" placeholder="ເຊັ່ນ: ຈັດຊື້ໄອທີ, ງົບໃຫຍ່ >50 ລ້ານ" style="width:100%;box-sizing:border-box;margin:4px 0 14px;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13.5px">
@@ -451,17 +451,17 @@
                 <sc-for list="{{ wfPoChips }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;background:#F1F6F2;border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><b style="color:#116F38">{{ c.order }}.</b> {{ c.name }} <button onClick="{{ c.onRemove }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">×</button></span></sc-for>
               </div>
             </div>
-            <button onClick="{{ onSaveWfSettings }}" style="margin-top:16px;background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer">ບັນທຶກ Workflow</button>
+            <button onClick="{{ onSaveWfSettings }}" style="margin-top:16px;background:#116F38;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer">{{ wfSaveLabel }}</button>
           </div>
         </sc-if>
         <div style="background:#fff;border:1px solid #EEF2ED;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(16,40,24,0.04)">
           <sc-for list="{{ workflowRows }}" as="wf" hint-placeholder-count="2">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid #F4F6F3">
               <div><div style="font-weight:600;font-size:13.5px">⚡ {{ wf.name }}</div><div style="font-size:11.5px;color:#8B9A88">{{ wf.summary }}</div></div>
-              <sc-if value="{{ wf.canDelete }}" hint-placeholder-val="{{ false }}"><button onClick="{{ wf.onDelete }}" style="flex-shrink:0;background:#FBE7E6;color:#B23B2E;border:1px solid #F3CFCB;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ລຶບ</button></sc-if>
+              <sc-if value="{{ wf.canDelete }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:6px;flex-shrink:0"><button onClick="{{ wf.onEdit }}" style="background:#E8F3EC;color:#116F38;border:1px solid #BFE0C9;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">✎ ແກ້ໄຂ</button><button onClick="{{ wf.onDelete }}" style="flex-shrink:0;background:#FBE7E6;color:#B23B2E;border:1px solid #F3CFCB;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ລຶບ</button></div></sc-if>
             </div>
           </sc-for>
-          <sc-if value="{{ noWorkflows }}" hint-placeholder-val="{{ true }}"><div style="padding:28px 16px;text-align:center;color:#8B9A88;font-size:13px">ຍັງບໍ່ມີ Workflow — ໄປໜ້າ "ສ້າງ PR" ຕັ້ງຄ່າຜູ້ອະນຸມັດ ແລ້ວກົດ 💾 ເພື່ອບັນທຶກ</div></sc-if>
+          <sc-if value="{{ noWorkflows }}" hint-placeholder-val="{{ true }}"><div style="padding:28px 16px;text-align:center;color:#8B9A88;font-size:13px">ຍັງບໍ່ມີ Workflow — ກົດ "+ ສ້າງ Workflow" ຂ້າງເທິງເພື່ອເລີ່ມ</div></sc-if>
         </div>
       </div>
 
@@ -1890,7 +1890,7 @@ class Component extends DCLogic {
     loaded: false, currentUserId: null, page: 'dashboard', toast: null, sidebarCollapsed: false, sigTargetUserId: '',
     prFilter: 'all', prSearch: '', prCommentText: '', mobileNavOpen: false,
     vendorFormOpen: false, vNewName: '', vNewTax: '', vNewCur: 'LAK',
-    wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '',
+    wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '', wfEditingId: null,
     loginSelectedId: null, loginPassword: '', loginError: '',
     detailKind: null, detailId: null, detailTab: 'lines', action: null, reasonText: '',
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
@@ -2357,7 +2357,17 @@ class Component extends DCLogic {
   toggleWfForm() {
     const u = this.me();
     if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມສ້າງ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
-    this.setState({ wfFormOpen: !this.state.wfFormOpen, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '' });
+    this.setState({ wfFormOpen: !this.state.wfFormOpen, wfEditingId: null, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '' });
+  }
+  editWorkflow(id) {
+    const u = this.me();
+    if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມແກ້ໄຂ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
+    const w = (this.state.settings.workflows || []).find(x => x.id === id);
+    if (!w) return;
+    this.setState({ wfFormOpen: true, wfEditingId: w.id, wfName: w.name || '', wfProc: w.procOfficer || '',
+      wfPrList: [...(w.prApprovers || [])], wfBudgetList: [...(w.budgetApprovers || [])], wfQuoteList: [...(w.quoteApprovers || [])], wfPoList: [...(w.poApprovers || [])],
+      wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '' });
+    setTimeout(() => { const el = document.getElementById('wfForm'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
   }
   addWfStageApprover(stage, id) {
     if (!id) return;
@@ -2377,17 +2387,20 @@ class Component extends DCLogic {
     const nm = (s.wfName || '').trim();
     if (!nm) { this.toast('error', 'ຕ້ອງມີຊື່ Workflow'); return; }
     if (!(s.wfPrList || []).length && !(s.wfBudgetList || []).length && !(s.wfQuoteList || []).length && !(s.wfPoList || []).length && !s.wfProc) { this.toast('error', 'ກຳນົດຢ່າງໜ້ອຍ 1 ຂັ້ນ (ອະນຸມັດ PR/ງບ/ໃບສະເໜີ/PO/ຈັດຊື້)'); return; }
-    const wf = { id: uid(), name: nm, prApprovers: [...(s.wfPrList || [])], procOfficer: s.wfProc || null, budgetApprovers: [...(s.wfBudgetList || [])], quoteApprovers: [...(s.wfQuoteList || [])], poApprovers: [...(s.wfPoList || [])] };
-    const settings = { ...s.settings, workflows: [...(s.settings.workflows || []), wf] };
-    const lg = this.log('CREATE', `ສ້າງ Workflow "${nm}" (Settings)`, true);
-    this.persist({ settings, wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '', ...lg });
-    this.toast('success', `ສ້າງ Workflow "${nm}" ແລ້ວ`);
+    const editing = s.wfEditingId && (s.settings.workflows || []).some(w => w.id === s.wfEditingId);
+    const wf = { id: editing ? s.wfEditingId : uid(), name: nm, prApprovers: [...(s.wfPrList || [])], procOfficer: s.wfProc || null, budgetApprovers: [...(s.wfBudgetList || [])], quoteApprovers: [...(s.wfQuoteList || [])], poApprovers: [...(s.wfPoList || [])] };
+    const list = s.settings.workflows || [];
+    const settings = { ...s.settings, workflows: editing ? list.map(w => w.id === wf.id ? wf : w) : [...list, wf] };
+    const lg = this.log(editing ? 'UPDATE' : 'CREATE', `${editing ? 'ແກ້ໄຂ' : 'ສ້າງ'} Workflow "${nm}" (Settings)`, true);
+    this.persist({ settings, wfFormOpen: false, wfName: '', wfProc: '', wfPrList: [], wfBudgetList: [], wfQuoteList: [], wfPoList: [], wfPrPick: '', wfBudgetPick: '', wfQuotePick: '', wfPoPick: '', wfEditingId: null, ...lg });
+    this.toast('success', `${editing ? 'ບັນທຶກການແກ້ໄຂ' : 'ສ້າງ'} Workflow "${nm}" ແລ້ວ`);
   }
   deleteWorkflow(id) {
     const u = this.me();
     if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມລຶບ Workflow', 'ສະເພາະຜູ້ດູແລລະບົບ (SoD)'); return; }
     const wf = (this.state.settings.workflows || []).find(w => w.id === id);
     const settings = { ...this.state.settings, workflows: (this.state.settings.workflows || []).filter(w => w.id !== id) };
+    if (this.state.wfEditingId === id) this.setState({ wfFormOpen: false, wfEditingId: null });
     const lg = this.log('DELETE', `ລຶບ Workflow "${wf ? wf.name : ''}"`, true);
     this.persist({ settings, ...lg });
     this.toast('success', 'ລຶບ Workflow ແລ້ວ');
@@ -3268,9 +3281,9 @@ class Component extends DCLogic {
       workflowRows: ((s.settings && s.settings.workflows) || []).map(w => ({
         name: w.name,
         summary: ((w.prApprovers || []).length ? 'PR: ' + w.prApprovers.map(id => this.uName(id)).join(' → ') : 'PR: role ອັດຕະໂນມັດ') + (w.procOfficer ? ' · ຈັດຊື້: ' + this.uName(w.procOfficer) : '') + ((w.budgetApprovers || []).length ? ' · ງບ: ' + w.budgetApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.quoteApprovers || []).length ? ' · ໃບສະເໜີ: ' + w.quoteApprovers.map(id => this.uName(id)).join(' → ') : '') + ((w.poApprovers || []).length ? ' · PO: ' + w.poApprovers.map(id => this.uName(id)).join(' → ') : ''),
-        canDelete: !!(u && u.role === 'ADMIN'), onDelete: () => this.deleteWorkflow(w.id),
+        canDelete: !!(u && u.role === 'ADMIN'), onDelete: () => this.deleteWorkflow(w.id), onEdit: () => this.editWorkflow(w.id),
       })),
-      wfFormOpen: s.wfFormOpen, wfFormBtnLabel: s.wfFormOpen ? 'ຍົກເລີກ' : '+ ສ້າງ Workflow', onToggleWfForm: () => this.toggleWfForm(), onSaveWfSettings: () => this.saveWorkflowFromSettings(),
+      wfFormOpen: s.wfFormOpen, wfFormBtnLabel: s.wfFormOpen ? 'ຍົກເລີກ' : '+ ສ້າງ Workflow', wfFormTitle: s.wfEditingId ? '✎ ແກ້ໄຂ Workflow' : 'ສ້າງ Workflow ໃໝ່', wfSaveLabel: s.wfEditingId ? 'ບັນທຶກການແກ້ໄຂ' : 'ບັນທຶກ Workflow', onToggleWfForm: () => this.toggleWfForm(), onSaveWfSettings: () => this.saveWorkflowFromSettings(),
       wfPickList: s.users.filter(x => x.isActive).map(x => ({ id: x.id, name: x.name, role: ROLE_LABEL[x.role] || '' })),
       wfProcList: s.users.filter(x => x.isActive && x.role === 'PROCUREMENT').map(x => ({ id: x.id, name: x.name })),
       wfName: s.wfName, onWfName: e => this.setState({ wfName: e.target.value }),
