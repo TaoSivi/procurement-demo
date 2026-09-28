@@ -210,6 +210,7 @@
           <div>• &gt; {{ t2Display }} ກີບ → ອະນຸມັດ 3 ຂັ້ນ (+ ຜູ້ອຳນວຍການ)</div>
           <div>• ມູນຄ່າ ≥ <b>{{ qtDisplay }}</b> ກີບ → ຕ້ອງມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ <b>{{ minQuotesDisplay }}</b> ໃບກ່ອນອອກ PO</div>
           <div>• ມູນຄ່າ ≥ <b>{{ qt2Display }}</b> ກີບ → ຕ້ອງມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ <b>{{ minQuotes2Display }}</b> ໃບກ່ອນອອກ PO</div>
+          <sc-if value="{{ dblOn }}" hint-placeholder-val="{{ true }}"><div>• ມູນຄ່າ &lt; <b>{{ dblDisplay }}</b> ກີບ → ຈັດຊື້ ຊື້ໂດຍກົງໄດ້ (ບໍ່ຕ້ອງໃບສະເໜີລາຄາ / ຫົວໜ້າອະນຸມັດ; PO ຍັງຕ້ອງອະນຸມັດ)</div></sc-if>
         </div>
       </div>
     </div>
@@ -275,6 +276,7 @@
             <div><button onClick="{{ grn.onView }}" style="background:#F3F8F4;color:#116F38;border:1px solid #DCE8DF;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer">ເປີດ</button></div>
           </div>
         </sc-for>
+        <sc-if value="{{ noGrns }}" hint-placeholder-val="{{ false }}"><div style="padding:28px 16px;text-align:center;color:#8B9A88;font-size:13px;line-height:1.7">ຍັງບໍ່ມີໃບຮັບເຄື່ອງ — ເມື່ອ PO ອະນຸມັດຄົບແລ້ວ, ຝ່າຍຈັດຊື້ເປີດ PR ນັ້ນ ແລ້ວກົດ "ຮັບເຄື່ອງ (ສ້າງ GRN)"</div></sc-if>
       </div>
     </div>
     </sc-if>
@@ -378,7 +380,12 @@
               <div style="font-weight:700;font-size:12.5px;margin-bottom:6px">ຂັ້ນທີ 2 — ວົງເງິນສູງກວ່າ</div>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">ບັງຄັບເມື່ອມູນຄ່າ ≥ <input type="text" inputmode="decimal" value="{{ setQt2Display }}" onChange="{{ onSetQt2 }}" disabled="{{ settingsReadOnly }}" style="width:150px;padding:7px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;box-sizing:border-box;text-align:right"> ກີບ · ຢ່າງໜ້ອຍ <input type="number" value="{{ setMinQuotes2 }}" onChange="{{ onSetMinQuotes2 }}" disabled="{{ settingsReadOnly }}" style="width:70px;padding:7px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;box-sizing:border-box"> ໃບ</div>
             </div>
-            <div style="color:#8B9A88;font-size:12.5px;line-height:1.7">ຕໍ່າກວ່າຂັ້ນທີ 1 ອອກ PO ໄດ້ໂດຍມີໃບສະເໜີລາຄາໃບດຽວ ຫຼື ບໍ່ມີກໍໄດ້</div>
+            <div style="border:1px solid #F0DDB0;border-radius:10px;padding:12px 14px;background:#FFF9EC">
+              <div style="font-weight:700;font-size:12.5px;margin-bottom:6px">⚡ ຊື້ໂດຍກົງ (ຈັດຊື້ຕັດສິນໃຈເອງ)</div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">ເມື່ອມູນຄ່າ &lt; <input type="text" inputmode="numeric" value="{{ setDblDisplay }}" onChange="{{ onSetDbl }}" disabled="{{ settingsReadOnly }}" style="width:150px;padding:7px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;box-sizing:border-box;text-align:right"> ກີບ</div>
+              <div style="color:#8A6A2A;font-size:12px;line-height:1.7;margin-top:6px">ບໍ່ຕ້ອງມີໃບສະເໜີລາຄາ ແລະ ບໍ່ຕ້ອງສົ່ງຫົວໜ້າອະນຸມັດ — PO ຍັງຕ້ອງອະນຸມັດຕາມປົກກະຕິ. ໃສ່ 0 = ປິດ</div>
+            </div>
+            <div style="color:#8B9A88;font-size:12.5px;line-height:1.7">ຕໍ່າກວ່າຂັ້ນທີ 1 ຕ້ອງມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ 1 ໃບ (ຍົກເວັ້ນ ຊື້ໂດຍກົງ)</div>
           </div>
           <div style="font-weight:700;font-size:15px;color:#0B4D27;margin:20px 0 14px">ຂໍ້ມູນບໍລິສັດເທິງເອກະສານ</div>
           <div style="display:flex;flex-direction:column;gap:10px;font-size:13px">
@@ -416,7 +423,7 @@
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
                 <sc-for list="{{ wfPrChips }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;background:#F1F6F2;border:1px solid #D9E7DD;border-radius:20px;padding:4px 6px 4px 11px;font-size:12.5px"><b style="color:#116F38">{{ c.order }}.</b> {{ c.name }} <button onClick="{{ c.onRemove }}" style="background:#DCE8DF;color:#5C6D5A;border:none;border-radius:50%;width:18px;height:18px;line-height:1;cursor:pointer;font-size:12px">×</button></span></sc-for>
               </div>
-              <div style="font-size:10.5px;color:#8B9A88;margin-top:4px">ວ່າງໄວ້ = ໃຊ້ role ອັດຕະໂນມັດຕາມມູນຄ່າ (≤10ລ້ານ→ຫົວໜ້າ, ≤100ລ້ານ→+ການເງິນ, >100ລ້ານ→+ຜอ.)</div>
+              <div style="font-size:10.5px;color:#8B9A88;margin-top:4px">ວ່າງໄວ້ = ໃຊ້ role ອັດຕະໂນມັດຕາມມູນຄ່າ (≤10ລ້ານ→ຫົວໜ້າ, ≤100ລ້ານ→+ການເງິນ, >100ລ້ານ→+ຜອ.)</div>
             </div>
 
             <div style="border-top:1px dashed #DCE8DF;padding-top:12px;margin-bottom:12px">
@@ -674,8 +681,8 @@
 
     <!-- ===== ແນบเอกสาร (ຫຼາຍໄຟລ໌) ====== -->
     <div style="margin-top:18px;padding-top:16px;border-top:1px solid #EEF1ED">
-      <label style="font-size:12px;color:#5C6D5A;font-weight:600">ເອກະສານແນບ (ແນບໄດ້ຫຼາຍໄຟລ໌ — ໃບສະເໜີລາຄາ, ຮູບ, PDF ฯลฯ)</label>
-      <div style="margin-top:6px"><input type="file" multiple onChange="{{ onPrFilesChange }}" style="font-size:12.5px" /></div>
+      <label style="font-size:12px;color:#5C6D5A;font-weight:600">ເອກະສານແນບ (ແນບໄດ້ຫຼາຍໄຟລ໌ — ໃບສະເໜີລາຄາ, ຮູບ, PDF ຯລຯ)</label>
+      <div style="margin-top:6px"><input type="file" multiple="{{ true }}" onChange="{{ onPrFilesChange }}" style="font-size:12.5px" /></div>
       <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">
         <sc-for list="{{ prFormAttachmentRows }}" as="at" hint-placeholder-count="2">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:#F3F8F4;border:1px solid #DCE8DF;border-radius:7px;padding:7px 10px;font-size:12.5px">
@@ -768,7 +775,7 @@
       <sc-if value="{{ viewPr.showWaiting }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;align-items:center;gap:10px;background:#EAF3FB;border:1px solid #BcdBF0;border:1px solid #BCD8F0;border-radius:8px;padding:12px 16px;margin-bottom:18px">
           <span style="font-size:18px">🕐</span>
-          <div style="font-size:13px;color:#1D3F6E;line-height:1.6">ຂັ້ນຕອນนี้ยังไม่ถึงตาท่าน — ກຳລັງລໍຖ້າ: <b>{{ viewPr.waitingText }}</b> ດຳເນີນການກ່ອน. ท่านจะดำเนินการต่อได้เมื่อถึงขั้นของท่าน.</div>
+          <div style="font-size:13px;color:#1D3F6E;line-height:1.6">ຂັ້ນຕອນນີ້ຍັງບໍ່ຮອດຄິວທ່ານ — ກຳລັງລໍຖ້າ: <b>{{ viewPr.waitingText }}</b> ດຳເນີນການກ່ອນ. ທ່ານຈະດຳເນີນການຕໍ່ໄດ້ເມື່ອຮອດຂັ້ນຂອງທ່ານ.</div>
         </div>
       </sc-if>
 
@@ -1110,12 +1117,12 @@
           </sc-if>
 
           <sc-if value="{{ viewPr.hasProcOfficer }}" hint-placeholder-val="{{ false }}">
-            <div style="background:#EEF2ED;border:1px solid #DCE8DF;border-radius:8px;padding:9px 12px;margin-bottom:14px;font-size:12.5px;color:#3C4C3A">🛒 ມอบหมายจัดซื้อ: <b>{{ viewPr.procOfficerName }}</b></div>
+            <div style="background:#EEF2ED;border:1px solid #DCE8DF;border-radius:8px;padding:9px 12px;margin-bottom:14px;font-size:12.5px;color:#3C4C3A">🛒 ມອບໝາຍຈັດຊື້: <b>{{ viewPr.procOfficerName }}</b></div>
           </sc-if>
 
           <!-- ===== ຄວາມເห็น / โน้ต (คุยกันในใบ) ===== -->
           <div style="margin-bottom:16px;padding-top:14px;border-top:1px solid #EEF1ED">
-            <div style="font-size:11.5px;font-weight:700;color:#0B4D27;margin-bottom:8px">ຄວາມເห็น / ໂน้ต</div>
+            <div style="font-size:11.5px;font-weight:700;color:#0B4D27;margin-bottom:8px">ຄວາມເຫັນ / ໂນ້ດ</div>
             <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
               <sc-for list="{{ viewPr.commentList }}" as="cm" hint-placeholder-count="2">
                 <div style="background:#F3F8F4;border:1px solid #EEF1ED;border-radius:8px;padding:8px 11px">
@@ -1126,7 +1133,7 @@
               <sc-if value="{{ viewPr.hasComments }}" hint-placeholder-val="{{ false }}"></sc-if>
             </div>
             <div style="display:flex;gap:8px">
-              <input value="{{ viewPr.prCommentText }}" onChange="{{ viewPr.onCommentChange }}" placeholder="ຂຽນຄວາມເห็น..." style="flex:1;box-sizing:border-box;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px">
+              <input value="{{ viewPr.prCommentText }}" onChange="{{ viewPr.onCommentChange }}" placeholder="ຂຽນຄວາມເຫັນ..." style="flex:1;box-sizing:border-box;padding:9px 11px;border:1px solid #D9E1D6;border-radius:8px;font-size:13px">
               <button onClick="{{ viewPr.onAddComment }}" style="flex-shrink:0;background:#116F38;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer">ສົ່ງ</button>
             </div>
           </div>
@@ -1318,6 +1325,34 @@
               <button onClick="{{ viewPr.onSubmitToHead }}" style="background:#116F38;color:#fff;border:none;border-radius:6px;padding:10px 18px;font-size:13.5px;font-weight:600;cursor:pointer">ສົ່ງໃຫ້ຫົວໜ້າອະນຸມັດ</button>
             </sc-if>
           </div>
+
+          <sc-if value="{{ viewPr.directBuyDone }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:14px;background:#FFF9EC;border:1px solid #F0DDB0;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#6B4E12;line-height:1.7">⚡ {{ viewPr.directBuyInfo }}</div>
+          </sc-if>
+          <sc-if value="{{ viewPr.showDirectBuy }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px;background:#FFF9EC;border:1px solid #F0DDB0;border-radius:10px;padding:14px 16px">
+              <div style="font-weight:700;font-size:13.5px;color:#6B4E12">⚡ ຊື້ໂດຍກົງ — ມູນຄ່າຕ່ຳກວ່າ {{ viewPr.directBuyLimitDisplay }} ກີບ</div>
+              <div style="font-size:12px;color:#8A6A2A;margin:4px 0 12px;line-height:1.7">ຈັດຊື້ຕັດສິນໃຈເລືອກຜູ້ຂາຍໄດ້ເອງ — ບໍ່ຕ້ອງມີໃບສະເໜີລາຄາ ແລະ ບໍ່ຕ້ອງສົ່ງຫົວໜ້າອະນຸມັດ. PO ທີ່ອອກ ຍັງຕ້ອງຜ່ານການອະນຸມັດ PO ຕາມປົກກະຕິ.</div>
+              <sc-if value="{{ viewPr.dbHasSel }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:12.5px;color:#3C4C3A;margin-bottom:10px">ໃຊ້ໃບສະເໜີທີ່ເລືອກແລ້ວ: <b>{{ viewPr.dbSelText }}</b></div>
+              </sc-if>
+              <sc-if value="{{ viewPr.dbNoSel }}" hint-placeholder-val="{{ true }}">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:10px">
+                  <div>
+                    <label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ຜູ້ຂາຍ (ສະກຸນກີບ)</label>
+                    <select value="{{ viewPr.dbVendorId }}" onChange="{{ viewPr.onDbVendor }}" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;background:#fff"><option value="">— ເລືອກຜູ້ຂາຍ —</option><sc-for list="{{ viewPr.dbVendorOptions }}" as="dv" hint-placeholder-count="2"><option value="{{ dv.id }}">{{ dv.name }}</option></sc-for></select>
+                  </div>
+                  <div>
+                    <label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ມູນຄ່າຊື້ (ກີບ)</label>
+                    <input type="text" inputmode="numeric" value="{{ viewPr.dbAmountDisplay }}" onChange="{{ viewPr.onDbAmount }}" placeholder="0" style="width:100%;box-sizing:border-box;margin-top:4px;padding:9px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px;text-align:right">
+                  </div>
+                </div>
+                <label style="font-size:11.5px;color:#5C6D5A;font-weight:600">ເຫດຜົນທີ່ເລືອກຜູ້ຂາຍນີ້ (ບັງຄັບ — ບັນທຶກໃນ audit)</label>
+                <input value="{{ viewPr.dbReason }}" onChange="{{ viewPr.onDbReason }}" placeholder="ເຊັ່ນ: ຮ້ານປະຈຳ, ລາຄາຕ່ຳສຸດໃນຕະຫຼາດ, ຕ້ອງການດ່ວນ" style="width:100%;box-sizing:border-box;margin:4px 0 10px;padding:9px 10px;border:1px solid #D9E1D6;border-radius:7px;font-size:13px">
+              </sc-if>
+              <button onClick="{{ viewPr.onDirectBuy }}" style="background:#B7791F;color:#fff;border:none;border-radius:7px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">⚡ ຊື້ໂດຍກົງ — ອອກ PO ເລີຍ</button>
+            </div>
+          </sc-if>
         </div>
       </sc-if>
 
@@ -1512,7 +1547,7 @@
       <div style="margin-top:22px;padding-top:18px;border-top:1px solid #EEF1ED">
         <div style="font-size:13px;font-weight:700;color:#0B4D27;margin-bottom:8px">ເອກະສານ ໃບສັ່ງຊື້ (ຈັດການໂດຍ ພະແນກຈັດຊື້)</div>
         <sc-if value="{{ viewPo.canManagePoDocs }}" hint-placeholder-val="{{ false }}">
-          <div style="margin-bottom:8px"><input type="file" multiple onChange="{{ viewPo.onPoFilesChange }}" style="font-size:12.5px" /></div>
+          <div style="margin-bottom:8px"><input type="file" multiple="{{ true }}" onChange="{{ viewPo.onPoFilesChange }}" style="font-size:12.5px" /></div>
         </sc-if>
         <sc-if value="{{ viewPo.hasPoAttachments }}" hint-placeholder-val="{{ true }}">
           <div style="display:flex;flex-direction:column;gap:5px">
@@ -1863,9 +1898,11 @@ function fmtIn(v) {
   return parts.join('.');
 }
 function parseIn(v) { return String(v).replace(/,/g, ''); }
+// ໄຟລ໌ທີ່ browser ອາດເປີດເປັນໜ້າເວັບ/ລັນ script ໄດ້ (HTML, SVG, JS) — ບໍ່ຮັບເປັນເອກະສານແນບ
+function isRiskyUpload(file) { const t = String(file.type || '').toLowerCase(); const n = String(file.name || '').toLowerCase(); return /html|svg|javascript|ecmascript|xml/.test(t) || /\.(html?|xhtml|svgz?|js|mjs|hta|xml)$/.test(n); }
 
 function seedData() {
-  const settings = { t1: 10000000, t2: 100000000, quoteThreshold: 20000000, minQuotes: 2, quoteThreshold2: 80000000, minQuotes2: 3,
+  const settings = { t1: 10000000, t2: 100000000, quoteThreshold: 20000000, minQuotes: 2, quoteThreshold2: 80000000, minQuotes2: 3, directBuyLimit: 10000000,
     coLao: 'ບໍລິສັດ ຕົວຢ່າງ ການຄ້າ ຈຳກັດ (DEMO)', coEn: 'Demo Trading Co., Ltd.',
     coAddr: 'ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ (ຕົວຢ່າງ)', coPhone: '+856 20 0000 0000 · demo@example.com', workflows: [] };
   const vendors = [
@@ -1896,6 +1933,7 @@ class Component extends DCLogic {
     prFormOpen: false, editingPrId: null, prFormDept: '', prFormNeeded: '', prFormReason: '', prFormBudgetLine: '', prFormLines: [{ desc: '', qty: 1, unit: '', unitPrice: 0 }],
     prFormApprovers: [], prFormWatchers: [], prFormApproverSearch: '', prFormWatcherSearch: '', prFormAttachments: [], prFormProcOfficer: '', prFormBudgetApprover: '', prFormQuoteApprover: '', prFormPoApprover: '', applyWorkflowId: '', prFormWorkflowId: '',
     qVendorId: '', qAmount: '', qFx: '', qNote: '', qFileName: '', qFileData: '',
+    dbVendorId: '', dbAmount: '', dbReason: '',
     qNewVendorOpen: false, qNvName: '', qNvTax: '', qNvCur: 'LAK',
     selectingQuoteId: null, qSelectReason: '', filePreview: null,
     docView: null,
@@ -1918,6 +1956,9 @@ class Component extends DCLogic {
     if (d.settings.quoteThreshold2 == null) d.settings.quoteThreshold2 = 80000000;
     if (!d.settings.workflows) d.settings.workflows = [];
     if (d.settings.minQuotes2 == null) d.settings.minQuotes2 = 3;
+    if (d.settings.directBuyLimit == null) d.settings.directBuyLimit = 10000000;
+    // ສ້ອມຄ່າເກົ່າທີ່ເຄີຍຖືກບັນທຶກເປັນ string ມີຈຸດ ("50,000,000") — ເຮັດໃຫ້ການປຽບທຽບວົງເງິນຜິດ
+    ['t1', 't2', 'quoteThreshold', 'minQuotes', 'quoteThreshold2', 'minQuotes2', 'directBuyLimit'].forEach(k => { if (typeof d.settings[k] === 'string') { const n = Number(parseIn(d.settings[k])); if (!isNaN(n)) d.settings[k] = n; } });
     if (!d.users || !d.users.length) d.users = DEFAULT_USERS.map(x => ({ ...x }));
     d.users = d.users.map(x => ({ password: '1234', isActive: true, failedAttempts: 0, ...x }));
     // ທຳຄວາມສະອາດຂໍ້ມູນເກົ່າ: ຖ້າ fileData ບໍ່ແມ່ນ data: URL ທີ່ຖືກຕ້ອງ (ເຊັ່ນຄ່າຄ້າງຈາກສະບັບທົດລອງ) ໃຫ້ລຶບອອກ ເພື່ອບໍ່ໃຫ້ໄຟລ໌ເສຍພະຍາຍາມໂຫຼດ
@@ -2010,6 +2051,7 @@ class Component extends DCLogic {
       if (isCurrent) return { label: def.label, dotBg: '#fff', dotBorder: color, dotShadow: `0 0 0 4px ${color}26`, fg: color, weight: 700, ...cur };
       return { label: def.label, dotBg: '#fff', dotBorder: '#D9E1D6', dotShadow: 'none', fg: '#98A69B', weight: 500, ...cur };
     });
+    if (pr.rfq && pr.rfq.directBuy) chips[5] = { ...chips[5], label: 'ຂ້າມ (ຊື້ໂດຍກົງ)', cursor: 'default', onClick: null };
     const doneCount = doneArr.filter(Boolean).length;
     const progressPct = Math.max(4, Math.round((doneCount / WIZ_STEPS.length) * 100));
     return { idx, chips, po, progressPct };
@@ -2144,6 +2186,50 @@ class Component extends DCLogic {
     return (u.role === 'DIRECTOR' || (u.role === 'DEPT_HEAD' && u.dept === 'ພະແນກຈັດຊື້'));
   }
   quoteLcy(q) { return r2(q.amount * q.fxRate); }
+  // ຊື້ໂດຍກົງ: ມູນຄ່າ < directBuyLimit → ຈັດຊື້ເລືອກຜູ້ຂາຍ/ລາຄາເອງ (ໃບສະເໜີລາຄາບໍ່ບັງຄັບ) ແລະ ຂ້າມຂັ້ນຫົວໜ້າອະນຸມັດໃບສະເໜີ.
+  // PO ທີ່ອອກຍັງຕ້ອງຜ່ານການອະນຸມັດ PO ຕາມປົກກະຕິ. 0 = ປິດ
+  directBuyLimit() { const v = Number(this.state.settings.directBuyLimit); return v > 0 ? v : 0; }
+  canDirectBuy(pr) { const lim = this.directBuyLimit(); return lim > 0 && this.prTotal(pr) < lim; }
+  directBuy(pr) {
+    const u = this.me();
+    if (!this.canDoProcurement(pr, u)) { this.deny(`ພະຍາຍາມຊື້ໂດຍກົງ ${pr.prNumber}`, pr.procurementOfficer ? `PR ນີ້ມອບໝາຍໃຫ້ "${this.uName(pr.procurementOfficer)}" (SoD)` : `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" ເທົ່ານັ້ນ (SoD)`); return; }
+    const cur = this.state.prs.find(p => p.id === pr.id) || pr;
+    if (cur.status !== 'APPROVED' || !cur.rfq || !['COLLECTING', 'HEAD_REJECTED'].includes(cur.rfq.stage)) { this.toast('error', 'PR ນີ້ບໍ່ໄດ້ຢູ່ຂັ້ນຫາໃບສະເໜີລາຄາ — ຊື້ໂດຍກົງບໍ່ໄດ້'); return; }
+    const lim = this.directBuyLimit();
+    if (!this.canDirectBuy(cur)) { this.toast('error', `ຊື້ໂດຍກົງໄດ້ສະເພາະມູນຄ່າຕ່ຳກວ່າ ${fm(lim)} ກີບ`); return; }
+    const sel = cur.quotes.find(q => q.selected);
+    let vendorId, quoteId = null, quoteNumber = '—', currency = 'LAK', fx = 1, amount, reason;
+    if (sel) {
+      vendorId = sel.vendorId; quoteId = sel.id; quoteNumber = sel.qNumber; currency = sel.currency; fx = sel.fxRate; amount = sel.amount;
+      reason = sel.selectReason || '';
+    } else {
+      const v = this.state.vendors.find(x => x.id === this.state.dbVendorId);
+      if (!v) { this.toast('error', 'ກະລຸນາເລືອກຜູ້ຂາຍ'); return; }
+      if (v.status !== 'ACTIVE' || v.isDeleted) { this.toast('error', 'ຜູ້ຂາຍນີ້ບໍ່ສາມາດໃຊ້ງານໄດ້ (ຖືກລຶບ ຫຼື ບັນຊີດຳ)'); return; }
+      if (v.currency !== 'LAK') { this.toast('error', `ຜູ້ຂາຍນີ້ໃຊ້ສະກຸນ ${v.currency} — ຊື້ໂດຍກົງແບບບໍ່ມີໃບສະເໜີ ຮອງຮັບສະເພາະກີບ (LAK). ໃຫ້ເພີ່ມໃບສະເໜີລາຄາແທນ`); return; }
+      amount = parseFloat(parseIn(this.state.dbAmount));
+      if (!(amount > 0)) { this.toast('error', 'ກະລຸນາລະບຸມູນຄ່າຊື້ທີ່ຫຼາຍກວ່າ 0'); return; }
+      reason = (this.state.dbReason || '').trim();
+      if (!reason) { this.toast('error', 'ກະລຸນາລະບຸເຫດຜົນທີ່ເລືອກຜູ້ຂາຍນີ້'); return; }
+      vendorId = v.id;
+    }
+    const lcy = r2(amount * fx);
+    if (lcy >= lim) { this.toast('error', `ມູນຄ່າຊື້ ${fm(lcy)} ກີບ ບໍ່ຕ່ຳກວ່າວົງເງິນຊື້ໂດຍກົງ (${fm(lim)} ກີບ) — ໃຫ້ສົ່ງຫົວໜ້າອະນຸມັດ`); return; }
+    const req = this.minQuotesRequired(Math.max(this.prTotal(cur), lcy));
+    if (req > 0 && cur.quotes.length < req) { this.toast('error', `ນະໂຍບາຍກຳນົດໃຫ້ມີໃບສະເໜີລາຄາຢ່າງໜ້ອຍ ${req} ໃບ (ມີ ${cur.quotes.length} ໃບ)`); return; }
+    const now = new Date().toISOString();
+    const n = this.state.seq.po + 1;
+    const poNumber = 'PO-2026-' + String(n).padStart(6, '0');
+    const po = { id: uid(), poNumber, prId: cur.id, prNumber: cur.prNumber, vendorId, quoteId, quoteNumber, currency, fxRate: fx, totalFcy: amount, totalLcy: lcy, status: 'PENDING_APPROVAL', createdBy: u.id, approvedBy: null, approvedAt: null, createdAt: now, directBuy: true,
+      lines: cur.lines.map(l => ({ id: uid(), desc: l.desc, qty: l.qty, unitPrice: l.unitPrice, quantityReceived: 0 })), approvals: [], currentStep: 0 };
+    const rfq = { ...cur.rfq, stage: 'DONE', directBuy: true, directBy: u.id, directAt: now, directReason: reason, preparedBy: u.id, preparedAt: now, poId: po.id };
+    const prs = this.state.prs.map(p => p.id === cur.id ? { ...p, status: 'CONVERTED', rfq } : p);
+    const vName = (this.state.vendors.find(v => v.id === vendorId) || {}).name || '—';
+    const lg = this.log('CREATE', `ຊື້ໂດຍກົງ (< ${fm(lim)} ກີບ) — ອອກ ${poNumber} ຈາກ ${cur.prNumber} (${vName}, ${fm(lcy)} ກີບ, ${sel ? quoteNumber : 'ບໍ່ມີໃບສະເໜີລາຄາ'}) ເຫດຜົນ: ${reason || '—'}`, true);
+    this.persist({ prs, pos: [po, ...this.state.pos], seq: { ...this.state.seq, po: n, audit: lg.seq.audit }, auditLogs: lg.auditLogs });
+    this.toast('success', `ຊື້ໂດຍກົງ — ອອກ ${poNumber} ແລ້ວ, ລໍຖ້າອະນຸມັດ PO`);
+    this.setState({ dbVendorId: '', dbAmount: '', dbReason: '', action: null });
+  }
   minQuotesRequired(total) {
     const st = this.state.settings;
     if (total >= st.quoteThreshold2) return st.minQuotes2;
@@ -2172,6 +2258,7 @@ class Component extends DCLogic {
     const u = this.me();
     if (!u || u.role !== 'ADMIN') { this.deny('ພະຍາຍາມແກ້ໄຂລາຍເຊັນ', 'ສະເພາະຜູ້ດູແລລະບົບ (ADMIN) ເທົ່ານັ້ນທີ່ຕັ້ງລາຍເຊັນໄດ້ (SoD)'); return; }
     const f = e.target.files[0]; if (!f) return;
+    if (isRiskyUpload(f) || String(f.type || '').indexOf('image/') !== 0) { this.toast('error', 'ລາຍເຊັນຕ້ອງເປັນໄຟລ໌ຮູບ (PNG/JPG)'); e.target.value = ''; return; }
     const targetId = this.state.sigTargetUserId || u.id;
     const r = new FileReader();
     r.onload = () => {
@@ -2207,7 +2294,7 @@ class Component extends DCLogic {
   openDetail(kind, id) {
     // ກັນຄົນທີ່ບໍ່ກ່ຽວຂ້ອງເປີດ PR (defense): ເຫັນໄດ້ສະເພาะ ຄົນສ້າງ/ຜູ້ອະນຸມັດ/CC/Admin/Auditor/ຝ່າຍທີ່ກ່ຽວ
     if (kind === 'pr') { const pr = this.state.prs.find(p => p.id === id); if (pr && !this.canSeePr(pr, this.me())) { this.toast('error', 'ທ່ານບໍ່ມີສິດເບິ່ງໃບຂໍຊື້ນີ້ (ສະເພາະຜູ້ກ່ຽວຂ້ອງ)'); return; } }
-    this.setState({ detailKind: kind, detailId: id, detailTab: 'lines', action: null, reasonText: '', qVendorId: '', qAmount: '', qFx: '', qNote: '', historicalStepIdx: null });
+    this.setState({ detailKind: kind, detailId: id, detailTab: 'lines', action: null, reasonText: '', qVendorId: '', qAmount: '', qFx: '', qNote: '', dbVendorId: '', dbAmount: '', dbReason: '', historicalStepIdx: null });
   }
   // ເບິ່ງຂັ້ນຕອນທີ່ຜ່ານໄປແລ້ວ (ອ່ານໄດ້ຢ່າງດຽວ, ພ້ອມພິມ) — ບໍ່ປ່ຽນສະຖານະຈິງ
   viewHistoricalStep(i) { this.setState({ historicalStepIdx: i }); }
@@ -2328,13 +2415,13 @@ class Component extends DCLogic {
   // ຄอมเมนต์/โน้ต ในใบ PR — ຄนที่เกี่ยวข้อง (ຄนสร้าง/ผู้อนุมัด/CC/Admin/Auditor/ฝ่ายที่เกี่ยว) คุยกันได้
   addPrComment(pr) {
     const u = this.me();
-    if (!this.canSeePr(pr, u)) { this.deny(`ພະຍາຍາມเพิ่มความเห็น ${pr.prNumber}`, 'ສະเฉพาะผู้เกี่ยวข้อง'); return; }
+    if (!this.canSeePr(pr, u)) { this.deny(`ພະຍາຍາມເພີ່ມຄວາມເຫັນ ${pr.prNumber}`, 'ສະເພາະຜູ້ກ່ຽວຂ້ອງ'); return; }
     const text = (this.state.prCommentText || '').trim();
     if (!text) { this.toast('error', 'ພິມຂໍ້ຄວາມກ່ອນ'); return; }
     const c = { id: uid(), by: u.id, at: new Date().toISOString(), text };
     const prs = this.state.prs.map(p => p.id === pr.id ? { ...p, comments: [...(p.comments || []), c] } : p);
     this.persist({ prs, prCommentText: '' });
-    this.toast('success', 'ເພີ່ມຄວາມເห็นแล้ว');
+    this.toast('success', 'ເພີ່ມຄວາມເຫັນແລ້ວ');
   }
   // ===== Workflow templates: บันทึกการตั้งค่าอนุมัดไว้ใช้ซ้ำ =====
   applyWorkflow(id) {
@@ -2347,7 +2434,7 @@ class Component extends DCLogic {
     if (name === null) return;
     const nm = name.trim();
     if (!nm) { this.toast('error', 'ຕ້ອງມີຊື່ Workflow'); return; }
-    if (!(this.state.prFormApprovers || []).length) { this.toast('error', 'ເລືອກຜູ້ອະນຸມັດຢ່າງໜ້ອຍ 1 ຄົนก่อนบันทึก'); return; }
+    if (!(this.state.prFormApprovers || []).length) { this.toast('error', 'ເລືອກຜູ້ອະນຸມັດຢ່າງໜ້ອຍ 1 ຄົນກ່ອນບັນທຶກ'); return; }
     const wf = { id: uid(), name: nm, approvers: [...(this.state.prFormApprovers || [])], watchers: [...(this.state.prFormWatchers || [])], procOfficer: this.state.prFormProcOfficer || null, budgetApprover: this.state.prFormBudgetApprover || null, quoteApprover: this.state.prFormQuoteApprover || null, poApprover: this.state.prFormPoApprover || null };
     const settings = { ...this.state.settings, workflows: [...(this.state.settings.workflows || []), wf] };
     const lg = this.log('CREATE', `ບັນທຶກ Workflow "${nm}"`, true);
@@ -2504,6 +2591,7 @@ class Component extends DCLogic {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
     if (file.size > 4 * 1024 * 1024) { this.toast('error', 'ໄຟລ໌ໃຫຍ່ເກີນໄປ (ຈຳກັດ 4MB)'); return; }
+    if (isRiskyUpload(file)) { this.toast('error', `ບໍ່ຮັບໄຟລ໌ປະເພດນີ້ ("${file.name}") — ໃຊ້ PDF ຫຼື ຮູບ`); e.target.value = ''; return; }
     const reader = new FileReader();
     reader.onload = () => this.setState({ qFileName: file.name, qFileData: reader.result });
     reader.readAsDataURL(file);
@@ -2515,6 +2603,7 @@ class Component extends DCLogic {
     if (!files.length) return;
     files.forEach(file => {
       if (file.size > 4 * 1024 * 1024) { this.toast('error', `"${file.name}" ໃຫຍ່ເກີນ 4MB — ຂ້າມ`); return; }
+      if (isRiskyUpload(file)) { this.toast('error', `ບໍ່ຮັບໄຟລ໌ປະເພດນີ້ ("${file.name}") — ຂ້າມ`); return; }
       const reader = new FileReader();
       reader.onload = () => this.setState({ prFormAttachments: [...(this.state.prFormAttachments || []), { id: uid(), name: file.name, data: reader.result }] });
       reader.readAsDataURL(file);
@@ -2529,6 +2618,7 @@ class Component extends DCLogic {
     const files = [...(e.target.files || [])];
     files.forEach(file => {
       if (file.size > 4 * 1024 * 1024) { this.toast('error', `"${file.name}" ໃຫຍ່ເກີນ 4MB — ຂ້າມ`); return; }
+      if (isRiskyUpload(file)) { this.toast('error', `ບໍ່ຮັບໄຟລ໌ປະເພດນີ້ ("${file.name}") — ຂ້າມ`); return; }
       const reader = new FileReader();
       reader.onload = () => {
         const att = { id: uid(), name: file.name, data: reader.result, byId: u.id, at: new Date().toISOString() };
@@ -2573,12 +2663,12 @@ class Component extends DCLogic {
   }
   createVendorFromPage() {
     const u = this.me();
-    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny('ພະຍາຍາມເພີ່ມຜູ້ຂາຍ', `ສະເພาะ "${ROLE_LABEL.PROCUREMENT}" (SoD)`); return; }
+    if (!['PROCUREMENT', 'ADMIN'].includes(u.role)) { this.deny('ພະຍາຍາມເພີ່ມຜູ້ຂາຍ', `ສະເພາະ "${ROLE_LABEL.PROCUREMENT}" (SoD)`); return; }
     const name = (this.state.vNewName || '').trim();
     if (!name) { this.toast('error', 'ກະລຸນາລະບຸຊື່ຜູ້ຂາຍ'); return; }
     const taxIn = (this.state.vNewTax || '').trim();
     const dupe = this.state.vendors.find(v => !v.isDeleted && (v.name.trim().toLowerCase() === name.toLowerCase() || (taxIn && taxIn !== '—' && v.taxId.trim().toLowerCase() === taxIn.toLowerCase())));
-    if (dupe) { this.toast('error', `ມີຜູ້ຂາຍ "${dupe.name}" ຢູ່ແລ້ວ (ຊື່/ເລກพาสีຊໍ້າ)`); return; }
+    if (dupe) { this.toast('error', `ມີຜູ້ຂາຍ "${dupe.name}" ຢູ່ແລ້ວ (ຊື່/ເລກພາສີຊ້ຳ)`); return; }
     const v = { id: uid(), name, taxId: taxIn || '—', currency: this.state.vNewCur, status: 'ACTIVE', isDeleted: false };
     const lg = this.log('CREATE', `ເພີ່ມຜູ້ຂາຍໃໝ່ "${name}" (${v.currency})`, true);
     this.persist({ vendors: [...this.state.vendors, v], vendorFormOpen: false, vNewName: '', vNewTax: '', vNewCur: 'LAK', ...lg });
@@ -2658,6 +2748,17 @@ class Component extends DCLogic {
     if (step === 2) return { kind: 'role', role: 'FINANCE_MANAGER', label: ROLE_LABEL.FINANCE_MANAGER };
     return { kind: 'role', role: 'DIRECTOR', label: ROLE_LABEL.DIRECTOR };
   }
+  // ຊື່ຜູ້ຮັບຜິດຊອບຂັ້ນ PO ປັດຈຸບັນ (ໂໝດ role) — ບອກຊື່ຄົນຖ້າມີ, ແລະ ເຕືອນຖ້າພະແນກບໍ່ມີຫົວໜ້າ
+  poWaitLabel(po) {
+    if (!po) return 'ຜູ້ອະນຸມັດ';
+    const step = po.currentStep || 0;
+    const info = this.poStepInfo(po, step);
+    const head = `ຂັ້ນ ${step + 1}/${PO_STEPS}: `;
+    if (info.kind === 'requester') return head + (info.personId ? this.uName(info.personId) : info.label) + ' (ຜູ້ຂໍຊື້ ກວດສະເປັກ)';
+    const people = this.state.users.filter(x => x.isActive && (info.kind === 'depthead' ? (x.role === 'DEPT_HEAD' && x.dept === info.dept) : x.role === info.role));
+    if (!people.length) return head + info.label + ' (⚠ ບໍ່ມີຜູ້ໃຊ້ຕຳແໜ່ງນີ້ — Admin ອະນຸມັດແທນໄດ້)';
+    return head + info.label + ' (' + people.map(x => x.name).join(', ') + ')';
+  }
   poStepAllowed(info, u) {
     if (!u) return false;
     if (info.kind === 'requester') return u.id === info.personId;
@@ -2675,7 +2776,7 @@ class Component extends DCLogic {
       if (u.role !== 'ADMIN' && u.id !== exp) { this.deny(`ພະຍາຍາມອະນຸມັດ ${po.poNumber}`, `ຂັ້ນນີ້ກຳນົດໃຫ້ "${this.uName(exp)}" ອະນຸມັດ PO (SoD)`); return; }
     } else {
       const info = this.poStepInfo(po, step);
-      if (!this.poStepAllowed(info, u)) { this.deny(`ພະຍາຍາມອະນຸມັດ ${po.poNumber}`, `ຂັ້ນປັດຈຸບັນຕ້ອງການ "${info.label}" ເທົ່ານັ້ນ (SoD)`); return; }
+      if (u.role !== 'ADMIN' && !this.poStepAllowed(info, u)) { this.deny(`ພະຍາຍາມອະນຸມັດ ${po.poNumber}`, `ຂັ້ນປັດຈຸບັນຕ້ອງການ "${info.label}" ເທົ່ານັ້ນ (SoD)`); return; }
     }
     if (po.createdBy === u.id) { this.deny(`ພະຍາຍາມອະນຸມັດ ${po.poNumber}`, 'ຜູ້ສ້າງ PO ອະນຸມັດເອງບໍ່ໄດ້ (Maker ≠ Checker)'); return; }
     const approvals = [...(po.approvals || []), { step, userId: u.id, at: new Date().toISOString() }];
@@ -2684,7 +2785,8 @@ class Component extends DCLogic {
     const done = approvals.length >= total;
     const pos = this.state.pos.map(p => p.id === po.id ? { ...p, approvals, currentStep: nextStep, status: done ? 'APPROVED' : 'PENDING_APPROVAL', approvedBy: done ? u.id : p.approvedBy, approvedAt: done ? new Date().toISOString() : p.approvedAt } : p);
     const nextLabel = poList.length ? this.uName(poList[approvals.length]) : this.poStepInfo(po, nextStep).label;
-    const lg = this.log('APPROVE', `ອະນຸມັດ ${po.poNumber} (${approvals.length}/${total}) ມູນຄ່າ ${fm(po.totalLcy)} ກີບ${done ? ' — ຄົບແລ້ວ' : ''}`, true);
+    const isOverride = u.role === 'ADMIN' && !(poList.length ? u.id === poList[done0] : this.poStepAllowed(this.poStepInfo(po, step), u));
+    const lg = this.log('APPROVE', `ອະນຸມັດ ${po.poNumber} (${approvals.length}/${total}) ມູນຄ່າ ${fm(po.totalLcy)} ກີບ${isOverride ? ' — ⚠ Admin ອະນຸມັດແທນ' : ''}${done ? ' — ຄົບແລ້ວ' : ''}`, true);
     this.persist({ pos, ...lg });
     this.toast('success', done ? `ອະນຸມັດ ${po.poNumber} ຄົບແລ້ວ` : `ອະນຸມັດແລ້ວ (${approvals.length}/${total}) — ຕໍ່ໄປ: ${nextLabel}`);
     this.setState({ action: null });
@@ -2697,7 +2799,7 @@ class Component extends DCLogic {
       if (u.role !== 'ADMIN' && u.id !== exp) { this.deny(`ພະຍາຍາມປະຕິເສດ ${po.poNumber}`, `ຂັ້ນນີ້ກຳນົດໃຫ້ "${this.uName(exp)}" (SoD)`); return; }
     } else {
       const info = this.poStepInfo(po, po.currentStep || 0);
-      if (!this.poStepAllowed(info, u)) { this.deny(`ພະຍາຍາມປະຕິເສດ ${po.poNumber}`, `ຂັ້ນປັດຈຸບັນຕ້ອງການ "${info.label}" ເທົ່ານັ້ນ (SoD)`); return; }
+      if (u.role !== 'ADMIN' && !this.poStepAllowed(info, u)) { this.deny(`ພະຍາຍາມປະຕິເສດ ${po.poNumber}`, `ຂັ້ນປັດຈຸບັນຕ້ອງການ "${info.label}" ເທົ່ານັ້ນ (SoD)`); return; }
     }
     if (po.createdBy === u.id) { this.deny(`ພະຍາຍາມປະຕິເສດ ${po.poNumber}`, 'ຜູ້ສ້າງ PO ປະຕິເສດເອງບໍ່ໄດ້ (Maker ≠ Checker)'); return; }
     if (!this.state.reasonText.trim()) { this.toast('error', 'ກະລຸນາລະບຸເຫດຜົນການປະຕິເສດ'); return; }
@@ -2747,10 +2849,15 @@ class Component extends DCLogic {
     const u = this.me();
     if (u.role !== 'ADMIN') { this.deny('ພະຍາຍາມແກ້ໄຂການຕັ້ງຄ່າ', 'ສະເພາະຜູ້ດູແລລະບົບເທົ່ານັ້ນ (SoD)'); return; }
     const d = this.state.setDraft;
-    const t1 = Number(d.t1), t2 = Number(d.t2), qt = Number(d.quoteThreshold), mq = Math.max(1, Math.round(Number(d.minQuotes)));
-    if (!t1 || !t2 || t1 <= 0 || t2 <= t1) { this.toast('error', 'ວົງເງິນບໍ່ຖືກຕ້ອງ — ວົງເງິນ 2 ຂັ້ນຕ້ອງສູງກວ່າ 1 ຂັ້ນ'); return; }
-    const settings = { ...d, t1, t2, quoteThreshold: qt, minQuotes: mq };
-    const lg = this.log('UPDATE', `ແກ້ໄຂການຕັ້ງຄ່າ: 1ຂັ້ນ≤${fm(t1)}, 2ຂັ້ນ≤${fm(t2)}, ໃບສະເໜີລາຄາ≥${fm(qt)} ຕ້ອງມີ ${mq} ໃບ`, true);
+    // ຊ່ອງຕົວເລກສະແດງແບບມີຈຸດ (10,000,000) → ຕ້ອງຕັດ "," ກ່ອນແປງເປັນຕົວເລກ, ແລະ ແປງທຸກຊ່ອງ (ບໍ່ໃຫ້ເກັບເປັນ string)
+    const num = k => Number(parseIn(d[k] == null ? '' : d[k]));
+    const t1 = num('t1'), t2 = num('t2'), qt = num('quoteThreshold'), qt2 = num('quoteThreshold2'), dbl = num('directBuyLimit');
+    const mq = Math.max(1, Math.round(num('minQuotes'))), mq2 = Math.max(1, Math.round(num('minQuotes2')));
+    if (!(t1 > 0) || !(t2 > t1)) { this.toast('error', 'ວົງເງິນບໍ່ຖືກຕ້ອງ — ວົງເງິນ 2 ຂັ້ນຕ້ອງສູງກວ່າ 1 ຂັ້ນ'); return; }
+    if (!(qt > 0) || !(qt2 > qt) || !(mq2 >= mq)) { this.toast('error', 'ນະໂຍບາຍໃບສະເໜີລາຄາບໍ່ຖືກຕ້ອງ — ຂັ້ນທີ 2 ຕ້ອງມີວົງເງິນສູງກວ່າ ແລະ ຈຳນວນໃບບໍ່ໜ້ອຍກວ່າຂັ້ນທີ 1'); return; }
+    if (!(dbl >= 0)) { this.toast('error', 'ວົງເງິນຊື້ໂດຍກົງບໍ່ຖືກຕ້ອງ (0 = ປິດ)'); return; }
+    const settings = { ...d, t1, t2, quoteThreshold: qt, minQuotes: mq, quoteThreshold2: qt2, minQuotes2: mq2, directBuyLimit: dbl };
+    const lg = this.log('UPDATE', `ແກ້ໄຂການຕັ້ງຄ່າ: 1ຂັ້ນ≤${fm(t1)}, 2ຂັ້ນ≤${fm(t2)}, ໃບສະເໜີ≥${fm(qt)}→${mq} ໃບ, ≥${fm(qt2)}→${mq2} ໃບ, ຊື້ໂດຍກົງ<${fm(dbl)}`, true);
     this.persist({ settings, setDraft: { ...settings }, ...lg });
     this.toast('success', 'ບັນທຶກການຕັ້ງຄ່າສຳເລັດ');
   }
@@ -2810,7 +2917,8 @@ class Component extends DCLogic {
     const rows = [
       { role: 'ຜູ້ຄວບຄຸມງົບປະມານ', userId: rfq.budgetBy, at: rfq.budgetAt, done: !!rfq.budgetBy, rejected: rfq.stage === 'BUDGET_REJECTED', active: rfq.stage === 'BUDGET_REVIEW' },
       { role: 'ພະນັກງານຈັດຊື້ (ຜູ້ກະກຽມ)', userId: preparedUserId, at: rfq.preparedAt, done: !!preparedUserId, rejected: false, active: ['COLLECTING', 'HEAD_REJECTED'].includes(rfq.stage) },
-      { role: 'ຫົວໜ້າຝ່າຍຈັດຊື້', userId: rfq.headBy, at: rfq.headAt, done: !!rfq.headBy, rejected: rfq.stage === 'HEAD_REJECTED', active: rfq.stage === 'HEAD_PENDING' },
+      rfq.directBuy ? { role: 'ຊື້ໂດຍກົງ (ບໍ່ຕ້ອງຫົວໜ້າອະນຸມັດ)', userId: rfq.directBy, at: rfq.directAt, done: true, rejected: false, active: false }
+        : { role: 'ຫົວໜ້າຝ່າຍຈັດຊື້', userId: rfq.headBy, at: rfq.headAt, done: !!rfq.headBy, rejected: rfq.stage === 'HEAD_REJECTED', active: rfq.stage === 'HEAD_PENDING' },
     ];
     // ລາຍເຊັນ: ຈາກຂວາໄປຊ້າຍ — ຂັ້ນຕອນຫຼ້າສຸດ (ຫົວໜ້າ) ຢູ່ຊ້າຍສຸດ, ຂັ້ນຕອນທຳອິດ (ງົບປະມານ) ຢູ່ຂວາສຸດ
     const qSignatures = [...rows].reverse().map(r => { const u2 = r.userId ? this.state.users.find(x => x.id === r.userId) : null; return { name: u2 ? u2.name : '', role: r.role, date: r.at ? fd(r.at) : '________', img: (u2 && u2.signature) || '', hasImg: !!(u2 && u2.signature) }; });
@@ -3025,7 +3133,7 @@ class Component extends DCLogic {
       if (effIdx === 1) { canAct = myTurn && !isHistorical; onApproveClick = () => this.approvePr(selPr); onConfirmReject = () => this.rejectPr(selPr); actLabel = `ອະນຸມັດ (ຂັ້ນທີ ${selPr.currentStep + 1})`; }
       else if (effIdx === 3) { canAct = this.canApproveBudget(selPr, u) && !isHistorical; onApproveClick = () => this.approveBudget(selPr); onConfirmReject = () => this.rejectBudget(selPr); actLabel = 'ຜ່ານງົບປະມານ'; }
       else if (effIdx === 5) { canAct = this.canApproveQuote(selPr, u) && !isHistorical; onApproveClick = () => this.approveQuote(selPr); onConfirmReject = () => this.rejectQuote(selPr); actLabel = 'ອະນຸມັດ ແລະ ອອກ PO'; }
-      else if (effIdx === 6 && wsPoRaw) { const _poExp = this.poNextId(wsPoRaw, selPr); canAct = u && ((selPr.poApprovers || []).length ? (u.role === 'ADMIN' || u.id === _poExp) : this.poStepAllowed(this.poStepInfo(wsPoRaw, wsPoRaw.currentStep || 0), u)) && wsPoRaw.createdBy !== u.id && !isHistorical; onApproveClick = () => this.approvePo(wsPoRaw); onConfirmReject = () => this.rejectPo(wsPoRaw); actLabel = 'ອະນຸມັດ PO'; }
+      else if (effIdx === 6 && wsPoRaw) { const _poExp = this.poNextId(wsPoRaw, selPr); canAct = u && ((selPr.poApprovers || []).length ? (u.role === 'ADMIN' || u.id === _poExp) : (u.role === 'ADMIN' || this.poStepAllowed(this.poStepInfo(wsPoRaw, wsPoRaw.currentStep || 0), u))) && wsPoRaw.createdBy !== u.id && !isHistorical; onApproveClick = () => this.approvePo(wsPoRaw); onConfirmReject = () => this.rejectPo(wsPoRaw); actLabel = 'ອະນຸມັດ PO'; }
 
       // ===== "ກำลังรอใคร" — ບอกให้ชัดเมื่อผู้ใช้ยังทำอะไรไม่ได้ในขั้นนี้ =====
       const canActNow = canAct || (effIdx === 2 && this.canDoProcurement(selPr, u)) || (effIdx === 4 && canQuote);
@@ -3036,7 +3144,7 @@ class Component extends DCLogic {
         else if (effIdx === 3) { const _l = selPr.budgetApprovers || []; waitingText = (_l.length ? this.uName(this.budgetNextId(selPr)) + (_l.length > 1 ? ' (' + this.budgetApprovalsOf(selPr).length + '/' + _l.length + ')' : '') : 'ຝ່າຍການເງິນ / ຜູ້ຄຸມງົບປະມານ') + ' ກວດງົບປະມານ'; }
         else if (effIdx === 4) waitingText = 'ຝ່າຍຈັດຊື້ ຫາໃບສະເໜີລາຄາ' + (selPr.procurementOfficer ? ' (' + this.uName(selPr.procurementOfficer) + ')' : '');
         else if (effIdx === 5) { const _l = selPr.quoteApprovers || []; waitingText = (_l.length ? this.uName(this.quoteNextId(selPr)) + (_l.length > 1 ? ' (' + this.quoteApprovalsOf(selPr).length + '/' + _l.length + ')' : '') : 'ຜູ້ອຳນວຍການ') + ' ອະນຸມັດໃບສະເໜີລາຄາ'; }
-        else if (effIdx === 6) { const _l = selPr.poApprovers || []; const _done = wsPoRaw ? (wsPoRaw.approvals || []).length : 0; waitingText = (_l.length ? this.uName(this.poNextId(wsPoRaw || {}, selPr)) + (_l.length > 1 ? ' (' + _done + '/' + _l.length + ')' : '') : 'ຜູ້ອະນຸມັດ') + ' ອະນຸມັດ ໃບສັ່ງຊື້ (PO)'; }
+        else if (effIdx === 6) { const _l = selPr.poApprovers || []; const _done = wsPoRaw ? (wsPoRaw.approvals || []).length : 0; waitingText = (_l.length ? this.uName(this.poNextId(wsPoRaw || {}, selPr)) + (_l.length > 1 ? ' (' + _done + '/' + _l.length + ')' : '') : this.poWaitLabel(wsPoRaw)) + ' ອະນຸມັດ ໃບສັ່ງຊື້ (PO)'; }
       }
       const showWaiting = !!waitingText && !isHistorical && !canActNow;
 
@@ -3067,6 +3175,17 @@ class Component extends DCLogic {
         isAddingQuote: s.action === 'addQuote',
         showAddQuoteBtn: canQuote && s.action !== 'addQuote' && !isHistorical,
         showSubmitToHeadBtn: canQuote && enoughQ && hasSel && s.action !== 'addQuote' && !isHistorical,
+        showDirectBuy: canQuote && effIdx === 4 && !isHistorical && s.action !== 'addQuote' && this.canDirectBuy(selPr),
+        directBuyLimitDisplay: fm(this.directBuyLimit()),
+        dbHasSel: hasSel, dbNoSel: !hasSel,
+        dbSelText: (() => { const q = selPr.quotes.find(x => x.selected); if (!q) return ''; const v = s.vendors.find(x => x.id === q.vendorId); return (v ? v.name : '—') + ' · ' + fm(this.quoteLcy(q)) + ' ກີບ (' + q.qNumber + ')'; })(),
+        dbVendorOptions: activeVendors.filter(v => v.currency === 'LAK'),
+        dbVendorId: s.dbVendorId, onDbVendor: e => this.setState({ dbVendorId: e.target.value }),
+        dbAmountDisplay: fmtIn(s.dbAmount), onDbAmount: e => this.setState({ dbAmount: parseIn(e.target.value) }),
+        dbReason: s.dbReason, onDbReason: e => this.setState({ dbReason: e.target.value }),
+        onDirectBuy: () => this.directBuy(selPr),
+        directBuyDone: !!(selPr.rfq && selPr.rfq.directBuy),
+        directBuyInfo: (selPr.rfq && selPr.rfq.directBuy) ? ('ຊື້ໂດຍກົງ ໂດຍ ' + this.uName(selPr.rfq.directBy) + ' · ' + fd(selPr.rfq.directAt) + (selPr.rfq.directReason ? ' · ເຫດຜົນ: ' + selPr.rfq.directReason : '')) : '',
         onAddQuoteOpen: () => this.setState({ action: 'addQuote', qVendorId: '', qAmount: '', qFx: '', qNote: '' }),
         onConfirmAddQuote: () => this.addQuote(selPr), onSubmitToHead: () => this.submitQuotesForHead(selPr),
         onPrintDoc: () => this.setState({ docView: { kind: 'pr', id: selPr.id } }),
@@ -3192,7 +3311,7 @@ class Component extends DCLogic {
 
     return {
       loaded: true, showLogin: !u, showApp: !!u, loginRows,
-      syncLabel: getSyncUrl() ? '☁ Sync ເປີດ — ຂໍ້ມູນແຊร์ຜ່ານ Google Sheet' : '💾 Sync ປິດ — ເກັບໃນເຄື່ອງນີ້ (localStorage)',
+      syncLabel: getSyncUrl() ? '☁ Sync ເປີດ — ຂໍ້ມູນແຊຜ່ານ Google Sheet' : '💾 Sync ປິດ — ເກັບໃນເຄື່ອງນີ້ (localStorage)',
       syncColor: getSyncUrl() ? '#116F38' : '#98A69B',
       onConfigSync: () => { const cur = getSyncUrl(); const v = prompt('ວາງ URL ຂອງ Google Apps Script Web App\\n(ວ່າງໄວ້ = ປິດ sync, ໃຊ້ localStorage):', cur); if (v !== null) { setSyncUrl(v.trim()); location.reload(); } },
       hasLoginSelection: !!loginSelUser, showLoginGrid: !loginSelUser,
@@ -3249,8 +3368,9 @@ class Component extends DCLogic {
       auditTotal: s.auditLogs.length,
       t1Display: fm(st.t1), t2Display: fm(st.t2), qtDisplay: fm(st.quoteThreshold), minQuotesDisplay: st.minQuotes,
       qt2Display: fm(st.quoteThreshold2), minQuotes2Display: st.minQuotes2,
+      dblOn: Number(st.directBuyLimit) > 0, dblDisplay: fm(Number(st.directBuyLimit) || 0),
 
-      prRows, poRows, grnRows, vendorRows,
+      prRows, poRows, grnRows, vendorRows, noGrns: grnRows.length === 0,
       canManageVendors, vendorFormOpen: s.vendorFormOpen, onToggleVendorForm: () => this.toggleVendorForm(), onCreateVendor: () => this.createVendorFromPage(),
       vNewName: s.vNewName, onVNewName: e => this.setState({ vNewName: e.target.value }),
       vNewTax: s.vNewTax, onVNewTax: e => this.setState({ vNewTax: e.target.value }),
@@ -3317,7 +3437,7 @@ class Component extends DCLogic {
       qSelectReason: s.qSelectReason, onQSelectReasonChange: e => this.setState({ qSelectReason: e.target.value }),
       onSelectCancel: () => this.setState({ selectingQuoteId: null, qSelectReason: '' }),
       filePreviewOpen: !!s.filePreview, fpName: s.filePreview ? s.filePreview.name : '',
-      fpData: s.filePreview ? s.filePreview.data : '', fpIsImg: !!s.filePreview && s.filePreview.isImg, fpIsPdf: !!s.filePreview && !s.filePreview.isImg,
+      fpData: s.filePreview ? s.filePreview.data : '', fpIsImg: !!s.filePreview && s.filePreview.isImg, fpIsPdf: !!s.filePreview && !s.filePreview.isImg && String(s.filePreview.data || '').indexOf('data:application/pdf') === 0,
       onCloseFilePreview: () => this.setState({ filePreview: null }),
       setFpRef: (el) => { if (el && s.filePreview) el.src = s.filePreview.data; },
       qAmount: s.qAmount, qAmountDisplay: fmtIn(s.qAmount), onQAmountChange: e => this.setState({ qAmount: parseIn(e.target.value) }),
@@ -3334,6 +3454,7 @@ class Component extends DCLogic {
       setQt2Display: fmtIn(d.quoteThreshold2), onSetQt2: e => this.setD('quoteThreshold2', e.target.value),
       setMinQuotes: d.minQuotes, onSetMinQuotes: e => this.setD('minQuotes', e.target.value),
       setMinQuotes2: d.minQuotes2, onSetMinQuotes2: e => this.setD('minQuotes2', e.target.value),
+      setDblDisplay: fmtIn(d.directBuyLimit), onSetDbl: e => this.setD('directBuyLimit', e.target.value),
       setCoLao: d.coLao, onSetCoLao: e => this.setD('coLao', e.target.value),
       setCoEn: d.coEn, onSetCoEn: e => this.setD('coEn', e.target.value),
       setCoAddr: d.coAddr, onSetCoAddr: e => this.setD('coAddr', e.target.value),
