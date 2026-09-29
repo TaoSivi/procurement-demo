@@ -293,7 +293,7 @@
           <h2 style="margin:0 0 4px;font-size:22px">ເບີກເງິນແຮ (ADV)</h2>
           <p style="margin:0;color:#5C6D5A;font-size:13.5px">ຂໍເບີກ → ອະນຸມັດ → ຈ່າຍເງິນ → ຮັບເງິນ → ເຄຍ → ກວດເຄຍ → ສຳເລັດ</p>
         </div>
-        <button onClick="{{ onOpenAdvForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">+ ຂໍເບີກລ່ວງໜ້າ</button>
+        <button onClick="{{ onOpenAdvForm }}" style="background:#116F38;color:#fff;border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:44px">+ ຂໍເບີກເງິນແຮ</button>
       </div>
       <sc-if value="{{ advCanReport }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center">
@@ -4137,11 +4137,16 @@ class Component extends DCLogic {
     const creatorUser = this.state.users.find(x => x.id === po.createdBy);
     const poApprovals = [{ name: this.uName(po.createdBy), role: ROLE_LABEL.PROCUREMENT, dept: creatorUser ? creatorUser.dept : '—', status: 'ອອກ PO ແລ້ວ' }];
     const approverSigs = [];
-    for (let i = 0; i < PO_STEPS; i++) {
-      const info = this.poStepInfo(po, i);
+    // ຖ້າ Workflow ຂອງ PR ກຳນົດຜູ້ອະນຸມັດ PO ໄວ້ — ໃຊ້ລາຍຊື່ນັ້ນ (ຄືກັບ approvePo), ບໍ່ດັ່ງນັ້ນໃຊ້ 4 ຂັ້ນຕາມບົດບາດ
+    const _poPr = this.state.prs.find(x => x.id === po.prId);
+    const poList = (_poPr && _poPr.poApprovers) || [];
+    for (let i = 0; i < (poList.length || PO_STEPS); i++) {
+      const listUser = poList.length ? this.state.users.find(x => x.id === poList[i]) : null;
+      const info = poList.length ? { label: listUser ? ROLE_LABEL[listUser.role] : '—' } : this.poStepInfo(po, i);
       const ap = (po.approvals || []).find(a => a.step === i);
       let expectedUser = null;
-      if (info.kind === 'requester') expectedUser = this.state.users.find(x => x.id === info.personId);
+      if (poList.length) expectedUser = listUser;
+      else if (info.kind === 'requester') expectedUser = this.state.users.find(x => x.id === info.personId);
       else if (info.kind === 'depthead') expectedUser = this.state.users.find(x => x.role === 'DEPT_HEAD' && x.dept === info.dept);
       else expectedUser = this.state.users.find(x => x.role === info.role);
       const apUser = ap ? this.state.users.find(x => x.id === ap.userId) : expectedUser;
@@ -4470,7 +4475,7 @@ class Component extends DCLogic {
       onSumByCat: () => this.setState({ advSumBy: 'cat' }), onSumByDept: () => this.setState({ advSumBy: 'dept' }), onSumByMonth: () => this.setState({ advSumBy: 'month' }),
       onExportAdvList: () => this.exportAdvCsv('list'), onExportAdvLines: () => this.exportAdvCsv('lines'),
       // ຟອມ
-      advFormOpen: !!s.advFormOpen, advFormTitle: s.advEditingId ? 'ແກ້ໄຂຮ່າງ ໃບຂໍເບີກລ່ວງໜ້າ' : 'ຂໍເບີກເງິນລ່ວງໜ້າ',
+      advFormOpen: !!s.advFormOpen, advFormTitle: s.advEditingId ? 'ແກ້ໄຂຮ່າງ ໃບຂໍເບີກເງິນແຮ' : 'ຂໍເບີກເງິນແຮ (ADV)',
       advTypeOptions: Object.keys(ADV_TYPES).map(k => ({ value: k, label: ADV_TYPES[k] })),
       afType: af.type || 'TRAVEL', onAfType: e => this.setAdvForm('type', e.target.value),
       afPurpose: af.purpose || '', onAfPurpose: e => this.setAdvForm('purpose', e.target.value),
